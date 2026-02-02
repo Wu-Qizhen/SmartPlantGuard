@@ -1,0 +1,84 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.3.6">
+  <diagram name="第 1 页" id="gUXEQHs_KaAp1g5TKPrB">
+    <mxGraphModel dx="819" dy="491" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-42" parent="1" style="whiteSpace=wrap;html=1;fillColor=light-dark(#B1DDF066,#173D4D66);strokeColor=#10739e;dashed=1;dashPattern=12 12;" value="" vertex="1">
+          <mxGeometry height="300" width="160" x="584" y="364" as="geometry" />
+        </mxCell>
+        <mxCell id="jNSzGqVAXNNwE9S1dTTj-1" parent="1" style="whiteSpace=wrap;html=1;fillColor=light-dark(#BAC8D366,#39454E66);strokeColor=#23445d;" value="" vertex="1">
+          <mxGeometry height="200" width="160" x="584" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="erlgEsH3adA2BvTwSDPO-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#D0CEE266,#3B394A66);strokeColor=#56517e;" value="" vertex="1">
+          <mxGeometry height="500" width="160" x="744" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-34" parent="1" style="whiteSpace=wrap;html=1;fillColor=#B0E3E666;strokeColor=#0e8088;" value="" vertex="1">
+          <mxGeometry height="500" width="320" x="264" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=light-dark(#B0E3E666,#103C3F66);strokeColor=#0e8088;" value="STM32F103C8T6&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;（主控）&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="364" y="184" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=light-dark(#B1DDF066,#173D4D66);strokeColor=#10739e;dashed=1;dashPattern=12 12;" value="ESP8266&lt;div&gt;（WiFi 模块）&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="604" y="384" as="geometry" />
+        </mxCell>
+        <mxCell id="erlgEsH3adA2BvTwSDPO-1" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="J3bQKYso8QbNUyRtDhXq-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="传感器采集" vertex="1">
+          <mxGeometry height="60" width="120" x="284" y="284" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-35" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="J3bQKYso8QbNUyRtDhXq-24">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="524" y="414" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-37" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.993;exitY=0.702;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;exitPerimeter=0;" target="J3bQKYso8QbNUyRtDhXq-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jNSzGqVAXNNwE9S1dTTj-5" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="jNSzGqVAXNNwE9S1dTTj-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontColor=default;fontFamily=Helvetica;fontSize=12;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="控制逻辑处理" vertex="1">
+          <mxGeometry height="60" width="120" x="444" y="334" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-41" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="J3bQKYso8QbNUyRtDhXq-40">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=12 12;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="云平台（待定）&lt;div&gt;Home Assistant&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="764" y="484" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="APP" vertex="1">
+          <mxGeometry height="60" width="120" x="764" y="334" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-19" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-8" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="J3bQKYso8QbNUyRtDhXq-18" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="674" y="514" as="sourcePoint" />
+            <mxPoint x="724" y="464" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="执行器控制" vertex="1">
+          <mxGeometry height="60" width="120" x="284" y="384" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-38" edge="1" parent="1" source="J3bQKYso8QbNUyRtDhXq-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="J3bQKYso8QbNUyRtDhXq-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-36" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=12 12;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="云端通信" vertex="1">
+          <mxGeometry height="60" width="120" x="604" y="484" as="geometry" />
+        </mxCell>
+        <mxCell id="J3bQKYso8QbNUyRtDhXq-40" parent="1" style="rounded=1;whiteSpace=wrap;html=1;dashed=1;dashPattern=12 12;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="OTA 升级" vertex="1">
+          <mxGeometry height="60" width="120" x="604" y="584" as="geometry" />
+        </mxCell>
+        <mxCell id="jNSzGqVAXNNwE9S1dTTj-2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#BAC8D366,#39454E66);strokeColor=#23445d;" value="HC05&lt;div&gt;（蓝牙模块）&lt;/div&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="604" y="284" as="geometry" />
+        </mxCell>
+        <mxCell id="jNSzGqVAXNNwE9S1dTTj-4" edge="1" parent="1" source="jNSzGqVAXNNwE9S1dTTj-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" target="J3bQKYso8QbNUyRtDhXq-18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="jNSzGqVAXNNwE9S1dTTj-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF66,#FFFFFF66);" value="蓝牙通信" vertex="1">
+          <mxGeometry height="60" width="120" x="604" y="184" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
