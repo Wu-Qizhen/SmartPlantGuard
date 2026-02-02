@@ -1,0 +1,56 @@
+# 编译产物
+*.o
+*.obj
+*.elf
+*.axf
+*.bin
+*.hex
+*.map
+*.lst
+*.out
+
+# 构建目录
+build/
+Build/
+build-*/
+
+# IDE 配置文件
+# .idea/
+# .vscode/
+*.swp
+*.swo
+*~
+
+# CubeMX 生成文件
+STM32CubeMX/.mxproject
+
+# 调试文件
+*.bak
+*.backup
+
+# 操作系统文件
+Thumbs.db
+.DS_Store
+
+# 日志文件
+*.log
+
+# 配置文件
+*.ini
+
+# 工具文件
+# tools/
+
+# 文档文件
+# *.pdf
+# *.docx
+
+# 临时文件
+*.tmp
+*.temp
+
+# 环境变量文件
+.env
+
+# 测试文件
+test/
