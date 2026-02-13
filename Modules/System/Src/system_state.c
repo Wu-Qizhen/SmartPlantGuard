@@ -1,3 +1,8 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ */
 #include "system_state.h"
 
 // 全局状态变量
@@ -31,7 +36,7 @@ void SystemState_ClearError(void) {
 }
 
 // 获取状态字符串
-const char* SystemState_GetStateString(SystemStateEnum state) {
+const char *SystemState_GetStateString(SystemStateEnum state) {
     switch (state) {
         case SYS_STATE_INIT:
             return "INIT";
@@ -51,7 +56,7 @@ const char* SystemState_GetStateString(SystemStateEnum state) {
 }
 
 // 获取错误字符串
-const char* SystemState_GetErrorString(ErrorCodeEnum error) {
+const char *SystemState_GetErrorString(ErrorCodeEnum error) {
     switch (error) {
         case ERROR_NONE:
             return "NONE";

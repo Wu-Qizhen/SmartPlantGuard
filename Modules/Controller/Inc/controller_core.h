@@ -1,3 +1,9 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #ifndef CONTROLLER_CORE_H
 #define CONTROLLER_CORE_H
 
@@ -16,11 +22,13 @@ bool ControllerCore_SetMode(ControlModeEnum mode);
 
 // 手动控制接口
 bool ControllerCore_ManualControl(ActuatorIDEnum actuator, ActuatorStateEnum state);
+
 bool ControllerCore_ManualPWM(ActuatorIDEnum actuator, uint16_t dutyCycle);
 
 // 获取控制参数
 ControlParams ControllerCore_GetParams(void);
-bool ControllerCore_SetParams(ControlParams* newParams);
+
+bool ControllerCore_SetParams(ControlParams *newParams);
 
 // 重置为默认参数
 void ControllerCore_ResetToDefaults(void);

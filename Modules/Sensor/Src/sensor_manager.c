@@ -1,4 +1,12 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #include "sensor_manager.h"
+
+#include "stm32f1xx_hal.h"
 
 static SensorManagerStatus managerStatus = {
     .isInitialized = false,
@@ -12,48 +20,48 @@ static SensorManagerStatus managerStatus = {
 SensorStatusEnum SensorManager_Init(void) {
     // 初始化各个传感器
     // 这里需要调用各个传感器的初始化函数
-    
+
     managerStatus.isInitialized = true;
     return SENSOR_OK;
 }
 
 // 读取所有传感器数据
-bool SensorManager_ReadAll(AllSensorData* sensorData) {
+bool SensorManager_ReadAll(AllSensorData *sensorData) {
     if (!managerStatus.isInitialized || !sensorData) {
         return false;
     }
-    
+
     // 读取各个传感器数据
     SensorManager_ReadSoilMoisture(&sensorData->soilMoisture.value);
     SensorManager_ReadTemperature(&sensorData->temperature.value);
     SensorManager_ReadHumidity(&sensorData->humidity.value);
     SensorManager_ReadLightIntensity(&sensorData->lightIntensity.value);
-    
+
     // 设置时间戳
     sensorData->lastUpdateTime = HAL_GetTick();
     sensorData->allSensorsValid = true; // 简化处理，实际需要检查各个传感器状态
-    
+
     managerStatus.totalReadCount++;
     return true;
 }
 
 // 读取单个传感器
-SensorStatusEnum SensorManager_ReadSoilMoisture(float* moisture) {
+SensorStatusEnum SensorManager_ReadSoilMoisture(float *moisture) {
     // 调用土壤湿度传感器的读取函数
     return SENSOR_OK;
 }
 
-SensorStatusEnum SensorManager_ReadTemperature(float* temperature) {
+SensorStatusEnum SensorManager_ReadTemperature(float *temperature) {
     // 调用 DHT11 温度读取函数
     return SENSOR_OK;
 }
 
-SensorStatusEnum SensorManager_ReadHumidity(float* humidity) {
+SensorStatusEnum SensorManager_ReadHumidity(float *humidity) {
     // 调用 DHT11 湿度读取函数
     return SENSOR_OK;
 }
 
-SensorStatusEnum SensorManager_ReadLightIntensity(float* light) {
+SensorStatusEnum SensorManager_ReadLightIntensity(float *light) {
     // 调用光敏传感器的读取函数
     return SENSOR_OK;
 }

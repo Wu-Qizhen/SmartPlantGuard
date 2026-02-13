@@ -1,3 +1,9 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #include "error_handler.h"
 
 static uint32_t errorCount = 0;
@@ -10,7 +16,7 @@ void ErrorHandler_HandleError(ErrorCodeEnum error) {
 }
 
 // 记录错误
-void ErrorHandler_LogError(ErrorCodeEnum error, const char* message) {
+void ErrorHandler_LogError(ErrorCodeEnum error, const char *message) {
     // 这里可以添加错误日志记录功能
     // 例如通过串口发送错误信息
     ErrorHandler_HandleError(error);

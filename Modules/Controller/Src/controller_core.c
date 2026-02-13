@@ -1,5 +1,14 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #include "controller_core.h"
+#include <string.h>
 #include "sensor_manager.h"
+
+static void runAutoControl(AllSensorData *sensorData);
 
 static ControlParams controlParams = {
     .soilMoistureLow = 30.0f,
@@ -24,10 +33,10 @@ static ControlDecision lastDecision = {
 bool ControllerCore_Init(void) {
     // 初始化执行器
     ActuatorManager_Init();
-    
+
     // 初始化传感器
     SensorManager_Init();
-    
+
     return true;
 }
 
@@ -55,7 +64,7 @@ void ControllerCore_RunCycle(void) {
 }
 
 // 自动控制逻辑
-static void runAutoControl(AllSensorData* sensorData) {
+static void runAutoControl(AllSensorData *sensorData) {
     // 土壤湿度控制
     if (sensorData->soilMoisture.value < controlParams.soilMoistureLow) {
         ActuatorManager_SetState(ACTUATOR_ID_PUMP, ACTUATOR_ON);
@@ -65,7 +74,7 @@ static void runAutoControl(AllSensorData* sensorData) {
         ActuatorManager_SetState(ACTUATOR_ID_PUMP, ACTUATOR_OFF);
         lastDecision.needWatering = false;
     }
-    
+
     // 温度控制
     if (sensorData->temperature.value > controlParams.temperatureHigh) {
         ActuatorManager_SetState(ACTUATOR_ID_FAN, ACTUATOR_ON);
@@ -75,7 +84,7 @@ static void runAutoControl(AllSensorData* sensorData) {
         ActuatorManager_SetState(ACTUATOR_ID_FAN, ACTUATOR_OFF);
         lastDecision.needCooling = false;
     }
-    
+
     // 光照控制（预留）
     if (sensorData->lightIntensity.value < controlParams.lightIntensityLow) {
         lastDecision.needLighting = true;
@@ -106,11 +115,11 @@ ControlParams ControllerCore_GetParams(void) {
 }
 
 // 设置控制参数
-bool ControllerCore_SetParams(ControlParams* newParams) {
+bool ControllerCore_SetParams(ControlParams *newParams) {
     if (!newParams) {
         return false;
     }
-    
+
     controlParams = *newParams;
     return true;
 }

@@ -65,7 +65,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Controller module
     Modules/Controller/Src/controller_core.c
     Modules/Controller/Src/hysteresis_logic.c
-    Modules/Controller/Src/task_scheduler.c
     Modules/Controller/Src/storage_flash.c
     # Communication module
     Modules/Communication/Src/protocol.c

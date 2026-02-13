@@ -1,24 +1,31 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #ifndef SOIL_MOISTURE_H
 #define SOIL_MOISTURE_H
 
 #include "sensor_types.h"
+#include "stm32f1xx_hal.h"
 
 // 土壤湿度校准结构
 typedef struct {
-    float dryValue;      // 干燥时的 ADC 值
-    float wetValue;      // 湿润时的 ADC 值
-    bool isCalibrated;   // 是否已校准
+    float dryValue; // 干燥时的 ADC 值
+    float wetValue; // 湿润时的 ADC 值
+    bool isCalibrated; // 是否已校准
 } SoilCalibration;
 
 // 初始化土壤湿度传感器
-bool SoilMoisture_Init(ADC_HandleTypeDef* hadc, uint32_t channel);
+bool SoilMoisture_Init(ADC_HandleTypeDef *hadc, uint32_t channel);
 
 // 读取土壤湿度
-SensorStatusEnum SoilMoisture_Read(float* moisturePercent);
+SensorStatusEnum SoilMoisture_Read(float *moisturePercent);
 
 // 校准函数
-void SoilMoisture_CalibrateDry(void);  // 校准干燥值
-void SoilMoisture_CalibrateWet(void);  // 校准湿润值
+void SoilMoisture_CalibrateDry(void); // 校准干燥值
+void SoilMoisture_CalibrateWet(void); // 校准湿润值
 SoilCalibration SoilMoisture_GetCalibration(void);
 
 // 设置自定义校准值

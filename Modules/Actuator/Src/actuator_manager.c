@@ -1,3 +1,9 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #include "actuator_manager.h"
 
 static ActuatorStatus actuatorStatuses[ACTUATOR_ID_COUNT];
@@ -12,7 +18,7 @@ bool ActuatorManager_Init(void) {
         actuatorStatuses[i].operationCount = 0;
         actuatorStatuses[i].isFaulty = false;
     }
-    
+
     isInitialized = true;
     return true;
 }
@@ -22,12 +28,12 @@ bool ActuatorManager_SetState(ActuatorIDEnum id, ActuatorStateEnum state) {
     if (!isInitialized || id >= ACTUATOR_ID_COUNT) {
         return false;
     }
-    
+
     // 检查状态是否变化
     if (actuatorStatuses[id].currentState != state) {
         actuatorStatuses[id].currentState = state;
         actuatorStatuses[id].operationCount++;
-        
+
         // 根据执行器类型执行相应的控制
         switch (id) {
             case ACTUATOR_ID_PUMP:
@@ -43,7 +49,7 @@ bool ActuatorManager_SetState(ActuatorIDEnum id, ActuatorStateEnum state) {
                 break;
         }
     }
-    
+
     return true;
 }
 
@@ -52,17 +58,17 @@ bool ActuatorManager_SetPWM(ActuatorIDEnum id, uint16_t dutyCycle) {
     if (!isInitialized || id >= ACTUATOR_ID_COUNT) {
         return false;
     }
-    
+
     // 限制占空比范围
     if (dutyCycle > 1000) {
         dutyCycle = 1000;
     }
-    
+
     // 只对风扇执行 PWM 控制
     if (id == ACTUATOR_ID_FAN) {
         // 设置风扇 PWM
     }
-    
+
     return true;
 }
 
@@ -71,7 +77,7 @@ ActuatorStateEnum ActuatorManager_GetState(ActuatorIDEnum id) {
     if (!isInitialized || id >= ACTUATOR_ID_COUNT) {
         return ACTUATOR_ERROR;
     }
-    
+
     return actuatorStatuses[id].currentState;
 }
 
@@ -86,7 +92,7 @@ ActuatorStatus ActuatorManager_GetStatus(ActuatorIDEnum id) {
         };
         return errorStatus;
     }
-    
+
     return actuatorStatuses[id];
 }
 
@@ -95,10 +101,10 @@ bool ActuatorManager_SafeToggle(ActuatorIDEnum id, uint32_t minInterval) {
     if (!isInitialized || id >= ACTUATOR_ID_COUNT) {
         return false;
     }
-    
+
     // 检查最小间隔
     // 这里需要实现时间检查逻辑
-    
+
     // 切换状态
     ActuatorStateEnum newState = (actuatorStatuses[id].currentState == ACTUATOR_ON) ? ACTUATOR_OFF : ACTUATOR_ON;
     return ActuatorManager_SetState(id, newState);
@@ -115,7 +121,7 @@ void ActuatorManager_ResetStatistics(ActuatorIDEnum id) {
     if (!isInitialized || id >= ACTUATOR_ID_COUNT) {
         return;
     }
-    
+
     actuatorStatuses[id].totalOnTime = 0;
     actuatorStatuses[id].operationCount = 0;
     actuatorStatuses[id].isFaulty = false;

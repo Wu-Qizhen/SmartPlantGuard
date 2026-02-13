@@ -1,3 +1,9 @@
+/**
+* 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ */
 #include "communication_manager.h"
 #include "bluetooth_hc05.h"
 #include "wifi_esp8266.h"
@@ -18,7 +24,7 @@ bool CommunicationManager_Init(void) {
     };
     // 这里需要传入实际的 UART 句柄
     // Bluetooth_Init(&huart1, &btConfig);
-    
+
     // 初始化 WiFi（预留）
     // WiFiConfig wifiConfig = {
     //     .ssid = "",
@@ -28,16 +34,16 @@ bool CommunicationManager_Init(void) {
     //     .baudRate = 115200
     // };
     // WiFi_Init(&huart2, &wifiConfig);
-    
+
     return true;
 }
 
 // 发送数据
-bool CommunicationManager_SendData(CommunicationTypeEnum type, uint8_t* data, uint16_t length) {
+bool CommunicationManager_SendData(CommunicationTypeEnum type, uint8_t *data, uint16_t length) {
     if (!data) {
         return false;
     }
-    
+
     switch (type) {
         case COMM_BLUETOOTH:
             return Bluetooth_SendData(data, length);
@@ -52,11 +58,11 @@ bool CommunicationManager_SendData(CommunicationTypeEnum type, uint8_t* data, ui
 }
 
 // 发送命令包
-bool CommunicationManager_SendPacket(CommunicationTypeEnum type, CommandPacket* packet) {
+bool CommunicationManager_SendPacket(CommunicationTypeEnum type, CommandPacket *packet) {
     if (!packet) {
         return false;
     }
-    
+
     switch (type) {
         case COMM_BLUETOOTH:
             return Bluetooth_SendPacket(packet);
@@ -71,11 +77,11 @@ bool CommunicationManager_SendPacket(CommunicationTypeEnum type, CommandPacket* 
 }
 
 // 接收数据
-bool CommunicationManager_ReceiveData(CommunicationTypeEnum type, uint8_t* buffer, uint16_t* length) {
+bool CommunicationManager_ReceiveData(CommunicationTypeEnum type, uint8_t *buffer, uint16_t *length) {
     if (!buffer || !length) {
         return false;
     }
-    
+
     // 这里需要根据实际的通信模块实现接收逻辑
     return false;
 }
@@ -84,7 +90,7 @@ bool CommunicationManager_ReceiveData(CommunicationTypeEnum type, uint8_t* buffe
 void CommunicationManager_ProcessData(void) {
     // 处理蓝牙数据
     Bluetooth_ProcessReceivedData();
-    
+
     // 处理 WiFi 数据
     WiFi_ProcessReceivedData();
 }
@@ -94,7 +100,7 @@ CommunicationStateEnum CommunicationManager_GetState(CommunicationTypeEnum type)
     if (type >= 3) {
         return COMM_STATE_ERROR;
     }
-    
+
     return commStates[type];
 }
 
