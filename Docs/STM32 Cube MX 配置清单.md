@@ -64,10 +64,17 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 
 
-## 5. 串口（蓝牙 HC-05）
+## 5. 串口（蓝牙、调试 / WiFi）
 
-- USART1：Asynchronous
-- 波特率：9600
+- USART1：
+  - Asynchronous
+  - 波特率：9600
+
+- USART2：
+  - Asynchronous
+  - 波特率：115200
+  - NVIC -> USART2 global interrupt
+
 
 
 
