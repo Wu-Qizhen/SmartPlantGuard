@@ -48,7 +48,10 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
+    # Task
+    Tasks/task_sensor_read.c
+    Tasks/task_control.c
+    Tasks/task_comm.c
     # System module
     Modules/System/Src/system_config.c
     Modules/System/Src/system_state.c
