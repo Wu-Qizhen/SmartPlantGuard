@@ -96,16 +96,16 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 ### 8.1 内核
 
-| 参数路径                | 参数名                | 推荐值                 | 说明                                                         |
-| :---------------------- | :-------------------- | :--------------------- | :----------------------------------------------------------- |
-| **`Config Parameters`** | **`TOTAL_HEAP_SIZE`** | **`8192` 或 `16384`**  | **堆内存大小（单位：字节）。传感器+蓝牙任务较多，建议 `16384`** |
-| `Config Parameters`     | `USE_PREEMPTION`      | `Enabled`              | 抢占式调度，必须开启                                         |
-| `Config Parameters`     | `CPU_CLOCK_HZ`        | 自动匹配（HAL 会定义） | 无需修改                                                     |
-| `Config Parameters`     | `TICK_RATE_HZ`        | `1000`                 | 系统节拍 1ms，适合毫秒级延时                                 |
-| `Config Parameters`     | `MAX_TASK_NAME_LEN`   | `16`                   | 任务名字符串长度，够用即可                                   |
-| `Config Parameters`     | `USE_MUTEXES`         | `Enabled`              | 后面可能会用到互斥锁保护共享资源                             |
-| `Config Parameters`     | `USE_SEMAPHORES`      | `Enabled`              | 信号量支持                                                   |
-| `Config Parameters`     | `USE_CO_ROUTINES`     | `Disabled`             | 协程已过时，不用                                             |
+| 参数路径                | 参数名                | 推荐值                 | 说明                                              |
+| :---------------------- | :-------------------- | :--------------------- | :------------------------------------------------ |
+| **`Config Parameters`** | **`TOTAL_HEAP_SIZE`** | **`8192`**             | **堆内存大小（单位：字节）。传感器+蓝牙任务较多** |
+| `Config Parameters`     | `USE_PREEMPTION`      | `Enabled`              | 抢占式调度，必须开启                              |
+| `Config Parameters`     | `CPU_CLOCK_HZ`        | 自动匹配（HAL 会定义） | 无需修改                                          |
+| `Config Parameters`     | `TICK_RATE_HZ`        | `1000`                 | 系统节拍 1ms，适合毫秒级延时                      |
+| `Config Parameters`     | `MAX_TASK_NAME_LEN`   | `16`                   | 任务名字符串长度，够用即可                        |
+| `Config Parameters`     | `USE_MUTEXES`         | `Enabled`              | 后面可能会用到互斥锁保护共享资源                  |
+| `Config Parameters`     | `USE_SEMAPHORES`      | `Enabled`              | 信号量支持                                        |
+| `Config Parameters`     | `USE_CO_ROUTINES`     | `Disabled`             | 协程已过时，不用                                  |
 
 ### 8.2 任务（Task）
 
@@ -131,7 +131,7 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 > Item Size 临时填一个大数字，为让 CubeMX 生成队列的初始化代码，防止语法检查报错
 >
-> 生成代码后，**找到队列定义并修改**
+> 生成代码后，**找到 `freertos.c` 队列定义并修改**
 >
 > ```
 > osMessageQueueId_t Queue_SensorDataHandle;
