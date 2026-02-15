@@ -1,12 +1,10 @@
 /**
-* 代码不注释，同事两行泪！（给！爷！写！）
+ * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
  */
 #include "sensor_manager.h"
-
-#include "stm32f1xx_hal.h"
 
 static SensorManagerStatus managerStatus = {
     .isInitialized = false,
@@ -20,6 +18,8 @@ static SensorManagerStatus managerStatus = {
 SensorStatusEnum SensorManager_Init(void) {
     // 初始化各个传感器
     // 这里需要调用各个传感器的初始化函数
+    delay_init();
+    DHT11_Init(DHT11_PORT, DHT11_PIN);
 
     managerStatus.isInitialized = true;
     return SENSOR_OK;
@@ -31,17 +31,30 @@ bool SensorManager_ReadAll(AllSensorData *sensorData) {
         return false;
     }
 
-    // 读取各个传感器数据
+    // 统一接口读取温湿度
+    float temp = 0, hum = 0;
+    SensorStatusEnum tempHumStatus = SensorManager_ReadTemperatureHumidity(&temp, &hum);
+    sensorData->temperature.value = temp;
+    sensorData->humidity.value = hum;
+    sensorData->temperature.unit = UNIT_CELSIUS;
+    sensorData->humidity.unit = UNIT_PERCENT;
+    sensorData->temperature.status = tempHumStatus;
+    sensorData->humidity.status = tempHumStatus;
+
+    // 读取其他传感器
     SensorManager_ReadSoilMoisture(&sensorData->soilMoisture.value);
-    SensorManager_ReadTemperature(&sensorData->temperature.value);
-    SensorManager_ReadHumidity(&sensorData->humidity.value);
     SensorManager_ReadLightIntensity(&sensorData->lightIntensity.value);
 
-    // 设置时间戳
+    sensorData->soilMoisture.unit = UNIT_PERCENT;
+    sensorData->lightIntensity.unit = UNIT_LUX;
+
     sensorData->lastUpdateTime = HAL_GetTick();
-    sensorData->allSensorsValid = true; // 简化处理，实际需要检查各个传感器状态
+    sensorData->allSensorsValid = (tempHumStatus == SENSOR_OK); // TODO
 
     managerStatus.totalReadCount++;
+    if (tempHumStatus != SENSOR_OK) {
+        managerStatus.errorCount++;
+    }
     return true;
 }
 
@@ -51,14 +64,19 @@ SensorStatusEnum SensorManager_ReadSoilMoisture(float *moisture) {
     return SENSOR_OK;
 }
 
-SensorStatusEnum SensorManager_ReadTemperature(float *temperature) {
-    // 调用 DHT11 温度读取函数
-    return SENSOR_OK;
-}
+SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity) {
+    DHT11_StatusEnum status = DHT11_Read(temperature, humidity);
 
-SensorStatusEnum SensorManager_ReadHumidity(float *humidity) {
-    // 调用 DHT11 湿度读取函数
-    return SENSOR_OK;
+    // 映射 DHT11 状态到通用传感器状态
+    if (status == DHT11_OK) {
+        return SENSOR_OK;
+    } else if (status == DHT11_TIMEOUT_ERROR || status == DHT11_NO_RESPONSE) {
+        return SENSOR_TIMEOUT;
+    } else if (status == DHT11_CHECKSUM_ERROR) {
+        return SENSOR_CHECKSUM_ERROR;
+    } else {
+        return SENSOR_NOT_CONNECTED;
+    }
 }
 
 SensorStatusEnum SensorManager_ReadLightIntensity(float *light) {

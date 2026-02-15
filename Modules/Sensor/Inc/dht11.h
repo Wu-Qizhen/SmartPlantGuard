@@ -1,5 +1,5 @@
 /**
-* 代码不注释，同事两行泪！（给！爷！写！）
+ * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
@@ -7,7 +7,8 @@
 #ifndef DHT11_H
 #define DHT11_H
 
-#include "sensor_types.h"
+#include "delay.h"
+#include <stddef.h>
 #include "stm32f1xx_hal.h"
 
 // DHT11 特定错误码

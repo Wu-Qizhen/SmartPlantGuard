@@ -1,5 +1,5 @@
 /**
-* 代码不注释，同事两行泪！（给！爷！写！）
+ * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  */
@@ -35,10 +35,10 @@
 // 板载 LED（PC13），低电平点亮
 #define SYSTEM_LED_PORT              GPIOC
 #define SYSTEM_LED_PIN               GPIO_PIN_13
-// WiFi 预留（USART2）
-// #define WIFI_UART                 USART2
-// #define WIFI_TX_PIN               GPIO_PIN_2      // PA2
-// #define WIFI_RX_PIN               GPIO_PIN_3      // PA3
+// WiFi 预留 / 调试（USART2）
+#define WIFI_UART                    USART2
+#define WIFI_TX_PIN                  GPIO_PIN_2      // PA2
+#define WIFI_RX_PIN                  GPIO_PIN_3      // PA3
 
 // 默认阈值配置
 #define DEFAULT_SOIL_MOISTURE_LOW    30.0f   // 土壤湿度低于 30% 开启水泵
@@ -48,7 +48,7 @@
 
 // 系统参数
 #define SYSTEM_TICK_MS               1000    // 主循环周期
-#define HYSTERESIS_BAND             2.0f    // 滞回带宽
-#define MAX_RETRY_COUNT             3       // 传感器重试次数
+#define HYSTERESIS_BAND              2.0f    // 滞回带宽
+#define MAX_RETRY_COUNT              3       // 传感器重试次数
 
 #endif // SYSTEM_CONFIG_H

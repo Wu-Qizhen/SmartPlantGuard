@@ -92,7 +92,7 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 ## 7. DMA（ADC 数据传输）
 
-- ADC1：一个DMA请求
+- ADC1：一个 DMA 请求
 - Mode：Circular
 - Data Width：Half Word (Both Peripheral and Memory)
 - Memory Increment Address：Enable
