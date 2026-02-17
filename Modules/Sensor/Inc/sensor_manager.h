@@ -8,6 +8,7 @@
 #define SENSOR_MANAGER_H
 
 #include "dht11.h"
+#include "adc_sensors.h"
 #include "sensor_types.h"
 #include "system_config.h"
 #include "stm32f1xx_hal.h"
@@ -30,9 +31,15 @@ bool SensorManager_ReadAll(AllSensorData *sensorData);
 // 读取单个传感器
 SensorStatusEnum SensorManager_ReadSoilMoisture(float *moisture);
 
-SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity);
-
 SensorStatusEnum SensorManager_ReadLightIntensity(float *light);
+
+SensorStatusEnum SensorManager_ReadSoilMoistureLightIntensity(float *moisture, float *light);
+
+SensorStatusEnum SensorManager_ReadTemperature(float *temperature);
+
+SensorStatusEnum SensorManager_ReadHumidity(float *humidity);
+
+SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity);
 
 // 校准函数
 bool SensorManager_CalibrateSoilMoisture(float dryValue, float wetValue);

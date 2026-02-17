@@ -82,20 +82,19 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 - ADC1：IN0 和 IN1 启用
 - Scan Conversion Mode：Enabled
-- Continuous Conversion Mode：Enabled
-- DMA Continuous Requests：Enabled
+- Continuous Conversion Mode：~~Enabled~~ -> Disabled
 - Number Of Conversion：2
 - Rank1：Channel 0, 239.5 Cycles
 - Rank2：Channel 1, 239.5 Cycles
 
 
 
-## 7. DMA（ADC 数据传输）
+## ~~7. DMA（ADC 数据传输）~~
 
-- ADC1：一个 DMA 请求
-- Mode：Circular
-- Data Width：Half Word (Both Peripheral and Memory)
-- Memory Increment Address：Enable
+- ~~ADC1：一个 DMA 请求~~
+- ~~Mode：Circular~~
+- ~~Data Width：Half Word (Both Peripheral and Memory)~~
+- ~~Memory Increment Address：Enable~~
 
 
 

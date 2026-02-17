@@ -3,6 +3,7 @@
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
+ * Deprecated on 2026.02.17
  */
 #ifndef LIGHT_SENSOR_H
 #define LIGHT_SENSOR_H

@@ -17,9 +17,9 @@ static SensorManagerStatus managerStatus = {
 // 初始化传感器系统
 SensorStatusEnum SensorManager_Init(void) {
     // 初始化各个传感器
-    // 这里需要调用各个传感器的初始化函数
     delay_init();
     DHT11_Init(DHT11_PORT, DHT11_PIN);
+    AdcSensors_Init(ADC_SENSOR_HANDLE);
 
     managerStatus.isInitialized = true;
     return SENSOR_OK;
@@ -41,33 +41,60 @@ bool SensorManager_ReadAll(AllSensorData *sensorData) {
     sensorData->temperature.status = tempHumStatus;
     sensorData->humidity.status = tempHumStatus;
 
-    // 读取其他传感器
-    SensorManager_ReadSoilMoisture(&sensorData->soilMoisture.value);
-    SensorManager_ReadLightIntensity(&sensorData->lightIntensity.value);
-
+    float soil = 0, light = 0;
+    SensorStatusEnum adcStatus = AdcSensors_Read(&soil, &light);
+    sensorData->soilMoisture.value = soil;
+    sensorData->lightIntensity.value = light;
     sensorData->soilMoisture.unit = UNIT_PERCENT;
     sensorData->lightIntensity.unit = UNIT_LUX;
+    sensorData->soilMoisture.status = adcStatus;
+    sensorData->lightIntensity.status = adcStatus;
 
     sensorData->lastUpdateTime = HAL_GetTick();
-    sensorData->allSensorsValid = (tempHumStatus == SENSOR_OK); // TODO
+    sensorData->allSensorsValid = (tempHumStatus == SENSOR_OK) && (adcStatus == SENSOR_OK);
 
     managerStatus.totalReadCount++;
-    if (tempHumStatus != SENSOR_OK) {
+    if (tempHumStatus != SENSOR_OK || adcStatus != SENSOR_OK) {
         managerStatus.errorCount++;
     }
     return true;
 }
 
-// 读取单个传感器
+// 读取土壤湿度（单独接口）
 SensorStatusEnum SensorManager_ReadSoilMoisture(float *moisture) {
-    // 调用土壤湿度传感器的读取函数
-    return SENSOR_OK;
+    float light; // 占位，忽略
+    return AdcSensors_Read(moisture, &light);
 }
 
+// 读取光照强度（单独接口）
+SensorStatusEnum SensorManager_ReadLightIntensity(float *light) {
+    float soil; // 占位，忽略
+    return AdcSensors_Read(&soil, light);
+}
+
+// 读取土壤湿度与光照强度
+SensorStatusEnum SensorManager_ReadSoilMoistureLightIntensity(float *moisture, float *light) {
+    return AdcSensors_Read(moisture, light);
+}
+
+// 读取温度（单独接口）
+SensorStatusEnum SensorManager_ReadTemperature(float *temperature) {
+    float hum;
+    return SensorManager_ReadTemperatureHumidity(temperature, &hum);
+}
+
+// 读取湿度（单独接口）
+SensorStatusEnum SensorManager_ReadHumidity(float *humidity) {
+    float temp;
+    return SensorManager_ReadTemperatureHumidity(&temp, humidity);
+}
+
+// 读取温度和湿度
 SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity) {
     DHT11_StatusEnum status = DHT11_Read(temperature, humidity);
 
     // 映射 DHT11 状态到通用传感器状态
+    // TODO: 简化，去掉特定错误码、映射
     if (status == DHT11_OK) {
         return SENSOR_OK;
     } else if (status == DHT11_TIMEOUT_ERROR || status == DHT11_NO_RESPONSE) {
@@ -79,19 +106,15 @@ SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float
     }
 }
 
-SensorStatusEnum SensorManager_ReadLightIntensity(float *light) {
-    // 调用光敏传感器的读取函数
-    return SENSOR_OK;
-}
-
-// 校准函数
+// 校准土壤湿度（调用合并模块的接口）
 bool SensorManager_CalibrateSoilMoisture(float dryValue, float wetValue) {
-    // 调用土壤湿度传感器的校准函数
+    AdcSensors_SetSoilCalibration(dryValue, wetValue);
     return true;
 }
 
+// 校准光照传感器（调用合并模块的接口）
 bool SensorManager_CalibrateLightSensor(float minLux, float maxLux) {
-    // 调用光敏传感器的校准函数
+    AdcSensors_SetLightRange(minLux, maxLux);
     return true;
 }
 

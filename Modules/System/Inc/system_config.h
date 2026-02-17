@@ -9,6 +9,8 @@
 // 引脚定义
 // 传感器引脚（Port A）
 // 注意：土壤和光敏必须接 3.3V，绝对不能接 5V！
+extern ADC_HandleTypeDef hadc1;
+#define ADC_SENSOR_HANDLE            (&hadc1)
 #define SOIL_MOISTURE_ADC_CHANNEL    ADC_CHANNEL_0   // PA0
 #define LIGHT_SENSOR_ADC_CHANNEL     ADC_CHANNEL_1   // PA1
 #define DHT11_PORT                   GPIOB

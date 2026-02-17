@@ -1,3 +1,10 @@
+/**
+ * 代码不注释，同事两行泪！（给！爷！写！）
+ * Elegance is not a dispensable luxury but a quality that decides between success and failure!
+ * Created by Wu Qizhen on 2026.02.02
+ * Updated by Wu Qizhen on 2026.02.13
+ * Deprecated on 2026.02.17
+ */
 #include "soil_moisture.h"
 
 static ADC_HandleTypeDef *soilAdc;
@@ -29,11 +36,11 @@ SensorStatusEnum SoilMoisture_Read(float *moisturePercent) {
 
         // 计算湿度百分比
         if (calibration.isCalibrated) {
-            *moisturePercent = 100.0f - ((adcValue - calibration.wetValue) / (
+            *moisturePercent = 100.0f - (((float) adcValue - calibration.wetValue) / (
                                              calibration.dryValue - calibration.wetValue) * 100.0f);
         } else {
             // 使用默认校准值
-            *moisturePercent = 100.0f - ((adcValue / 4095.0f) * 100.0f);
+            *moisturePercent = 100.0f - (((float) adcValue / 4095.0f) * 100.0f);
         }
 
         // 限制在 0-100% 范围内
