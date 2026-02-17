@@ -91,10 +91,9 @@ SensorStatusEnum SensorManager_ReadHumidity(float *humidity) {
 
 // 读取温度和湿度
 SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity) {
-    DHT11_StatusEnum status = DHT11_Read(temperature, humidity);
+    return DHT11_Read(temperature, humidity);
 
-    // 映射 DHT11 状态到通用传感器状态
-    // TODO: 简化，去掉特定错误码、映射
+    /*// 映射 DHT11 状态到通用传感器状态
     if (status == DHT11_OK) {
         return SENSOR_OK;
     } else if (status == DHT11_TIMEOUT_ERROR || status == DHT11_NO_RESPONSE) {
@@ -103,7 +102,7 @@ SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float
         return SENSOR_CHECKSUM_ERROR;
     } else {
         return SENSOR_NOT_CONNECTED;
-    }
+    }*/
 }
 
 // 校准土壤湿度（调用合并模块的接口）

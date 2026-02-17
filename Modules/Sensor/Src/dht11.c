@@ -10,7 +10,7 @@ static GPIO_TypeDef *dht11Port = NULL;
 static uint16_t dht11Pin = 0;
 static float lastTemperature = 25.0f;
 static float lastHumidity = 50.0f;
-static DHT11_StatusEnum lastStatus = DHT11_OK;
+static SensorStatusEnum lastStatus = SENSOR_OK;
 static uint32_t successCount = 0;
 static uint32_t errorCount = 0;
 
@@ -33,7 +33,7 @@ static void DHT11_SetInputMode(void) {
 }
 
 // 发送起始信号并等待传感器响应
-static DHT11_StatusEnum DHT11_StartSignal(void) {
+static SensorStatusEnum DHT11_StartSignal(void) {
     // 主机拉低总线至少 18ms
     DHT11_SetOutputMode();
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_RESET);
@@ -53,17 +53,17 @@ static DHT11_StatusEnum DHT11_StartSignal(void) {
         uint32_t timeout = 0;
         while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_RESET) {
             delay_us(1);
-            if (++timeout > 100) return DHT11_TIMEOUT_ERROR;
+            if (++timeout > 100) return SENSOR_TIMEOUT;
         }
         // 等待拉高阶段结束（约 80us）
         timeout = 0;
         while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET) {
             delay_us(1);
-            if (++timeout > 100) return DHT11_TIMEOUT_ERROR;
+            if (++timeout > 100) return SENSOR_TIMEOUT;
         }
-        return DHT11_OK;
+        return SENSOR_OK;
     }
-    return DHT11_NO_RESPONSE;
+    return SENSOR_TIMEOUT; // 原 DHT11_NO_RESPONSE
 }
 
 // 读取一个字节数据
@@ -88,7 +88,7 @@ static uint8_t DHT11_ReadByte(void) {
 }
 
 // 初始化 DHT11
-DHT11_StatusEnum DHT11_Init(GPIO_TypeDef *port, uint16_t pin) {
+SensorStatusEnum DHT11_Init(GPIO_TypeDef *port, uint16_t pin) {
     dht11Port = port;
     dht11Pin = pin;
 
@@ -97,15 +97,15 @@ DHT11_StatusEnum DHT11_Init(GPIO_TypeDef *port, uint16_t pin) {
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_SET);
     HAL_Delay(100); // 等待传感器稳定
 
-    return DHT11_OK;
+    return SENSOR_OK;
 }
 
 // 读取温湿度数据（若失败则返回上次成功值）
-DHT11_StatusEnum DHT11_Read(float *temperature, float *humidity) {
-    if (!dht11Port) return DHT11_NO_RESPONSE;
+SensorStatusEnum DHT11_Read(float *temperature, float *humidity) {
+    // if (!dht11Port) return DHT11_NO_RESPONSE;
 
-    DHT11_StatusEnum status = DHT11_StartSignal();
-    if (status != DHT11_OK) {
+    SensorStatusEnum status = DHT11_StartSignal();
+    if (status != SENSOR_OK) {
         if (temperature) *temperature = lastTemperature;
         if (humidity) *humidity = lastHumidity;
         lastStatus = status;
@@ -118,7 +118,7 @@ DHT11_StatusEnum DHT11_Read(float *temperature, float *humidity) {
     for (uint8_t i = 0; i < 5; i++) {
         buffer[i] = DHT11_ReadByte();
         if (buffer[i] == 0xFF) {
-            status = DHT11_TIMEOUT_ERROR;
+            status = SENSOR_TIMEOUT;
             break;
         }
     }
@@ -127,7 +127,7 @@ DHT11_StatusEnum DHT11_Read(float *temperature, float *humidity) {
     DHT11_SetOutputMode();
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_SET);
 
-    if (status != DHT11_OK) {
+    if (status != SENSOR_OK) {
         if (temperature) *temperature = lastTemperature;
         if (humidity) *humidity = lastHumidity;
         lastStatus = status;
@@ -137,7 +137,7 @@ DHT11_StatusEnum DHT11_Read(float *temperature, float *humidity) {
 
     // 校验和
     if ((buffer[0] + buffer[1] + buffer[2] + buffer[3]) % 256 != buffer[4]) {
-        status = DHT11_CHECKSUM_ERROR;
+        status = SENSOR_CHECKSUM_ERROR;
         if (temperature) *temperature = lastTemperature;
         if (humidity) *humidity = lastHumidity;
         lastStatus = status;
@@ -152,17 +152,17 @@ DHT11_StatusEnum DHT11_Read(float *temperature, float *humidity) {
     // 更新静态变量
     lastTemperature = temp;
     lastHumidity = hum;
-    lastStatus = DHT11_OK;
+    lastStatus = SENSOR_OK;
     successCount++;
 
     if (temperature) *temperature = temp;
     if (humidity) *humidity = hum;
 
-    return DHT11_OK;
+    return SENSOR_OK;
 }
 
 // 获取最后一次读取的状态
-DHT11_StatusEnum DHT11_GetLastStatus(void) {
+SensorStatusEnum DHT11_GetLastStatus(void) {
     return lastStatus;
 }
 
