@@ -6,6 +6,8 @@
 #ifndef SYSTEM_CONFIG_H
 #define SYSTEM_CONFIG_H
 
+#include "stm32f1xx_hal.h"
+
 // 引脚定义
 // 传感器引脚（Port A）
 // 注意：土壤和光敏必须接 3.3V，绝对不能接 5V！
