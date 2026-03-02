@@ -143,11 +143,11 @@ static void processGetSensorData(Response *response) {
 // 处理获取执行器状态命令
 static void processGetActuatorState(Response *response) {
     // 获取执行器状态
-    for (int i = 0; i < ACTUATOR_ID_COUNT; i++) {
-        ActuatorStateEnum state = ActuatorManager_GetState((ActuatorIDEnum) i);
+    for (int i = 0; i < ACTUATOR_COUNT; i++) {
+        ActuatorStateEnum state = ActuatorManager_GetState((ActuatorEnum) i);
         response->data[i] = (uint8_t) state;
     }
-    response->dataLength = ACTUATOR_ID_COUNT;
+    response->dataLength = ACTUATOR_COUNT;
 }
 
 // 处理设置执行器命令
@@ -157,7 +157,7 @@ static void processSetActuator(Response *response, CommandPacket *packet) {
         return;
     }
 
-    ActuatorIDEnum id = (ActuatorIDEnum) packet->data[0];
+    ActuatorEnum id = (ActuatorEnum) packet->data[0];
     ActuatorStateEnum state = (ActuatorStateEnum) packet->data[1];
 
     response->success = ActuatorManager_SetState(id, state);

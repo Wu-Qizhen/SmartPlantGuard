@@ -6,6 +6,8 @@
  */
 #include "dht11.h"
 
+#include "cmsis_os2.h"
+
 static GPIO_TypeDef *dht11Port = NULL;
 static uint16_t dht11Pin = 0;
 static float lastTemperature = 25.0f;
@@ -37,7 +39,7 @@ static SensorStatusEnum DHT11_StartSignal(void) {
     // 主机拉低总线至少 18ms
     DHT11_SetOutputMode();
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_RESET);
-    HAL_Delay(20);
+    osDelay(20);
 
     // 拉高总线 30us
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_SET);
@@ -95,7 +97,7 @@ SensorStatusEnum DHT11_Init(GPIO_TypeDef *port, uint16_t pin) {
     // 初始化为输出高电平
     DHT11_SetOutputMode();
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_SET);
-    HAL_Delay(100); // 等待传感器稳定
+    osDelay(100); // 等待传感器稳定
 
     return SENSOR_OK;
 }

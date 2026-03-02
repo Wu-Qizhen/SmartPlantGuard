@@ -21,34 +21,34 @@ extern ADC_HandleTypeDef hadc1;
 // 蓝牙
 #define BLUETOOTH_UART               USART1
 #define BLUETOOTH_TX_PORT            GPIOA
-#define BLUETOOTH_TX_PIN             GPIO_PIN_9      // PA9
+#define BLUETOOTH_TX_PIN             GPIO_PIN_9     // PA9
 #define BLUETOOTH_RX_PORT            GPIOA
-#define BLUETOOTH_RX_PIN             GPIO_PIN_10     // PA10
+#define BLUETOOTH_RX_PIN             GPIO_PIN_10    // PA10
 
 // 执行器引脚
 // 继电器移至 Port B，减少对 ADC 的干扰
 #define RELAY_PUMP_PORT              GPIOB
-#define RELAY_PUMP_PIN               GPIO_PIN_13     // PB13
-#define RELAY_FAN_PORT               GPIOB
-#define RELAY_FAN_PIN                GPIO_PIN_14     // PB14
+#define RELAY_PUMP_PIN               GPIO_PIN_13    // PB13
+#define RELAY_LIGHT_PORT             GPIOB
+#define RELAY_LIGHT_PIN              GPIO_PIN_14    // PB14
 // 风扇
 #define FAN_PWM_PORT                 GPIOB
-#define FAN_PWM_PIN                  GPIO_PIN_0      // PB0
+#define FAN_PWM_PIN                  GPIO_PIN_0     // PB0
 #define FAN_PWM_TIM                  TIM3
 #define FAN_PWM_CHANNEL              TIM_CHANNEL_3
 #define FAN_AIN1_PORT                GPIOA
-#define FAN_AIN1_PIN                 GPIO_PIN_6      // PA6
+#define FAN_AIN1_PIN                 GPIO_PIN_6     // PA6
 #define FAN_AIN2_PORT                GPIOA
-#define FAN_AIN2_PIN                 GPIO_PIN_7      // PA7
+#define FAN_AIN2_PIN                 GPIO_PIN_7     // PA7
 
 // 系统引脚
 // 板载 LED（PC13），低电平点亮
 #define SYSTEM_LED_PORT              GPIOC
-#define SYSTEM_LED_PIN               GPIO_PIN_13
+#define SYSTEM_LED_PIN               GPIO_PIN_13    // PC13
 // WiFi 预留 / 调试（USART2）
 #define WIFI_UART                    USART2
-#define WIFI_TX_PIN                  GPIO_PIN_2      // PA2
-#define WIFI_RX_PIN                  GPIO_PIN_3      // PA3
+#define WIFI_TX_PIN                  GPIO_PIN_2     // PA2
+#define WIFI_RX_PIN                  GPIO_PIN_3     // PA3
 
 // 默认阈值配置
 #define DEFAULT_SOIL_MOISTURE_LOW    30.0f   // 土壤湿度低于 30% 开启水泵

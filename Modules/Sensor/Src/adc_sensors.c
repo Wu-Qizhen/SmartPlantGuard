@@ -86,8 +86,7 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
     if (*soilMoisture > 100.0f) *soilMoisture = 100.0f;
 
     // 光照强度计算
-    // TODO: 光敏电阻可能是非线性的
-    // 光强增高，adc值减小，所以需要反转映射，已完成修改
+    // 光强增高，ADC 值减小，所以需要反转映射，已完成修改
     if (lightCalib.isCalibrated && (lightCalib.maxAdc > lightCalib.minAdc)) {
         // 线性映射到设置的 lux 范围
         *lightIntensity = lightCalib.maxLux -
@@ -134,7 +133,7 @@ void AdcSensors_SetSoilCalibration(float dryValue, float wetValue) {
 }
 
 // 光照强度校准接口
-// 因为弱光对应高adc值，所以校准最小光强所获取的adc值为maxAdc
+// 因为弱光对应高 ADC 值，所以校准最小光强所获取的 ADC 值为 maxAdc
 void AdcSensors_CalibrateLightMin(void) {
     uint32_t soilAdc, lightAdc; // soilAdc 暂不使用
     if (readAdcValues(&soilAdc, &lightAdc) == SENSOR_OK) {
@@ -143,7 +142,7 @@ void AdcSensors_CalibrateLightMin(void) {
     }
 }
 
-// 因为强光对应低adc值，校准最大光强所获取的adc值为minAdc
+// 因为强光对应低 ADC 值，校准最大光强所获取的 ADC 值为 minAdc
 void AdcSensors_CalibrateLightMax(void) {
     uint32_t soilAdc, lightAdc;
     if (readAdcValues(&soilAdc, &lightAdc) == SENSOR_OK) {

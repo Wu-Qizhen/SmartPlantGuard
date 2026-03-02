@@ -8,7 +8,7 @@
 #include "actuator_manager.h"
 #include "stm32f1xx_hal.h"
 
-static RelayStatus relayStatuses[ACTUATOR_ID_COUNT];
+static RelayStatus relayStatuses[ACTUATOR_COUNT];
 
 // 初始化继电器
 bool RelayDriver_Init(RelayConfig *config) {
@@ -32,7 +32,7 @@ bool RelayDriver_Init(RelayConfig *config) {
 }
 
 // 控制继电器
-bool RelayDriver_Set(RelayConfig *config, ActuatorStateEnum state) {
+bool RelayDriver_SetState(RelayConfig *config, ActuatorStateEnum state) {
     if (!config) {
         return false;
     }
@@ -53,7 +53,7 @@ bool RelayDriver_Set(RelayConfig *config, ActuatorStateEnum state) {
     HAL_GPIO_WritePin(config->controlPort, config->controlPin, pinState);
 
     // 更新状态
-    for (int i = 0; i < ACTUATOR_ID_COUNT; i++) {
+    for (int i = 0; i < ACTUATOR_COUNT; i++) {
         if (relayStatuses[i].config.controlPort == config->controlPort &&
             relayStatuses[i].config.controlPin == config->controlPin) {
             relayStatuses[i].state = state;
@@ -92,7 +92,7 @@ bool RelayDriver_SafeToggle(RelayConfig *config) {
     // 切换状态
     ActuatorStateEnum newState = (currentState == ACTUATOR_ON) ? ACTUATOR_OFF : ACTUATOR_ON;
 
-    return RelayDriver_Set(config, newState);
+    return RelayDriver_SetState(config, newState);
 }
 
 // 检查安全条件
@@ -102,7 +102,7 @@ bool RelayDriver_CheckSafety(RelayConfig *config) {
     }
 
     // 检查最小关闭时间
-    for (int i = 0; i < ACTUATOR_ID_COUNT; i++) {
+    for (int i = 0; i < ACTUATOR_COUNT; i++) {
         if (relayStatuses[i].config.controlPort == config->controlPort &&
             relayStatuses[i].config.controlPin == config->controlPin) {
             uint32_t elapsedTime = HAL_GetTick() - relayStatuses[i].lastToggleTime;

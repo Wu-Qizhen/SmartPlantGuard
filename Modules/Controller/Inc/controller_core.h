@@ -21,9 +21,9 @@ void ControllerCore_RunCycle(void);
 bool ControllerCore_SetMode(ControlModeEnum mode);
 
 // 手动控制接口
-bool ControllerCore_ManualControl(ActuatorIDEnum actuator, ActuatorStateEnum state);
+bool ControllerCore_ManualControl(ActuatorEnum actuator, ActuatorStateEnum state);
 
-bool ControllerCore_ManualPWM(ActuatorIDEnum actuator, uint16_t dutyCycle);
+bool ControllerCore_ManualPWM(ActuatorEnum actuator, uint16_t dutyCycle);
 
 // 获取控制参数
 ControlParams ControllerCore_GetParams(void);

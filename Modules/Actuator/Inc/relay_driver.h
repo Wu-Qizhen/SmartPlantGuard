@@ -30,7 +30,7 @@ typedef struct {
 bool RelayDriver_Init(RelayConfig *config);
 
 // 继电器控制
-bool RelayDriver_Set(RelayConfig *config, ActuatorStateEnum state);
+bool RelayDriver_SetState(RelayConfig *config, ActuatorStateEnum state);
 
 ActuatorStateEnum RelayDriver_GetState(RelayConfig *config);
 

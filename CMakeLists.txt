@@ -70,6 +70,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Modules/Actuator/Src/actuator_manager.c
     Modules/Actuator/Src/relay_driver.c
     Modules/Actuator/Src/pwm_driver.c
+    Modules/Actuator/Src/fan_driver.c
     # Controller module
     Modules/Controller/Src/controller_core.c
     Modules/Controller/Src/hysteresis_logic.c

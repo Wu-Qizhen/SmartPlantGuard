@@ -7,13 +7,13 @@
 #include "pwm_driver.h"
 
 // 初始化 PWM 驱动
-bool PWM_Driver_Init(PWMConfig *config) {
+// 已弃用，在 CubeMX 已配置
+bool PWMDriver_Init(PWMConfig *config) {
     if (!config || !config->htim) {
         return false;
     }
 
-    // 配置定时器
-    // 这里需要根据实际情况配置定时器参数
+    // NEXT: 后续如果需要配置才需要此函数
 
     // 启动定时器
     HAL_TIM_PWM_Start(config->htim, config->channel);
@@ -22,7 +22,7 @@ bool PWM_Driver_Init(PWMConfig *config) {
 }
 
 // 设置 PWM 占空比
-bool PWM_Driver_SetDutyCycle(PWMConfig *config, uint16_t dutyCycle) {
+bool PWMDriver_SetDutyCycle(PWMConfig *config, uint16_t dutyCycle) {
     if (!config || !config->htim) {
         return false;
     }
@@ -59,7 +59,7 @@ bool PWM_Driver_SetDutyCycle(PWMConfig *config, uint16_t dutyCycle) {
 }
 
 // 启动 PWM
-bool PWM_Driver_Start(PWMConfig *config) {
+bool PWMDriver_Start(PWMConfig *config) {
     if (!config || !config->htim) {
         return false;
     }
@@ -68,7 +68,7 @@ bool PWM_Driver_Start(PWMConfig *config) {
 }
 
 // 停止 PWM
-bool PWM_Driver_Stop(PWMConfig *config) {
+bool PWMDriver_Stop(PWMConfig *config) {
     if (!config || !config->htim) {
         return false;
     }
