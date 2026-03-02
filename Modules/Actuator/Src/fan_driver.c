@@ -23,12 +23,13 @@ bool Fan_SetSpeed(FanConfig *config, uint16_t dutyCycle) {
     return PWMDriver_SetDutyCycle(&config->pwm, dutyCycle);
 }
 
-bool Fan_Start(FanConfig *config) {
-    return PWMDriver_Start(&config->pwm);
+bool Fan_On(FanConfig *config) {
+    PWMDriver_Start(&config->pwm);
+    return PWMDriver_SetDutyCycle(&config->pwm, config->pwm.maxDutyCycle);
 }
 
-bool Fan_Stop(FanConfig *config) {
-    // 停止时可将占空比设为 0 并停止 PWM，或保持 PWM 但占空比为0
+bool Fan_Off(FanConfig *config) {
+    // 停止时可将占空比设为 0 并停止 PWM，或保持 PWM 但占空比为 0
     PWMDriver_SetDutyCycle(&config->pwm, 0);
     return PWMDriver_Stop(&config->pwm);
 }

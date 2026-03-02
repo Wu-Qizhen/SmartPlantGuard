@@ -8,10 +8,11 @@
 
 static ActuatorStatus actuatorStatuses[ACTUATOR_COUNT];
 static bool isInitialized = false;
+static FanConfig fanConfig;
 
 // 初始化执行器系统
 bool ActuatorManager_Init(void) {
-    FanConfig fan = {
+    fanConfig = (FanConfig){
         .pwm = {
             .htim = &htim3,
             .channel = FAN_PWM_CHANNEL,
@@ -24,7 +25,7 @@ bool ActuatorManager_Init(void) {
         .dir2Port = FAN_AIN2_PORT,
         .dir2Pin = FAN_AIN2_PIN
     };
-    Fan_Init(&fan);
+    Fan_Init(&fanConfig);
 
     // 初始化各个执行器
     for (int i = 0; i < ACTUATOR_COUNT; i++) {
@@ -55,8 +56,11 @@ bool ActuatorManager_SetState(ActuatorEnum id, ActuatorStateEnum state) {
                 // TODO: 控制水泵继电器
                 break;
             case ACTUATOR_FAN:
-                // 控制风扇继电器
-                // 已弃用
+                if (state == ACTUATOR_ON) {
+                    Fan_On(&fanConfig);
+                } else {
+                    Fan_Off(&fanConfig);
+                }
                 break;
             case ACTUATOR_LIGHT:
                 // TODO: 控制补光灯继电器
@@ -82,20 +86,7 @@ bool ActuatorManager_SetPWM(ActuatorEnum id, uint16_t dutyCycle) {
 
     // 只对风扇执行 PWM 控制
     if (id == ACTUATOR_FAN) {
-        FanConfig fan = {
-            .pwm = {
-                .htim = &htim3,
-                .channel = FAN_PWM_CHANNEL,
-                .period = 999,
-                .minDutyCycle = 0,
-                .maxDutyCycle = 1000
-            },
-            .dir1Port = FAN_AIN1_PORT,
-            .dir1Pin = FAN_AIN1_PIN,
-            .dir2Port = FAN_AIN2_PORT,
-            .dir2Pin = FAN_AIN2_PIN
-        };
-        Fan_SetSpeed(&fan, dutyCycle);
+        Fan_SetSpeed(&fanConfig, dutyCycle);
     }
 
     return true;

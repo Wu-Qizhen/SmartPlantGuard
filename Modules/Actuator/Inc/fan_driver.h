@@ -21,8 +21,8 @@ bool Fan_Init(FanConfig *config);
 
 bool Fan_SetSpeed(FanConfig *config, uint16_t dutyCycle);
 
-bool Fan_Start(FanConfig *config);
+bool Fan_On(FanConfig *config);
 
-bool Fan_Stop(FanConfig *config);
+bool Fan_Off(FanConfig *config);
 
 #endif // FAN_DRIVER_H
