@@ -133,18 +133,20 @@ void AdcSensors_SetSoilCalibration(float dryValue, float wetValue) {
 }
 
 // 光照强度校准接口
+//因为弱光对应高adc值，所以校准最小光强所获取的adc值为maxAdc
 void AdcSensors_CalibrateLightMin(void) {
-    uint32_t soilAdc, lightAdc;
+    uint32_t soilAdc, lightAdc; // soilAdc 暂不使用
     if (readAdcValues(&soilAdc, &lightAdc) == SENSOR_OK) {
-        lightCalib.minAdc = (float) lightAdc;
+        lightCalib.maxAdc = (float) lightAdc;
         lightCalib.isCalibrated = true;
     }
 }
 
+//因为强光对应低adc值，校准最大光强所获取的adc值为minAdc
 void AdcSensors_CalibrateLightMax(void) {
     uint32_t soilAdc, lightAdc;
     if (readAdcValues(&soilAdc, &lightAdc) == SENSOR_OK) {
-        lightCalib.maxAdc = (float) lightAdc;
+        lightCalib.minAdc = (float) lightAdc;
         lightCalib.isCalibrated = true;
     }
 }
