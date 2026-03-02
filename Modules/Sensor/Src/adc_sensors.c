@@ -86,15 +86,16 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
 
     // 光照强度计算
     // TODO: 光敏电阻可能是非线性的
+    //光强增高，adc值减小，所以需要反转映射，已完成修改
     if (lightCalib.isCalibrated && (lightCalib.maxAdc > lightCalib.minAdc)) {
         // 线性映射到设置的 lux 范围
-        *lightIntensity = lightCalib.minLux +
-                          ((float) lightAdc - lightCalib.minAdc) /
-                          (lightCalib.maxAdc - lightCalib.minAdc) *
-                          (lightCalib.maxLux - lightCalib.minLux);
+        *lightIntensity = lightCalib.maxLux -
+            ((lightCalib.maxAdc - (float)lightAdc) /
+            (lightCalib.maxAdc - lightCalib.minAdc)) *
+            (lightCalib.maxLux - lightCalib.minLux);
     } else {
         // 默认：假设 0~4095 对应 0~1000 lux
-        *lightIntensity = ((float) lightAdc / 4095.0f) * 1000.0f;
+        *lightIntensity = ((float)(4095- lightAdc) / 4095.0f) * 1000.0f;
     }
 
     // 限制在范围内（避免校准值异常导致越界）
