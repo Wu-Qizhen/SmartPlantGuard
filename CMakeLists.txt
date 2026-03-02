@@ -65,8 +65,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Sensor module
     Modules/Sensor/Src/sensor_manager.c
     Modules/Sensor/Src/dht11.c
-    Modules/Sensor/Src/soil_moisture.c
-    Modules/Sensor/Src/light_sensor.c
     Modules/Sensor/Src/adc_sensors.c
     # Actuator module
     Modules/Actuator/Src/actuator_manager.c

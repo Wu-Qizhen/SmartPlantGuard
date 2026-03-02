@@ -71,6 +71,7 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
     }
 
     // 土壤湿度计算
+    // TODO: 数值读取修复
     if (soilCalib.isCalibrated) {
         // 使用校准值：湿度百分比 = 100 - ((adc - wet) / (dry - wet) * 100)
         *soilMoisture = 100.0f - ((float) soilAdc - soilCalib.wetValue) /

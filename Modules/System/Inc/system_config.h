@@ -9,32 +9,38 @@
 #include "stm32f1xx_hal.h"
 
 // 引脚定义
-// 传感器引脚（Port A）
-// 注意：土壤和光敏必须接 3.3V，绝对不能接 5V！
+// 传感器引脚
 extern ADC_HandleTypeDef hadc1;
 #define ADC_SENSOR_HANDLE            (&hadc1)
 #define SOIL_MOISTURE_ADC_CHANNEL    ADC_CHANNEL_0   // PA0
 #define LIGHT_SENSOR_ADC_CHANNEL     ADC_CHANNEL_1   // PA1
 #define DHT11_PORT                   GPIOB
 #define DHT11_PIN                    GPIO_PIN_12     // PB12
-// 通信引脚（PPort A）
-// 蓝牙（USART1）
+
+// 通信引脚
+// 蓝牙
 #define BLUETOOTH_UART               USART1
 #define BLUETOOTH_TX_PORT            GPIOA
 #define BLUETOOTH_TX_PIN             GPIO_PIN_9      // PA9
 #define BLUETOOTH_RX_PORT            GPIOA
 #define BLUETOOTH_RX_PIN             GPIO_PIN_10     // PA10
-// 执行器引脚（Port B）
-// 继电器全部移至 Port B，减少对 ADC 的干扰
+
+// 执行器引脚
+// 继电器移至 Port B，减少对 ADC 的干扰
 #define RELAY_PUMP_PORT              GPIOB
 #define RELAY_PUMP_PIN               GPIO_PIN_13     // PB13
 #define RELAY_FAN_PORT               GPIOB
 #define RELAY_FAN_PIN                GPIO_PIN_14     // PB14
-// 风扇 PWM
+// 风扇
 #define FAN_PWM_PORT                 GPIOB
 #define FAN_PWM_PIN                  GPIO_PIN_0      // PB0
 #define FAN_PWM_TIM                  TIM3
 #define FAN_PWM_CHANNEL              TIM_CHANNEL_3
+#define FAN_AIN1_PORT                GPIOA
+#define FAN_AIN1_PIN                 GPIO_PIN_6      // PA6
+#define FAN_AIN2_PORT                GPIOA
+#define FAN_AIN2_PIN                 GPIO_PIN_7      // PA7
+
 // 系统引脚
 // 板载 LED（PC13），低电平点亮
 #define SYSTEM_LED_PORT              GPIOC
