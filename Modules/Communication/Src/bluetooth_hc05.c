@@ -19,6 +19,48 @@ static BluetoothStatus btStatus = {
 static uint8_t rxBuffer[64];
 static uint16_t rxBufferIndex = 0;
 
+// 内部辅助宏
+#define AT_CMD_TIMEOUT      500
+#define AT_RESPONSE_SIZE    64
+
+/**
+ * @brief 内部辅助函数：发送 AT 命令并等待 "OK" 响应
+ * @param cmd: 要发送的命令字符串 (不含 \r\n)
+ * @return true: 收到 OK, false: 超时或收到 ERROR
+ */
+static bool SendAT_WaitOK(const char *cmd) {
+    uint8_t response[AT_RESPONSE_SIZE] = {0};
+    uint32_t startTime = HAL_GetTick();
+    uint8_t rxByte;
+    uint8_t idx = 0;
+    bool foundOK = false;
+
+    // 1. 发送命令 + 回车换行
+    HAL_UART_Transmit(bluetoothUart, (uint8_t*)cmd, strlen(cmd), AT_CMD_TIMEOUT);
+    HAL_UART_Transmit(bluetoothUart, (uint8_t*)"\r\n", 2, AT_CMD_TIMEOUT);
+
+    // 2. 循环接收响应，直到超时或收到完整行
+    while (HAL_GetTick() - startTime < AT_CMD_TIMEOUT) {
+        if (HAL_UART_Receive(bluetoothUart, &rxByte, 1, 10) == HAL_OK) {
+            if (idx < AT_RESPONSE_SIZE - 1) {
+                response[idx++] = rxByte;
+
+                // 简单判断：如果接收到 "OK" 关键字
+                if (strstr((char*)response, "OK") != NULL) {
+                    foundOK = true;
+                    break;
+                }
+                // 如果接收到 "ERROR"
+                if (strstr((char*)response, "ERROR") != NULL) {
+                    break;
+                }
+            }
+        }
+    }
+
+    return foundOK;
+}
+
 // 初始化蓝牙模块
 bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
     if (!huart || !config) {
