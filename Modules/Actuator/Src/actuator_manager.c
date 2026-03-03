@@ -53,7 +53,12 @@ bool ActuatorManager_SetState(ActuatorEnum id, ActuatorStateEnum state) {
         // 根据执行器类型执行相应的控制
         switch (id) {
             case ACTUATOR_PUMP:
-                // TODO: 控制水泵继电器
+                // 暂不使用驱动，简化实现
+                if (state == ACTUATOR_ON) {
+                    HAL_GPIO_WritePin(RELAY_PUMP_PORT,RELAY_PUMP_PIN, GPIO_PIN_SET);
+                } else {
+                    HAL_GPIO_WritePin(RELAY_PUMP_PORT,RELAY_PUMP_PIN, GPIO_PIN_RESET);
+                }
                 break;
             case ACTUATOR_FAN:
                 if (state == ACTUATOR_ON) {
@@ -62,10 +67,13 @@ bool ActuatorManager_SetState(ActuatorEnum id, ActuatorStateEnum state) {
                     Fan_Off(&fanConfig);
                 }
                 break;
-            case ACTUATOR_LIGHT:
-                // TODO: 控制补光灯继电器
-                break;
             default:
+                // 控制补光灯继电器
+                if (state == ACTUATOR_ON) {
+                    HAL_GPIO_WritePin(RELAY_LIGHT_PORT,RELAY_LIGHT_PIN, GPIO_PIN_SET);
+                } else {
+                    HAL_GPIO_WritePin(RELAY_LIGHT_PORT,RELAY_LIGHT_PIN, GPIO_PIN_RESET);
+                }
                 break;
         }
     }
