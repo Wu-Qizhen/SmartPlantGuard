@@ -12,6 +12,9 @@
 #include "protocol.h"
 #include "stm32f1xx_hal.h"
 
+// 这是一个宏开关，专门用于开发调试
+#define DEBUG_FORCE_REINIT  1  // 1: 强制重新初始化 (开发时用，每次重启都重配), 0: 正常模式 (发布时用，仅首次配置)
+
 // 蓝牙模块状态
 typedef enum {
     BT_STATE_DISCONNECTED = 0,
