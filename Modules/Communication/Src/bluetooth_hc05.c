@@ -288,7 +288,14 @@ bool Bluetooth_SetDeviceName(const char *name) {
     }
 
     // 发送 AT 指令设置设备名称
-    // 这里需要根据 HC-05 的 AT 指令集进行配置
+    char cmdBuffer[64];
+    snprintf(cmdBuffer, sizeof(cmdBuffer), "AT+NAME=%s", name);
+
+    if (!SendAT_WaitOK(cmdBuffer)) {
+        return false;
+    }
+
+    // TODO: 还需存到Flash中
 
     return true;
 }
@@ -300,7 +307,14 @@ bool Bluetooth_SetPinCode(const char *pin) {
     }
 
     // 发送 AT 指令设置配对码
-    // 这里需要根据 HC-05 的 AT 指令集进行配置
+    char cmdBuffer[64];
+    snprintf(cmdBuffer, sizeof(cmdBuffer), "AT+PSWD=%s", pin);
+
+    if (!SendAT_WaitOK(cmdBuffer)) {
+        return false;
+    }
+
+    // TODO: 还需存到Flash中
 
     return true;
 }
