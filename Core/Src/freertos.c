@@ -22,7 +22,6 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
-#include "sensor_types.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -132,7 +131,7 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the queue(s) */
   /* creation of Queue_SensorData */
-  Queue_SensorDataHandle = osMessageQueueNew (1, sizeof(AllSensorData), &Queue_SensorData_attributes);
+  Queue_SensorDataHandle = osMessageQueueNew (1, 128, &Queue_SensorData_attributes);
 
   /* creation of Queue_BluetoothRx */
   Queue_BluetoothRxHandle = osMessageQueueNew (128, 1, &Queue_BluetoothRx_attributes);

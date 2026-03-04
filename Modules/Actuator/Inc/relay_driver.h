@@ -1,5 +1,5 @@
 /**
-* 代码不注释，同事两行泪！（给！爷！写！）
+ * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
@@ -30,7 +30,7 @@ typedef struct {
 bool RelayDriver_Init(RelayConfig *config);
 
 // 继电器控制
-bool RelayDriver_Set(RelayConfig *config, ActuatorStateEnum state);
+bool RelayDriver_SetState(RelayConfig *config, ActuatorStateEnum state);
 
 ActuatorStateEnum RelayDriver_GetState(RelayConfig *config);
 

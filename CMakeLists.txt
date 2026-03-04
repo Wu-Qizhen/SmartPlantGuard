@@ -37,6 +37,12 @@ add_executable(${CMAKE_PROJECT_NAME})
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
 
+# 生成 HEX 文件
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex
+    COMMENT "Generating hex file"
+)
+
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
@@ -59,12 +65,12 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Sensor module
     Modules/Sensor/Src/sensor_manager.c
     Modules/Sensor/Src/dht11.c
-    Modules/Sensor/Src/soil_moisture.c
-    Modules/Sensor/Src/light_sensor.c
+    Modules/Sensor/Src/adc_sensors.c
     # Actuator module
     Modules/Actuator/Src/actuator_manager.c
     Modules/Actuator/Src/relay_driver.c
     Modules/Actuator/Src/pwm_driver.c
+    Modules/Actuator/Src/fan_driver.c
     # Controller module
     Modules/Controller/Src/controller_core.c
     Modules/Controller/Src/hysteresis_logic.c
@@ -74,6 +80,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Modules/Communication/Src/communication_manager.c
     Modules/Communication/Src/bluetooth_hc05.c
     Modules/Communication/Src/wifi_esp8266.c
+    # Utils
+    Utils/Src/delay.c
 )
 
 # Add include paths
@@ -89,6 +97,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Modules/Controller/Inc
     # Communication module
     Modules/Communication/Inc
+    # Utils
+    Utils/Inc
 )
 
 # Add project symbols (macros)

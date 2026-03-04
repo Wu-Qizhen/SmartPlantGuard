@@ -1,5 +1,5 @@
 /**
-* 代码不注释，同事两行泪！（给！爷！写！）
+ * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
@@ -34,9 +34,6 @@ bool ControllerCore_Init(void) {
     // 初始化执行器
     ActuatorManager_Init();
 
-    // 初始化传感器
-    SensorManager_Init();
-
     return true;
 }
 
@@ -67,21 +64,21 @@ void ControllerCore_RunCycle(void) {
 static void runAutoControl(AllSensorData *sensorData) {
     // 土壤湿度控制
     if (sensorData->soilMoisture.value < controlParams.soilMoistureLow) {
-        ActuatorManager_SetState(ACTUATOR_ID_PUMP, ACTUATOR_ON);
+        ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_ON);
         lastDecision.needWatering = true;
         strcpy(lastDecision.decisionReason, "Soil moisture below threshold");
     } else if (sensorData->soilMoisture.value > controlParams.soilMoistureHigh) {
-        ActuatorManager_SetState(ACTUATOR_ID_PUMP, ACTUATOR_OFF);
+        ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_OFF);
         lastDecision.needWatering = false;
     }
 
     // 温度控制
     if (sensorData->temperature.value > controlParams.temperatureHigh) {
-        ActuatorManager_SetState(ACTUATOR_ID_FAN, ACTUATOR_ON);
+        ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_ON);
         lastDecision.needCooling = true;
         strcpy(lastDecision.decisionReason, "Temperature above threshold");
     } else if (sensorData->temperature.value < controlParams.temperatureLow) {
-        ActuatorManager_SetState(ACTUATOR_ID_FAN, ACTUATOR_OFF);
+        ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_OFF);
         lastDecision.needCooling = false;
     }
 
@@ -100,12 +97,12 @@ bool ControllerCore_SetMode(ControlModeEnum mode) {
 }
 
 // 手动控制执行器
-bool ControllerCore_ManualControl(ActuatorIDEnum actuator, ActuatorStateEnum state) {
+bool ControllerCore_ManualControl(ActuatorEnum actuator, ActuatorStateEnum state) {
     return ActuatorManager_SetState(actuator, state);
 }
 
 // 手动设置 PWM
-bool ControllerCore_ManualPWM(ActuatorIDEnum actuator, uint16_t dutyCycle) {
+bool ControllerCore_ManualPWM(ActuatorEnum actuator, uint16_t dutyCycle) {
     return ActuatorManager_SetPWM(actuator, dutyCycle);
 }
 

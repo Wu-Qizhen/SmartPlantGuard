@@ -1,5 +1,5 @@
 /**
-* 代码不注释，同事两行泪！（给！爷！写！）
+ * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
@@ -7,7 +7,11 @@
 #ifndef SENSOR_MANAGER_H
 #define SENSOR_MANAGER_H
 
+#include "dht11.h"
+#include "adc_sensors.h"
 #include "sensor_types.h"
+#include "system_config.h"
+#include "stm32f1xx_hal.h"
 
 // 传感器管理器状态
 typedef struct {
@@ -27,11 +31,15 @@ bool SensorManager_ReadAll(AllSensorData *sensorData);
 // 读取单个传感器
 SensorStatusEnum SensorManager_ReadSoilMoisture(float *moisture);
 
+SensorStatusEnum SensorManager_ReadLightIntensity(float *light);
+
+SensorStatusEnum SensorManager_ReadSoilMoistureLightIntensity(float *moisture, float *light);
+
 SensorStatusEnum SensorManager_ReadTemperature(float *temperature);
 
 SensorStatusEnum SensorManager_ReadHumidity(float *humidity);
 
-SensorStatusEnum SensorManager_ReadLightIntensity(float *light);
+SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity);
 
 // 校准函数
 bool SensorManager_CalibrateSoilMoisture(float dryValue, float wetValue);
