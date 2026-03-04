@@ -48,7 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+volatile uint8_t uart2_rx_byte = 0;  // 用于在中断 (stm32f1xx_it.c) 和 主程序 之间传递接收到的字节
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

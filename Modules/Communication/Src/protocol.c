@@ -133,8 +133,9 @@ static void processGetSensorData(Response *response) {
     AllSensorData sensorData;
     if (SensorManager_ReadAll(&sensorData)) {
         // 填充传感器数据
-        // 这里需要根据协议格式填充数据
+        memcpy(response->data, &sensorData, sizeof(AllSensorData));
         response->dataLength = sizeof(AllSensorData);
+        response->success = true;
     } else {
         response->success = false;
     }

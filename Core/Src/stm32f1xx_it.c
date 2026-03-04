@@ -22,6 +22,8 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "bluetooth_hc05.h"  // 包含蓝牙驱动头文件
+#include "usart.h"           // 包含 huart2 定义
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,7 +62,8 @@ extern UART_HandleTypeDef huart2;
 extern TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN EV */
-
+// 声明在 main.c 中定义的全局变量
+extern volatile uint8_t uart2_rx_byte;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -204,5 +207,23 @@ void USART2_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+// 回调函数
+// 当 HAL_UART_Receive_IT 接收到数据后，HAL_UART_IRQHandler 会自动调用此函数
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  // 判断是否是 USART2 的中断
+  if (huart->Instance == USART2) {
+
+    // A. 将接收到的字节送入蓝牙驱动缓冲区
+    // 此时 uart2_rx_byte 中已经是最新收到的数据
+    Bluetooth_ReceiveByte(uart2_rx_byte);
+
+    // B. 【至关重要】重新启动接收中断
+    // 如果不调用这句，接收一次后就会停止
+    HAL_UART_Receive_IT(&huart2, (uint8_t*)&uart2_rx_byte, 1);
+      // 如果重启失败，可以在这里处理错误（例如置位错误标志）
+      // 但通常不会失败，除非硬件故障,所以此处没加
+  }
+}
 
 /* USER CODE END 1 */
