@@ -55,9 +55,9 @@ bool Bluetooth_ProcessReceivedData(void);
 // 获取状态
 BluetoothStatus Bluetooth_GetStatus(void);
 
-// 配置蓝牙模块
+/*// 配置蓝牙模块
 bool Bluetooth_SetDeviceName(const char *name);
 
-bool Bluetooth_SetPinCode(const char *pin);
+bool Bluetooth_SetPinCode(const char *pin);*/
 
 #endif // BLUETOOTH_HC05_H

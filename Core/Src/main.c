@@ -47,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-static uint8_t bluetoothRxByte;
+extern uint8_t commRxByte;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,10 +65,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   {
     // 将字节放入队列
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    osMessageQueuePut(Queue_BluetoothRxHandle, &bluetoothRxByte, 0, 0);
+    osMessageQueuePut(Queue_BluetoothRxHandle, &commRxByte, 0, 0);
 
     // 重新开启下一次接收
-    HAL_UART_Receive_IT(&huart1, &bluetoothRxByte, 1);
+    HAL_UART_Receive_IT(&huart1, &commRxByte, 1);
 
     // 触发任务切换
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
@@ -110,7 +110,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  HAL_UART_Receive_IT(&huart1, &bluetoothRxByte, 1);
+  // HAL_UART_Receive_IT(&huart1, &bluetoothRxByte, 1);
   /* USER CODE END 2 */
 
   /* Init scheduler */

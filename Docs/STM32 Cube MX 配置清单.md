@@ -8,13 +8,15 @@
 | PA7  | 风扇 AIN2                      | GPIO      |                     |
 | PA9  | 蓝牙 TX                        | USART1_TX |                     |
 | PA10 | 蓝牙 RX                        | USART1_RX |                     |
+| PA13 | SWDIO                          | 调试      | 保留                |
+| PA14 | SWCLK                          | 调试      | 保留                |
 | PB0  | 风扇 PWM                       | TIM3_CH3  |                     |
+| PB8  | 蓝牙 EN                        | GPIO      |                     |
+| PB9  | 蓝牙 STATE                     | GPIO      |                     |
 | PB12 | DHT11 数据                     | GPIO      | 外部上拉，3.3V 电平 |
 | PB13 | 水泵继电器                     | GPIO      |                     |
 | PB14 | ~~风扇继电器~~ -> 补光灯继电器 | GPIO      |                     |
 | PC13 | 系统 LED                       | GPIO      | 低电平点亮          |
-| PA13 | SWDIO                          | 调试      | 保留                |
-| PA14 | SWCLK                          | 调试      | 保留                |
 
 <img src="./IMG/引脚设计.png" style="zoom:50%;" />
 
@@ -54,6 +56,8 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 - PA6（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PA7（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
+- PB8（蓝牙状态）：GPIO_Output, Push Pull, No pull, Low speed, Low level
+- PB9（蓝牙状态）：GPIO_Iutput
 - PB12（DHT11 数据线）：GPIO_Output, Open Drain, Pull-up, Medium speed, High level
 - PB13（继电器水泵控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PB14（继电器补光灯控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level

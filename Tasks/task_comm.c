@@ -3,55 +3,35 @@
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.13
  */
+#include "FreeRTOS.h"
 #include "cmsis_os2.h"
 #include "main.h"
 #include "usart.h"
 #include "bluetooth_hc05.h"
-#include "protocol.h"
-#include "sensor_manager.h"
-#include "actuator_manager.h"
-#include "controller_core.h"
-
-#define BT_UART_HANDLE      huart2
-#define BT_TASK_DELAY_MS    10                // 轮询间隔 (ms)
-#define BT_DEVICE_NAME      "PlantCtrl_Pro"
-#define BT_PIN_CODE         "1234"
-#define BT_BAUD_RATE        9600
 
 // 初始化设备名称、配对密码、波特率
 static BluetoothConfig btConfig = {
-    .deviceName = BT_DEVICE_NAME,
-    .pinCode    = BT_PIN_CODE,
-    .baudRate   = BT_BAUD_RATE
+    .deviceName = "SmartPlantGuard",
+    .pinCode = "McEnvCtr",
+    .baudRate = 9600
 };
 
-/**
- * @brief  通信任务入口
- */
+uint8_t commRxByte; // 全局变量，供中断回调使用
+
 void StartTask_Comm(void *argument) {
-    bool processResult;
+    Bluetooth_Init(&huart1, &btConfig);
+    HAL_UART_Receive_IT(&huart1, &commRxByte, 1); // 初始化完成后开启中断
 
-    // 等待硬件和外设完全稳定
-    osDelay(500);
-
-    if (!Bluetooth_Init(&BT_UART_HANDLE, &btConfig)) {
-        // 致命错误处理：闪烁LED或进入安全模式
-        while(1) {
-            HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13); // 假设LED在PC13
-            osDelay(200);
-        }
-    }
+    uint8_t rxByte;
 
     for (;;) {
-        // 核心：询问驱动层是否有完整数据包需要处理
-        // 若有，bluetooth_hc05.c -> Protocol_ParsePacket -> Protocol_ProcessCommand 会自动执行
-        processResult = Bluetooth_ProcessReceivedData();
+        // 从队列获取一个字节（阻塞等待）
+        if (osMessageQueueGet(Queue_BluetoothRxHandle, &rxByte, NULL, portMAX_DELAY) == osOK) {
+            // 将收到的字节原封不动发回（阻塞发送，简单可靠）
+            HAL_UART_Transmit(&huart1, &rxByte, 1, HAL_MAX_DELAY);
 
-        // 可选：根据 processResult 做额外统计或心跳灯翻转
-        if (processResult) {
-            // HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+            /*Bluetooth_ReceiveByte(rxByte); // 存入内部缓冲区
+            Bluetooth_ProcessReceivedData(); // 尝试解析并响应*/
         }
-
-        osDelay(BT_TASK_DELAY_MS);
     }
 }

@@ -24,6 +24,10 @@ extern ADC_HandleTypeDef hadc1;
 #define BLUETOOTH_TX_PIN             GPIO_PIN_9     // PA9 -> HC-05 RX
 #define BLUETOOTH_RX_PORT            GPIOA
 #define BLUETOOTH_RX_PIN             GPIO_PIN_10    // PA10 <- HC-05 TX
+#define BLUETOOTH_EN_PORT            GPIOB
+#define BLUETOOTH_EN_PIN             GPIO_PIN_8     // PB8
+#define BLUETOOTH_STATE_PORT         GPIOB
+#define BLUETOOTH_STATE_PIN          GPIO_PIN_9     // PB9
 
 // 执行器引脚
 // 继电器移至 Port B，减少对 ADC 的干扰

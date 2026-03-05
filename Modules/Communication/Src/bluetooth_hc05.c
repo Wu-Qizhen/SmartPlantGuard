@@ -6,24 +6,62 @@
  */
 #include "bluetooth_hc05.h"
 #include <string.h>
-#include "stdio.h"
 
-#define MAX_BUFFER_SIZE    64
+#include "cmsis_os2.h"
+#include "stdio.h"
+#include "system_config.h"
+
+#define TX_BUFFER_SIZE 64
+#define RX_BUFFER_SIZE 64
+#define CMD_BUFFER_SIZE 64
+#define AT_TIMEOUT_MS 1000
 
 static UART_HandleTypeDef *bluetoothUart;
 static BluetoothStatus btStatus = {
-    .state = BT_STATE_DISCONNECTED,
+    .state = BT_STATE_DISCONNECTED, // TODO
     .isPaired = false,
     .bytesReceived = 0,
     .bytesSent = 0
 };
-static uint8_t rxBuffer[MAX_BUFFER_SIZE];
+static uint8_t rxBuffer[RX_BUFFER_SIZE];
 static uint16_t rxBufferIndex = 0;
+
+// 发送 AT 指令并等待响应
+static bool sendATCommand(const char *cmd) {
+    char txBuffer[TX_BUFFER_SIZE];
+    int len = snprintf(txBuffer, sizeof(txBuffer), "%s\r\n", cmd);
+    if (len <= 0) return false;
+
+    // 发送命令
+    HAL_StatusTypeDef status = HAL_UART_Transmit(bluetoothUart, (uint8_t *) txBuffer, len, AT_TIMEOUT_MS);
+    if (status != HAL_OK) return false;
+
+    // 轮询接收响应，直到收到 OK 或超时
+    uint8_t rxBuff[32];
+    uint32_t tickstart = HAL_GetTick();
+    uint16_t index = 0;
+    bool okReceived = false;
+
+    while ((HAL_GetTick() - tickstart) < AT_TIMEOUT_MS) {
+        uint8_t byte;
+        // 尝试接收一个字节
+        if (HAL_UART_Receive(bluetoothUart, &byte, 1, 10) == HAL_OK) {
+            if (index < sizeof(rxBuff) - 1) {
+                rxBuff[index++] = byte;
+            }
+            // 检查是否收到 OK\r\n
+            if (index >= 4 && rxBuff[index - 4] == 'O' && rxBuff[index - 3] == 'K' &&
+                rxBuff[index - 2] == '\r' && rxBuff[index - 1] == '\n') {
+                okReceived = true;
+                break;
+            }
+        }
+    }
+    return okReceived;
+}
 
 // 初始化蓝牙模块
 bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
-    char cmdBuffer[64];
-
     if (!huart || !config) {
         return false;
     }
@@ -31,16 +69,37 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
     bluetoothUart = huart;
 
     // 初始化状态机
-    btStatus.state = BT_STATE_CONNECTING;
+    btStatus.state = BT_STATE_DISCONNECTED;
     btStatus.isPaired = false;
     btStatus.bytesReceived = 0;
     btStatus.bytesSent = 0;
 
-    // TODO
+    // 确保初始退出 AT 模式
+    HAL_GPIO_WritePin(BLUETOOTH_EN_PORT, BLUETOOTH_EN_PIN, GPIO_PIN_RESET);
+    osDelay(100);
 
-    // 更新最终状态
-    btStatus.state = BT_STATE_CONNECTED;
-    btStatus.isPaired = true;
+    // 进入 AT 模式：拉高 PB8
+    HAL_GPIO_WritePin(BLUETOOTH_EN_PORT, BLUETOOTH_EN_PIN, GPIO_PIN_SET);
+    osDelay(500); // 等待模块进入 AT 模式
+
+    // 1. 测试 AT 指令
+    if (!sendATCommand("AT")) {
+        HAL_GPIO_WritePin(BLUETOOTH_EN_PORT, BLUETOOTH_EN_PIN, GPIO_PIN_RESET); // 退出 AT 模式
+        return false;
+    }
+
+    // 2. 设置设备名称
+    char cmd[CMD_BUFFER_SIZE];
+    snprintf(cmd, sizeof(cmd), "AT+NAME=%s", config->deviceName);
+    sendATCommand(cmd); // 忽略失败，继续尝试
+
+    // 3. 设置配对码（需与 Android 端一致）
+    snprintf(cmd, sizeof(cmd), "AT+PSWD=%s", config->pinCode);
+    sendATCommand(cmd);
+
+    // 4. 退出 AT 模式：拉低 PB8
+    HAL_GPIO_WritePin(BLUETOOTH_EN_PORT, BLUETOOTH_EN_PIN, GPIO_PIN_RESET);
+    osDelay(500); // 等待模块重启并进入正常工作模式
 
     return true;
 }
@@ -92,7 +151,7 @@ bool Bluetooth_SendPacket(CommandPacket *packet) {
 }
 
 // 接收处理
-// TODO: 中断中调用
+// 仅在通信任务调用
 void Bluetooth_ReceiveByte(uint8_t byte) {
     if (rxBufferIndex < sizeof(rxBuffer)) {
         rxBuffer[rxBufferIndex++] = byte;
@@ -120,9 +179,9 @@ bool Bluetooth_ProcessReceivedData(void) {
         };
         memcpy(ackPacket.data, response.data, response.dataLength);
         ackPacket.checksum = Protocol_CalculateChecksum(
-            &ackPacket.command,
-            1 + ackPacket.dataLength
-        ); // TODO
+            &ackPacket.command, // 当作字节指针
+            2 + ackPacket.dataLength
+        );
 
         Bluetooth_SendPacket(&ackPacket);
 
@@ -144,32 +203,20 @@ BluetoothStatus Bluetooth_GetStatus(void) {
     return btStatus;
 }
 
-// 配置蓝牙设备名称
+/*// 配置蓝牙设备名称
 bool Bluetooth_SetDeviceName(const char *name) {
     if (!name) {
         return false;
     }
 
-    // 发送 AT 指令设置设备名称
-    char cmdBuffer[64];
-    snprintf(cmdBuffer, sizeof(cmdBuffer), "AT+NAME=%s", name);
-
-    // TODO
-
     return true;
-}
+}*/
 
-// 配置蓝牙配对码
+/*// 配置蓝牙配对码
 bool Bluetooth_SetPinCode(const char *pin) {
     if (!pin) {
         return false;
     }
 
-    // 发送 AT 指令设置配对码
-    char cmdBuffer[64];
-    snprintf(cmdBuffer, sizeof(cmdBuffer), "AT+PSWD=%s", pin);
-
-    // TODO
-
     return true;
-}
+}*/
