@@ -25,11 +25,13 @@ static BluetoothStatus btStatus = {
 };
 static uint8_t rxBuffer[RX_BUFFER_SIZE];
 static uint16_t rxBufferIndex = 0;
+static uint8_t txBuffer[TX_BUFFER_SIZE]; // 静态发送缓冲区
+static uint16_t txLength; // 当前待发送长度
+static osSemaphoreId_t txSemaphore; // 发送资源信号量
 
 // 发送 AT 指令并等待响应
 static bool sendATCommand(const char *cmd) {
-    char txBuffer[TX_BUFFER_SIZE];
-    int len = snprintf(txBuffer, sizeof(txBuffer), "%s\r\n", cmd);
+    int len = snprintf((char *) txBuffer, sizeof(txBuffer), "%s\r\n", cmd);
     if (len <= 0) return false;
 
     // 发送命令
@@ -62,6 +64,9 @@ static bool sendATCommand(const char *cmd) {
 
 // 初始化蓝牙模块
 bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
+    txSemaphore = osSemaphoreNew(1, 1, NULL); // 初始可用
+    if (txSemaphore == NULL) return false;
+
     if (!huart || !config) {
         return false;
     }
@@ -106,24 +111,29 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
 
 // 发送数据
 bool Bluetooth_SendData(uint8_t *data, uint16_t length) {
-    if (!data || !bluetoothUart) {
+    if (!data || !bluetoothUart || length == 0 || length > TX_BUFFER_SIZE) {
         return false;
     }
 
-    // TODO: 改为非阻塞
-    const HAL_StatusTypeDef status = HAL_UART_Transmit(
-        bluetoothUart,
-        data,
-        length,
-        100 // 9600 波特率：37 字节 ≈ 38.5 ms
-    );
-
-    if (status == HAL_OK) {
-        btStatus.bytesSent += length;
-        return true;
+    // 等待前一次发送完成（超时 100ms，可根据需要调整）
+    if (osSemaphoreAcquire(txSemaphore, 100) != osOK) {
+        return false; // 发送资源忙
     }
 
-    return false;
+    // 拷贝数据到静态缓冲区
+    memcpy(txBuffer, data, length);
+    txLength = length;
+
+    // 启动中断发送
+    if (HAL_UART_Transmit_IT(bluetoothUart, txBuffer, txLength) != HAL_OK) {
+        osSemaphoreRelease(txSemaphore); // 启动失败，释放信号量
+        return false;
+    }
+
+    // 统计字节数（注意：此时尚未发送完成，但可先累加，或放在回调中累加）
+    btStatus.bytesSent += length; // 如果要求精确，应在回调中累加
+
+    return true;
 }
 
 // 发送命令包
@@ -201,6 +211,22 @@ bool Bluetooth_ProcessReceivedData(void) {
 // 获取状态
 BluetoothStatus Bluetooth_GetStatus(void) {
     return btStatus;
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
+    if (huart == bluetoothUart) {
+        // 发送完成，释放信号量，允许下一次发送
+        osSemaphoreRelease(txSemaphore);
+        // 如果之前未统计，在这里更新精确的已发送字节数
+    }
+}
+
+void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
+    if (huart == bluetoothUart) {
+        // 发生错误，释放信号量防止死锁，并可尝试恢复
+        osSemaphoreRelease(txSemaphore);
+        // 可记录错误状态
+    }
 }
 
 /*// 配置蓝牙设备名称
