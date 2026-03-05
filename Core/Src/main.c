@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "system_config.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,7 +47,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+static uint8_t bluetoothRxByte;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,7 +59,21 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if (huart->Instance == BLUETOOTH_UART)
+  {
+    // 将字节放入队列
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    osMessageQueuePut(Queue_BluetoothRxHandle, &bluetoothRxByte, 0, 0);
 
+    // 重新开启下一次接收
+    HAL_UART_Receive_IT(&huart1, &bluetoothRxByte, 1);
+
+    // 触发任务切换
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -96,7 +110,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_UART_Receive_IT(&huart1, &bluetoothRxByte, 1);
   /* USER CODE END 2 */
 
   /* Init scheduler */
