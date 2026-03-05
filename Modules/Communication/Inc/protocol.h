@@ -10,6 +10,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define MAX_DATA_SIZE 32
+
 // 指令类型
 typedef enum {
     CMD_GET_SENSOR_DATA = 0x01, // 获取传感器数据
@@ -30,7 +32,7 @@ typedef struct {
     uint8_t startByte; // 起始字节 0xAA
     uint8_t command; // 指令类型
     uint8_t dataLength; // 数据长度
-    uint8_t data[32]; // 数据
+    uint8_t data[MAX_DATA_SIZE]; // 数据
     uint8_t checksum; // 校验和
     uint8_t endByte; // 结束字节 0x55
 } CommandPacket;
@@ -40,7 +42,7 @@ typedef struct {
 typedef struct {
     CommandTypeEnum command;
     bool success;
-    uint8_t data[32];
+    uint8_t data[MAX_DATA_SIZE];
     uint8_t dataLength;
 } Response;
 
@@ -49,7 +51,7 @@ bool Protocol_ParsePacket(uint8_t *buffer, uint16_t length, CommandPacket *packe
 
 bool Protocol_ValidatePacket(CommandPacket *packet);
 
-uint8_t Protocol_CalculateChecksum(uint8_t *data, uint8_t length);
+uint8_t Protocol_CalculateChecksum(const uint8_t *data, uint8_t length);
 
 Response Protocol_ProcessCommand(CommandPacket *packet);
 

@@ -27,7 +27,7 @@ static LightCalibration lightCalib = {
 
 // 内部辅助函数：执行 ADC 转换并返回两个通道的值（先 IN0 土壤，后 IN1 光敏）
 static SensorStatusEnum readAdcValues(uint32_t *soilAdc, uint32_t *lightAdc) {
-    if (!adcHandle || !soilAdc || !lightAdc) {
+    if (!adcHandle/* || !soilAdc || !lightAdc*/) {
         return SENSOR_NOT_CONNECTED;
     }
 
@@ -90,12 +90,12 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
     if (lightCalib.isCalibrated && (lightCalib.maxAdc > lightCalib.minAdc)) {
         // 线性映射到设置的 lux 范围
         *lightIntensity = lightCalib.maxLux -
-            ((lightCalib.maxAdc - (float)lightAdc) /
-            (lightCalib.maxAdc - lightCalib.minAdc)) *
-            (lightCalib.maxLux - lightCalib.minLux);
+                          ((lightCalib.maxAdc - (float) lightAdc) /
+                           (lightCalib.maxAdc - lightCalib.minAdc)) *
+                          (lightCalib.maxLux - lightCalib.minLux);
     } else {
         // 默认：假设 0~4095 对应 0~1000 lux
-        *lightIntensity = ((float)(4095- lightAdc) / 4095.0f) * 1000.0f;
+        *lightIntensity = ((float) (4095 - lightAdc) / 4095.0f) * 1000.0f;
     }
 
     // 限制在范围内（避免校准值异常导致越界）

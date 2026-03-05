@@ -12,8 +12,8 @@
 #include "protocol.h"
 #include "stm32f1xx_hal.h"
 
-// 这是一个宏开关，专门用于开发调试
-#define DEBUG_FORCE_REINIT  1  // 1: 强制重新初始化 (开发时用，每次重启都重配), 0: 正常模式 (发布时用，仅首次配置)
+#define MAX_DEVICE_NAME_LENGTH 16
+#define PIN_CODE_LENGTH 8
 
 // 蓝牙模块状态
 typedef enum {
@@ -25,8 +25,8 @@ typedef enum {
 
 // 蓝牙配置
 typedef struct {
-    char deviceName[16]; // 设备名称
-    char pinCode[8]; // 配对码
+    char deviceName[MAX_DEVICE_NAME_LENGTH]; // 设备名称
+    char pinCode[PIN_CODE_LENGTH]; // 配对码
     uint32_t baudRate; // 波特率
 } BluetoothConfig;
 
@@ -36,7 +36,7 @@ typedef struct {
     bool isPaired;
     uint32_t bytesReceived;
     uint32_t bytesSent;
-    uint32_t connectCount;
+    // uint32_t connectCount;
 } BluetoothStatus;
 
 // 初始化蓝牙模块

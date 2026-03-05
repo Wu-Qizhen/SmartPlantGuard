@@ -14,9 +14,9 @@ static void processGetSensorData(Response *response);
 
 static void processGetActuatorState(Response *response);
 
-static void processSetActuator(Response *response, CommandPacket *packet);
+static void processSetActuator(Response *response, const CommandPacket *packet);
 
-static void processSetParams(Response *response, CommandPacket *packet);
+static void processSetParams(Response *response, const CommandPacket *packet);
 
 static void processGetParams(Response *response);
 
@@ -43,7 +43,8 @@ bool Protocol_ParsePacket(uint8_t *buffer, uint16_t length, CommandPacket *packe
     packet->dataLength = buffer[2];
 
     // 检查数据长度
-    if (packet->dataLength > 32 || length != (6 + packet->dataLength)) {
+    // 帧的固定部分包括：起始、命令、数据长度、校验、结束，共 5 字节
+    if (packet->dataLength > MAX_DATA_SIZE || length != (5 + packet->dataLength)) {
         return false;
     }
 
@@ -63,9 +64,10 @@ bool Protocol_ValidatePacket(CommandPacket *packet) {
     }
 
     // 计算校验和
+    // 校验和覆盖命令、数据长度、数据三个字段
     uint8_t calculatedChecksum = Protocol_CalculateChecksum(
         &packet->command,
-        1 + packet->dataLength
+        2 + packet->dataLength
     );
 
     // 验证校验和
@@ -73,7 +75,7 @@ bool Protocol_ValidatePacket(CommandPacket *packet) {
 }
 
 // 计算校验和
-uint8_t Protocol_CalculateChecksum(uint8_t *data, uint8_t length) {
+uint8_t Protocol_CalculateChecksum(const uint8_t *data, uint8_t length) {
     if (!data) {
         return 0;
     }
@@ -129,12 +131,30 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
 }
 
 // 处理获取传感器数据命令
+// 土壤湿度，放大 10 倍（0-1000）
+// 温度，放大 10 倍（-500-1500）
+// 湿度，放大 10 倍（0-1000）
+// 光照强度
+// 位标志，bit0=土壤有效，bit1=温度有效，bit2=湿度有效，bit3=光敏有效
+// 时间戳
 static void processGetSensorData(Response *response) {
-    AllSensorData sensorData;
-    if (SensorManager_ReadAll(&sensorData)) {
-        // 填充传感器数据
-        memcpy(response->data, &sensorData, sizeof(AllSensorData));
-        response->dataLength = sizeof(AllSensorData);
+    AllSensorData fullData;
+    if (osMessageQueueGet(Queue_SensorDataHandle, &fullData, NULL, 10) == osOK) {
+        CompactSensorData compact;
+        // 转换并缩放
+        compact.soilMoisture = (uint16_t) (fullData.soilMoisture.value * 10);
+        compact.temperature = (int16_t) (fullData.temperature.value * 10);
+        compact.humidity = (uint16_t) (fullData.humidity.value * 10);
+        compact.lightIntensity = (uint16_t) fullData.lightIntensity.value;
+        compact.statusFlags = 0;
+        if (fullData.soilMoisture.status == SENSOR_OK) compact.statusFlags |= 0x01;
+        if (fullData.temperature.status == SENSOR_OK) compact.statusFlags |= 0x02;
+        if (fullData.humidity.status == SENSOR_OK) compact.statusFlags |= 0x04;
+        if (fullData.lightIntensity.status == SENSOR_OK) compact.statusFlags |= 0x08;
+        compact.timestamp = fullData.lastUpdateTime;
+
+        memcpy(response->data, &compact, sizeof(compact));
+        response->dataLength = sizeof(compact);
         response->success = true;
     } else {
         response->success = false;
@@ -142,6 +162,9 @@ static void processGetSensorData(Response *response) {
 }
 
 // 处理获取执行器状态命令
+// 水泵（0 OFF 1 ON 2 ERROR）
+// 风扇（0 OFF 1 ON 2 ERROR）
+// 补光灯（0 OFF 1 ON 2 ERROR）
 static void processGetActuatorState(Response *response) {
     // 获取执行器状态
     for (int i = 0; i < ACTUATOR_COUNT; i++) {
@@ -152,7 +175,7 @@ static void processGetActuatorState(Response *response) {
 }
 
 // 处理设置执行器命令
-static void processSetActuator(Response *response, CommandPacket *packet) {
+static void processSetActuator(Response *response, const CommandPacket *packet) {
     if (packet->dataLength < 2) {
         response->success = false;
         return;
@@ -164,8 +187,8 @@ static void processSetActuator(Response *response, CommandPacket *packet) {
     response->success = ActuatorManager_SetState(id, state);
 }
 
-// 处理设置参数命令
-static void processSetParams(Response *response, CommandPacket *packet) {
+// TODO: 处理设置参数命令
+static void processSetParams(Response *response, const CommandPacket *packet) {
     if (packet->dataLength < sizeof(ControlParams)) {
         response->success = false;
         return;
@@ -177,28 +200,28 @@ static void processSetParams(Response *response, CommandPacket *packet) {
     response->success = ControllerCore_SetParams(&params);
 }
 
-// 处理获取参数命令
+// TODO: 处理获取参数命令
 static void processGetParams(Response *response) {
     ControlParams params = ControllerCore_GetParams();
     memcpy(response->data, &params, sizeof(ControlParams));
     response->dataLength = sizeof(ControlParams);
 }
 
-// 处理复位命令
+// TODO: 处理复位命令
 static void processReset(Response *response) {
     // 重置系统
     ControllerCore_ResetToDefaults();
     response->success = true;
 }
 
-// 处理校准命令
+// TODO: 处理校准命令
 static void processCalibrate(Response *response, CommandPacket *packet) {
     // 处理校准命令
     // 这里需要根据校准类型执行不同的校准操作
     response->success = true;
 }
 
-// 处理获取系统信息命令
+// TODO: 处理获取系统信息命令
 static void processGetSystemInfo(Response *response) {
     // 填充系统信息
     // 这里需要填充系统版本、运行时间等信息
