@@ -3,15 +3,15 @@
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.13
  */
+#include "bluetooth_bt24.h"
 #include "FreeRTOS.h"
 #include "cmsis_os2.h"
 #include "main.h"
 #include "usart.h"
-#include "bluetooth_hc05.h"
 
 // 初始化设备名称、配对密码、波特率
 static BluetoothConfig btConfig = {
-    .deviceName = "SmartPlantGuard",
+    .deviceName = "PlantGuard",
     .pinCode = "McEnvCtr",
     .baudRate = 9600
 };
@@ -27,6 +27,7 @@ void StartTask_Comm(void *argument) {
     for (;;) {
         // 从队列获取一个字节（阻塞等待）
         if (osMessageQueueGet(Queue_BluetoothRxHandle, &rxByte, NULL, portMAX_DELAY) == osOK) {
+            // TODO
             // 将收到的字节原封不动发回（阻塞发送，简单可靠）
             HAL_UART_Transmit(&huart1, &rxByte, 1, HAL_MAX_DELAY);
 

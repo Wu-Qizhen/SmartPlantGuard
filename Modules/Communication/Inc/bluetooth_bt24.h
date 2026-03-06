@@ -4,8 +4,8 @@
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
  */
-#ifndef BLUETOOTH_HC05_H
-#define BLUETOOTH_HC05_H
+#ifndef BLUETOOTH_BT24_H
+#define BLUETOOTH_BT24_H
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -60,4 +60,4 @@ bool Bluetooth_SetDeviceName(const char *name);
 
 bool Bluetooth_SetPinCode(const char *pin);*/
 
-#endif // BLUETOOTH_HC05_H
+#endif // BLUETOOTH_BT24_H

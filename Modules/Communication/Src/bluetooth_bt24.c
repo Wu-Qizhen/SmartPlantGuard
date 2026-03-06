@@ -4,7 +4,7 @@
  * Created by Wu Qizhen on 2026.02.02
  * Updated by Wu Qizhen on 2026.02.13
  */
-#include "bluetooth_hc05.h"
+#include "bluetooth_bt24.h"
 #include <string.h>
 
 #include "cmsis_os2.h"
@@ -62,7 +62,7 @@ static bool sendATCommand(const char *cmd) {
     return okReceived;
 }
 
-// 初始化蓝牙模块
+/*// 初始化蓝牙模块（HC05）
 bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
     txSemaphore = osSemaphoreNew(1, 1, NULL); // 初始可用
     if (txSemaphore == NULL) return false;
@@ -105,6 +105,48 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
     // 4. 退出 AT 模式：拉低 PB8
     HAL_GPIO_WritePin(BLUETOOTH_EN_PORT, BLUETOOTH_EN_PIN, GPIO_PIN_RESET);
     osDelay(500); // 等待模块重启并进入正常工作模式
+
+    return true;
+}*/
+
+// 初始化蓝牙模块（BT24）
+bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
+    txSemaphore = osSemaphoreNew(1, 1, NULL); // 初始可用
+    if (txSemaphore == NULL) return false;
+
+    if (!huart || !config) {
+        return false;
+    }
+
+    bluetoothUart = huart;
+
+    // 初始化状态机
+    btStatus.state = BT_STATE_DISCONNECTED;
+    btStatus.isPaired = false;
+    btStatus.bytesReceived = 0;
+    btStatus.bytesSent = 0;
+
+    // BT24 无需 GPIO 控制，直接进入 AT 命令模式（模块上电默认即为命令模式，前提是未被连接）
+
+    // 1. 测试 AT 指令
+    if (!sendATCommand("AT")) {
+        return false; // 通信失败，直接返回
+    }
+
+    // 2. 设置设备名称（BT24 指令格式：AT+NAME<name>，无等号）
+    char cmd[CMD_BUFFER_SIZE];
+    snprintf(cmd, sizeof(cmd), "AT+NAME%s", config->deviceName);
+    sendATCommand(cmd); // 忽略失败，继续尝试
+
+    // 3. 设置配对码（BT24 指令格式：AT+PIN<code>，无等号）
+    //    若 BT24 仅支持数字密码，而 config->pinCode 为字母，此命令可能失败，
+    //    但不会影响整体初始化（可根据实际模块调整）
+    snprintf(cmd, sizeof(cmd), "AT+PIN%s", config->pinCode);
+    sendATCommand(cmd);
+
+    // 4. 软件复位使配置生效（BT24 需要重启）
+    sendATCommand("AT+RESET");
+    osDelay(500); // 等待模块重启
 
     return true;
 }

@@ -14,9 +14,9 @@ set(CMAKE_C_EXTENSIONS ON)
 
 
 # Define the build type
-if(NOT CMAKE_BUILD_TYPE)
+if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug")
-endif()
+endif ()
 
 # Set the project name
 set(CMAKE_PROJECT_NAME SmartPlantGuard)
@@ -39,13 +39,13 @@ add_subdirectory(cmake/stm32cubemx)
 
 # 生成 HEX 文件
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex
-    COMMENT "Generating hex file"
+        COMMAND ${CMAKE_OBJCOPY} -O ihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex
+        COMMENT "Generating hex file"
 )
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined library search paths
+        # Add user defined library search paths
 )
 
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
@@ -54,56 +54,56 @@ target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Task
-    Tasks/task_sensor_read.c
-    Tasks/task_control.c
-    Tasks/task_comm.c
-    # System module
-    Modules/System/Src/system_config.c
-    Modules/System/Src/system_state.c
-    Modules/System/Src/error_handler.c
-    # Sensor module
-    Modules/Sensor/Src/sensor_manager.c
-    Modules/Sensor/Src/dht11.c
-    Modules/Sensor/Src/adc_sensors.c
-    # Actuator module
-    Modules/Actuator/Src/actuator_manager.c
-    Modules/Actuator/Src/relay_driver.c
-    Modules/Actuator/Src/pwm_driver.c
-    Modules/Actuator/Src/fan_driver.c
-    # Controller module
-    Modules/Controller/Src/controller_core.c
-    Modules/Controller/Src/hysteresis_logic.c
-    Modules/Controller/Src/storage_flash.c
-    # Communication module
-    Modules/Communication/Src/protocol.c
-    Modules/Communication/Src/communication_manager.c
-    Modules/Communication/Src/bluetooth_hc05.c
-    Modules/Communication/Src/wifi_esp8266.c
-    # Utils
-    Utils/Src/delay.c
+        # Task
+        Tasks/task_sensor_read.c
+        Tasks/task_control.c
+        Tasks/task_comm.c
+        # System module
+        Modules/System/Src/system_config.c
+        Modules/System/Src/system_state.c
+        Modules/System/Src/error_handler.c
+        # Sensor module
+        Modules/Sensor/Src/sensor_manager.c
+        Modules/Sensor/Src/dht11.c
+        Modules/Sensor/Src/adc_sensors.c
+        # Actuator module
+        Modules/Actuator/Src/actuator_manager.c
+        Modules/Actuator/Src/relay_driver.c
+        Modules/Actuator/Src/pwm_driver.c
+        Modules/Actuator/Src/fan_driver.c
+        # Controller module
+        Modules/Controller/Src/controller_core.c
+        Modules/Controller/Src/hysteresis_logic.c
+        Modules/Controller/Src/storage_flash.c
+        # Communication module
+        Modules/Communication/Src/protocol.c
+        # Modules/Communication/Src/communication_manager.c
+        Modules/Communication/Src/bluetooth_bt24.c
+        # Modules/Communication/Src/wifi_esp8266.c
+        # Utils
+        Utils/Src/delay.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
-    # System module
-    Modules/System/Inc
-    # Sensor module
-    Modules/Sensor/Inc
-    # Actuator module
-    Modules/Actuator/Inc
-    # Controller module
-    Modules/Controller/Inc
-    # Communication module
-    Modules/Communication/Inc
-    # Utils
-    Utils/Inc
+        # Add user defined include paths
+        # System module
+        Modules/System/Inc
+        # Sensor module
+        Modules/Sensor/Inc
+        # Actuator module
+        Modules/Actuator/Inc
+        # Controller module
+        Modules/Controller/Inc
+        # Communication module
+        Modules/Communication/Inc
+        # Utils
+        Utils/Inc
 )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined symbols
+        # Add user defined symbols
 )
 
 # Remove wrong libob.a library dependency when using cpp files
@@ -111,7 +111,7 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
-    stm32cubemx
+        stm32cubemx
 
-    # Add user defined libraries
+        # Add user defined libraries
 )
