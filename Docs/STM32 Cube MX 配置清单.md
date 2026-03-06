@@ -98,6 +98,7 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 - Scan Conversion Mode：Enabled
 - Continuous Conversion Mode：~~Enabled~~ -> Disabled
+- Discontinuous Conversion Mode：Enabled
 - Number Of Conversion：2
 - Rank1：Channel 0, 239.5 Cycles
 - Rank2：Channel 1, 239.5 Cycles

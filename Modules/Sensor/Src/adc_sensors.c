@@ -31,25 +31,25 @@ static SensorStatusEnum readAdcValues(uint32_t *soilAdc, uint32_t *lightAdc) {
         return SENSOR_NOT_CONNECTED;
     }
 
-    // 启动 ADC 转换（扫描模式会自动转换所有已配置的通道）
-    HAL_ADC_Start(adcHandle);
+    // 确保 ADC 停止（清除可能残留的状态）
+    HAL_ADC_Stop(adcHandle);
 
-    // 等待转换完成（两个通道全部转换完毕）
+    // 第一次转换：读取通道 0（土壤湿度）
+    HAL_ADC_Start(adcHandle); // 启动转换（间断模式，只转换一个通道）
     if (HAL_ADC_PollForConversion(adcHandle, 100) != HAL_OK) {
         HAL_ADC_Stop(adcHandle);
         return SENSOR_TIMEOUT;
     }
 
-    // 读取第一个通道（土壤湿度，IN0）
     *soilAdc = HAL_ADC_GetValue(adcHandle);
 
-    // 等待第二个通道转换完成（通常第一个读取后自动触发下一个 EOC）
+    // 第二次转换：读取通道 1（光敏）
+    HAL_ADC_Start(adcHandle); // 再次启动，转换下一个通道（通道 1）
     if (HAL_ADC_PollForConversion(adcHandle, 100) != HAL_OK) {
         HAL_ADC_Stop(adcHandle);
         return SENSOR_TIMEOUT;
     }
 
-    // 读取第二个通道（光敏，IN1）
     *lightAdc = HAL_ADC_GetValue(adcHandle);
 
     HAL_ADC_Stop(adcHandle);
@@ -71,7 +71,6 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
     }
 
     // 土壤湿度计算
-    // TODO: 数值读取修复
     if (soilCalib.isCalibrated) {
         // 使用校准值：湿度百分比 = 100 - ((adc - wet) / (dry - wet) * 100)
         *soilMoisture = 100.0f - ((float) soilAdc - soilCalib.wetValue) /
