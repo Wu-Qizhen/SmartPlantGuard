@@ -27,12 +27,16 @@ void StartTask_Comm(void *argument) {
     for (;;) {
         // 从队列获取一个字节（阻塞等待）
         if (osMessageQueueGet(Queue_BluetoothRxHandle, &rxByte, NULL, portMAX_DELAY) == osOK) {
-            // TODO
-            // 将收到的字节原封不动发回（阻塞发送，简单可靠）
-            HAL_UART_Transmit(&huart1, &rxByte, 1, HAL_MAX_DELAY);
+            // TODO: 测试数字密码
+            /*// 将收到的字节原封不动发回（阻塞发送，简单可靠）
+            if (!Bluetooth_SendData(&rxByte, 1)) {
+                // 发送失败处理（可重试或记录错误）
+            }*/
 
-            /*Bluetooth_ReceiveByte(rxByte); // 存入内部缓冲区
-            Bluetooth_ProcessReceivedData(); // 尝试解析并响应*/
+            // 将字节存入蓝牙接收缓冲区
+            Bluetooth_ReceiveByte(rxByte);
+            // 尝试解析并响应（如果收到完整命令包，会自动发送响应）
+            Bluetooth_ProcessReceivedData();
         }
     }
 }

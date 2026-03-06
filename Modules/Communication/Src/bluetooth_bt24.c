@@ -18,7 +18,7 @@
 
 static UART_HandleTypeDef *bluetoothUart;
 static BluetoothStatus btStatus = {
-    .state = BT_STATE_DISCONNECTED, // TODO
+    .state = BT_STATE_DISCONNECTED,
     .isPaired = false,
     .bytesReceived = 0,
     .bytesSent = 0
@@ -60,6 +60,18 @@ static bool sendATCommand(const char *cmd) {
         }
     }
     return okReceived;
+}
+
+// 更新蓝牙连接状态（读取 STATE 引脚）
+static void Bluetooth_UpdateState(void) {
+    GPIO_PinState pinState = HAL_GPIO_ReadPin(BLUETOOTH_STATE_PORT, BLUETOOTH_STATE_PIN);
+    if (pinState == GPIO_PIN_SET) {
+        btStatus.state = BT_STATE_CONNECTED;
+        btStatus.isPaired = true; // 连接通常意味着已配对
+    } else {
+        btStatus.state = BT_STATE_DISCONNECTED;
+        btStatus.isPaired = false;
+    }
 }
 
 /*// 初始化蓝牙模块（HC05）
@@ -120,9 +132,16 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
 
     bluetoothUart = huart;
 
-    // 初始化状态机
-    btStatus.state = BT_STATE_DISCONNECTED;
-    btStatus.isPaired = false;
+    // 配置 STATE 引脚为输入（如果尚未配置，这里确保其为输入模式）
+    GPIO_InitTypeDef gpioInit = {0};
+    gpioInit.Pin = BLUETOOTH_STATE_PIN;
+    gpioInit.Mode = GPIO_MODE_INPUT;
+    gpioInit.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(BLUETOOTH_STATE_PORT, &gpioInit);
+
+    // 初始读取一次状态
+    Bluetooth_UpdateState();
+
     btStatus.bytesReceived = 0;
     btStatus.bytesSent = 0;
 
@@ -157,6 +176,11 @@ bool Bluetooth_SendData(uint8_t *data, uint16_t length) {
         return false;
     }
 
+    // 仅当已连接时才允许发送
+    if (btStatus.state != BT_STATE_CONNECTED) {
+        return false;
+    }
+
     // 等待前一次发送完成（超时 100ms，可根据需要调整）
     if (osSemaphoreAcquire(txSemaphore, 100) != osOK) {
         return false; // 发送资源忙
@@ -176,6 +200,13 @@ bool Bluetooth_SendData(uint8_t *data, uint16_t length) {
     btStatus.bytesSent += length; // 如果要求精确，应在回调中累加
 
     return true;
+}
+
+// 阻塞发送
+bool Bluetooth_SendDataBlocking(uint8_t *data, uint16_t length, uint32_t timeout) {
+    if (!Bluetooth_SendData(data, length)) return false;
+    // 等待发送完成信号量（此时信号量已被 SendData 占用，等待释放）
+    return (osSemaphoreAcquire(txSemaphore, timeout) == osOK);
 }
 
 // 发送命令包
@@ -252,6 +283,7 @@ bool Bluetooth_ProcessReceivedData(void) {
 
 // 获取状态
 BluetoothStatus Bluetooth_GetStatus(void) {
+    Bluetooth_UpdateState();
     return btStatus;
 }
 
@@ -267,7 +299,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart) {
     if (huart == bluetoothUart) {
         // 发生错误，释放信号量防止死锁，并可尝试恢复
         osSemaphoreRelease(txSemaphore);
-        // 可记录错误状态
+        btStatus.state = BT_STATE_ERROR; // 发生错误时置为错误状态
     }
 }
 

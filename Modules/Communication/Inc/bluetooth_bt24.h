@@ -45,6 +45,8 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config);
 // 发送数据
 bool Bluetooth_SendData(uint8_t *data, uint16_t length);
 
+bool Bluetooth_SendDataBlocking(uint8_t *data, uint16_t length, uint32_t timeout);
+
 bool Bluetooth_SendPacket(CommandPacket *packet);
 
 // 接收处理（在串口中断中调用）
