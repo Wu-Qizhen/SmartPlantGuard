@@ -51,10 +51,10 @@ bool Bluetooth_SendDataBlocking(uint8_t *data, uint16_t length, uint32_t timeout
 
 bool Bluetooth_SendPacket(CommandPacket *packet);
 
-// 接收处理（在串口中断中调用）
+/*// 接收处理（在串口中断中调用）
 void Bluetooth_ReceiveByte(uint8_t byte);
 
-bool Bluetooth_ProcessReceivedData(void);
+bool Bluetooth_ProcessReceivedData(void);*/
 
 // 获取状态
 BluetoothStatus Bluetooth_GetStatus(void);

@@ -12,7 +12,6 @@
 #include <string.h>
 
 #define TX_BUFFER_SIZE 64
-#define RX_BUFFER_SIZE 64
 #define CMD_BUFFER_SIZE 64
 #define AT_TIMEOUT_MS 1000
 
@@ -25,8 +24,6 @@ static BluetoothStatus btStatus = {
     .bytesReceived = 0,
     .bytesSent = 0
 };
-static uint8_t rxBuffer[RX_BUFFER_SIZE];
-static uint16_t rxBufferIndex = 0;
 static uint8_t txBuffer[TX_BUFFER_SIZE]; // 静态发送缓冲区
 static uint16_t txLength; // 当前待发送长度
 static osSemaphoreId_t txSemaphore; // 发送资源信号量
@@ -236,14 +233,16 @@ bool Bluetooth_SendPacket(CommandPacket *packet) {
 
 // 接收处理
 // 仅在通信任务调用
-void Bluetooth_ReceiveByte(uint8_t byte) {
+// TODO: 冗余职责，后续删除
+/*void Bluetooth_ReceiveByte(uint8_t byte) {
     if (rxBufferIndex < sizeof(rxBuffer)) {
         rxBuffer[rxBufferIndex++] = byte;
     }
-}
+}*/
 
 // 处理接收到的数据
-bool Bluetooth_ProcessReceivedData(void) {
+// TODO: 冗余职责，后续删除
+/*bool Bluetooth_ProcessReceivedData(void) {
     if (rxBufferIndex == 0) {
         return false;
     }
@@ -280,7 +279,7 @@ bool Bluetooth_ProcessReceivedData(void) {
     }
 
     return false;
-}
+}*/
 
 // 获取状态
 BluetoothStatus Bluetooth_GetStatus(void) {

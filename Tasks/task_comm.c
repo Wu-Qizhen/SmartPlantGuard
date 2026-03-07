@@ -4,14 +4,10 @@
  * Created by Wu Qizhen on 2026.02.13
  */
 #include <string.h>
-
 #include "bluetooth_bt24.h"
-#include "FreeRTOS.h"
-#include "cmsis_os2.h"
-#include "main.h"
-#include "sensor_manager.h"
-#include "sensor_types.h"
 #include "usart.h"
+
+#define RX_BUFFER_SIZE 64
 
 // 初始化设备名称、配对密码、波特率
 static BluetoothConfig btConfig = {
@@ -19,7 +15,6 @@ static BluetoothConfig btConfig = {
     .pinCode = "McEnvCtr",
     .baudRate = 9600
 };
-
 
 // 手动构造数据
 /*static void sendSensorDataPeriodically(void) {
@@ -91,7 +86,8 @@ static BluetoothConfig btConfig = {
 }*/
 
 // 手动读取队列
-static void sendSensorDataPeriodically(void) {
+// TODO
+/*static void sendSensorDataPeriodically(void) {
     AllSensorData sensorData;
 
     // 尝试从队列获取数据（不阻塞，立即返回）
@@ -123,8 +119,10 @@ static void sendSensorDataPeriodically(void) {
         uint8_t msg[] = "No sensor data";
         Bluetooth_SendData(msg, sizeof(msg) - 1);
     }
-}
+}*/
 
+// 模拟触发
+// TODO
 /*static void sendSensorDataPeriodically(void) {
     // 构造一个假的 GET_SENSOR_DATA 命令包，仅用于触发 processGetSensorData
     CommandPacket fakePacket;
@@ -154,11 +152,27 @@ static void sendSensorDataPeriodically(void) {
     // 如果失败（比如无数据），可根据需要处理（例如发送空包或不发送）
 }*/
 
+static void sendResponse(const Response *resp) {
+    CommandPacket ackPkt = {
+        .startByte = 0xAA,
+        .command = resp->success ? CMD_ACK : CMD_ERROR,
+        .dataLength = resp->dataLength,
+        .endByte = 0x55
+    };
+    memcpy(ackPkt.data, resp->data, resp->dataLength);
+    ackPkt.checksum = Protocol_CalculateChecksum(&ackPkt.command, 2 + ackPkt.dataLength);
+    Bluetooth_SendPacket(&ackPkt);
+}
+
 void StartTask_Comm(void *argument) {
+    uint8_t rxByte;
+    uint8_t parseBuf[RX_BUFFER_SIZE];
+    uint16_t parseLen = 0;
+    CommandPacket cmdPkt;
+    Response resp;
+
     Bluetooth_Init(&huart1, &btConfig);
     Bluetooth_StartReceive(); // 初始化完成后开启中断
-
-    uint8_t rxByte;
 
     for (;;) {
         // 从队列获取一个字节（阻塞等待）
@@ -175,7 +189,30 @@ void StartTask_Comm(void *argument) {
             Bluetooth_ProcessReceivedData();
         }*/
 
-        sendSensorDataPeriodically();
-        osDelay(3000);
+        // 尝试接收字节（带超时，兼顾周期性发送）
+        if (osMessageQueueGet(Queue_BluetoothRxHandle, &rxByte, NULL, 100) == osOK) {
+            // 字节存入解析缓冲区（简单循环缓冲区或滑动窗口）
+            if (parseLen < sizeof(parseBuf)) {
+                parseBuf[parseLen++] = rxByte;
+            } else {
+                memmove(parseBuf, parseBuf + 1, sizeof(parseBuf) - 1);
+                parseBuf[sizeof(parseBuf) - 1] = rxByte;
+            }
+
+            // 尝试解析完整命令包
+            if (Protocol_ParsePacket(parseBuf, parseLen, &cmdPkt)) {
+                // 解析成功，处理命令
+                resp = Protocol_ProcessCommand(&cmdPkt);
+                sendResponse(&resp);
+
+                // 从解析缓冲区移除已处理的数据
+                uint16_t pktLen = 5 + cmdPkt.dataLength; // 帧总长度
+                memmove(parseBuf, parseBuf + pktLen, parseLen - pktLen);
+                parseLen -= pktLen;
+            }
+            // 若未解析出完整包，继续接收
+        } else {
+            // 超时，执行周期性任务（如发送传感器数据）
+        }
     }
 }
