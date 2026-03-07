@@ -57,7 +57,7 @@ PCLK2：72 MHz（APB2 总线时钟）
 - PA6（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PA7（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PB8（蓝牙状态）：GPIO_Output, Push Pull, No pull, Low speed, Low level
-- PB9（蓝牙状态）：GPIO_Iutput
+- PB9（蓝牙状态）：GPIO_Input
 - PB12（DHT11 数据线）：GPIO_Output, Open Drain, Pull-up, Medium speed, High level
 - PB13（继电器水泵控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PB14（继电器补光灯控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level

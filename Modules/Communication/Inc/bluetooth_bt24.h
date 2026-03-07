@@ -42,6 +42,8 @@ typedef struct {
 // 初始化蓝牙模块
 bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config);
 
+void Bluetooth_StartReceive();
+
 // 发送数据
 bool Bluetooth_SendData(uint8_t *data, uint16_t length);
 
