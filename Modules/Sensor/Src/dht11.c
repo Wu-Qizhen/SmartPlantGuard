@@ -73,17 +73,27 @@ static uint8_t DHT11_ReadByte(void) {
     uint8_t byte = 0;
     for (uint8_t i = 0; i < 8; i++) {
         // 等待位起始信号（低电平结束）
-        uint32_t timeout = 0;
+        uint32_t startTimeout = 0;
         while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_RESET) {
             delay_us(1);
-            if (++timeout > 60) return 0xFF; // 超时
+            if (++startTimeout > 60) return 0xFF; // 超时
         }
         // 延时 40us 后判断电平
         delay_us(40);
         if (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET) {
             byte |= (1 << (7 - i)); // 高位在前
-            // 等待该位高电平结束
-            while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET);
+            // 修复卡死问题
+            // while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET);
+            // 等待该位高电平结束，增加超时
+            uint32_t endTimeout = 0;
+            while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET) {
+                delay_us(1);
+                if (++endTimeout > 100) {
+                    // 100µs 足够覆盖最长的高电平时间（约70µs）
+                    // 超时，可返回错误或跳过该位
+                    return 0xFF; // 或采取其他错误处理
+                }
+            }
         }
     }
     return byte;
