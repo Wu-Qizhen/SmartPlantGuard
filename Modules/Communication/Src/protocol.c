@@ -93,7 +93,7 @@ static void processGetSystemInfo(Response *response);
 
 // 解析数据包
 bool Protocol_ParsePacket(uint8_t *buffer, uint16_t length, CommandPacket *packet) {
-    if (!buffer || !packet || length < 5) {
+    if (!buffer || !packet || length < MIN_PACKET_SIZE) {
         // 命令包最小 5 字节
         return false;
     }
@@ -196,46 +196,52 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
     return response;
 }
 
-// 处理获取传感器数据命令
-// 土壤湿度，放大 10 倍（0-1000）
-// 温度，放大 10 倍（-500-1500）
-// 湿度，放大 10 倍（0-1000）
-// 光照强度
-// 位标志，bit0=土壤有效，bit1=温度有效，bit2=湿度有效，bit3=光敏有效
-// 时间戳
+/**
+ * 处理获取传感器数据命令
+ * 土壤湿度，放大 10 倍（0-1000）
+ * 温度，放大 10 倍（-500-1500）
+ * 湿度，放大 10 倍（0-1000）
+ * 光照强度
+ * 位标志，0 = 土壤有效，1 = 温度有效，2 = 湿度有效，3 = 光敏有效
+ * 时间戳
+ */
 static void processGetSensorData(Response *response) {
-    static AllSensorData lastValidData; // 缓存上一次有效数据
-    static bool hasData = false; // 标记是否已有数据
-    AllSensorData fullData;
-
-    // 尝试从队列获取最新数据（非阻塞，超时 0）
-    if (osMessageQueueGet(Queue_SensorDataHandle, &fullData, NULL, 0) == osOK) {
-        // 有新数据，更新缓存
-        lastValidData = fullData;
-        hasData = true;
-    }
-
-    if (hasData) {
-        // 使用缓存数据构造响应
-        CompactSensorData compact;
-        compact.soilMoisture = (uint16_t) (lastValidData.soilMoisture.value * 10);
-        compact.temperature = (int16_t) (lastValidData.temperature.value * 10);
-        compact.humidity = (uint16_t) (lastValidData.humidity.value * 10);
-        compact.lightIntensity = (uint16_t) lastValidData.lightIntensity.value;
-        compact.statusFlags = 0;
-        if (lastValidData.soilMoisture.status == SENSOR_OK) compact.statusFlags |= 0x01;
-        if (lastValidData.temperature.status == SENSOR_OK) compact.statusFlags |= 0x02;
-        if (lastValidData.humidity.status == SENSOR_OK) compact.statusFlags |= 0x04;
-        if (lastValidData.lightIntensity.status == SENSOR_OK) compact.statusFlags |= 0x08;
-        compact.timestamp = lastValidData.lastUpdateTime;
-
-        memcpy(response->data, &compact, sizeof(compact));
-        response->dataLength = sizeof(compact);
-        response->success = true;
-    } else {
-        // 从未获取到数据（系统启动初期），返回错误
+    // 获取互斥量，保护对共享数据的访问
+    if (osMutexAcquire(gSensorDataMutex, osWaitForever) != osOK) {
         response->success = false;
+        return;
     }
+
+    // 复制最新数据到局部变量（减少互斥量持有时间）
+    AllSensorData localCopy = gLatestSensorData;
+    osMutexRelease(gSensorDataMutex);
+
+    // 判断是否有有效数据（例如检查 lastUpdateTime 是否为 0）
+    if (localCopy.lastUpdateTime == 0) {
+        // 从未成功读取过传感器数据
+        response->success = false;
+        return;
+    }
+
+    // 构造紧凑数据包
+    CompactSensorData compact;
+    compact.soilMoisture = (uint16_t) (localCopy.soilMoisture.value * 10);
+    compact.temperature = (int16_t) (localCopy.temperature.value * 10);
+    compact.humidity = (uint16_t) (localCopy.humidity.value * 10);
+    compact.lightIntensity = (uint16_t) localCopy.lightIntensity.value;
+
+    compact.statusFlags = 0;
+    if (localCopy.soilMoisture.status == SENSOR_OK) compact.statusFlags |= 0x01;
+    if (localCopy.temperature.status == SENSOR_OK) compact.statusFlags |= 0x02;
+    if (localCopy.humidity.status == SENSOR_OK) compact.statusFlags |= 0x04;
+    if (localCopy.lightIntensity.status == SENSOR_OK) compact.statusFlags |= 0x08;
+
+    compact.timestamp = localCopy.lastUpdateTime;
+
+    // 填充响应
+    memcpy(response->data, &compact, sizeof(compact));
+    response->dataLength = sizeof(compact);
+    response->success = true;
 }
 
 // 处理获取执行器状态命令

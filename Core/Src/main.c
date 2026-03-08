@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "sensor_manager.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -102,6 +102,14 @@ int main(void)
   /* Init scheduler */
   osKernelInitialize();  /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
+
+  /* USER CODE BEGIN RTOS_OBJECTS */
+  // 在 MX_FREERTOS_Init() 之后创建互斥量（确保所有 RTOS 对象已初始化）
+  gSensorDataMutex = osMutexNew(NULL);
+  if (gSensorDataMutex == NULL) {
+    Error_Handler();
+  }
+  /* USER CODE END RTOS_OBJECTS */
 
   /* Start scheduler */
   osKernelStart();

@@ -6,6 +6,10 @@
  */
 #include "sensor_manager.h"
 
+// 全局变量（分配存储）
+AllSensorData gLatestSensorData;
+osMutexId_t gSensorDataMutex;
+
 static SensorManagerStatus managerStatus = {
     .isInitialized = false,
     .readInterval = 5,
@@ -16,6 +20,15 @@ static SensorManagerStatus managerStatus = {
 
 // 初始化传感器系统
 SensorStatusEnum SensorManager_Init(void) {
+    // 创建互斥量（只创建一次），已移至 main.c
+    /*if (gSensorDataMutex == NULL) {
+        gSensorDataMutex = osMutexNew(NULL);
+        if (gSensorDataMutex == NULL) {
+            // 处理创建失败（可根据需要返回错误）
+            return SENSOR_ERROR;
+        }
+    }*/
+
     // 初始化各个传感器
     delay_init();
     DHT11_Init(DHT11_PORT, DHT11_PIN);

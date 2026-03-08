@@ -76,6 +76,7 @@
 #include <stdint.h>
 
 #define MAX_DATA_SIZE 32
+#define MIN_PACKET_SIZE 5
 
 // 指令类型
 typedef enum {

@@ -7,11 +7,15 @@
 #ifndef SENSOR_MANAGER_H
 #define SENSOR_MANAGER_H
 
+#include "cmsis_os2.h"
 #include "dht11.h"
 #include "adc_sensors.h"
 #include "sensor_types.h"
 #include "system_config.h"
 #include "stm32f1xx_hal.h"
+
+extern AllSensorData gLatestSensorData;
+extern osMutexId_t gSensorDataMutex;
 
 // 传感器管理器状态
 typedef struct {

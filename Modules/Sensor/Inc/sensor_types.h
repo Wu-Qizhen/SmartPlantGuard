@@ -25,7 +25,7 @@ typedef enum {
     SENSOR_NOT_CONNECTED,
     SENSOR_OUT_OF_RANGE,
     SENSOR_TIMEOUT,
-    SENSOR_CHECKSUM_ERROR
+    SENSOR_ERROR
 } SensorStatusEnum;
 
 // 传感器数据包结构体
@@ -33,9 +33,9 @@ typedef struct {
     float value; // 传感器数值
     SensorUnitEnum unit; // 数值单位
     SensorStatusEnum status; // 传感器状态
-    uint32_t timestamp; // 时间戳
-    float minValue; // 最小值（用于校准）
-    float maxValue; // 最大值（用于校准）
+    // uint32_t timestamp; // 时间戳
+    // float minValue; // 最小值（用于校准）
+    // float maxValue; // 最大值（用于校准）
 } SensorData;
 
 // 所有传感器数据集合

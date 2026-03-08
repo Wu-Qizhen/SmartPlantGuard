@@ -139,7 +139,7 @@ SensorStatusEnum DHT11_Read(float *temperature, float *humidity) {
 
     // 校验和
     if ((buffer[0] + buffer[1] + buffer[2] + buffer[3]) % 256 != buffer[4]) {
-        status = SENSOR_CHECKSUM_ERROR;
+        status = SENSOR_ERROR;
         if (temperature) *temperature = lastTemperature;
         if (humidity) *humidity = lastHumidity;
         lastStatus = status;

@@ -68,7 +68,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Modules/Sensor/Src/adc_sensors.c
         # Actuator module
         Modules/Actuator/Src/actuator_manager.c
-        Modules/Actuator/Src/relay_driver.c
+        # Modules/Actuator/Src/relay_driver.c
         Modules/Actuator/Src/pwm_driver.c
         Modules/Actuator/Src/fan_driver.c
         # Controller module

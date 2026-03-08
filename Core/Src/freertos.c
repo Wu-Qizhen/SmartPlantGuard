@@ -68,11 +68,6 @@ const osThreadAttr_t Task_Comm_attributes = {
   .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityAboveNormal,
 };
-/* Definitions for Queue_SensorData */
-osMessageQueueId_t Queue_SensorDataHandle;
-const osMessageQueueAttr_t Queue_SensorData_attributes = {
-  .name = "Queue_SensorData"
-};
 /* Definitions for Queue_BluetoothRx */
 osMessageQueueId_t Queue_BluetoothRxHandle;
 const osMessageQueueAttr_t Queue_BluetoothRx_attributes = {
@@ -130,9 +125,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_TIMERS */
 
   /* Create the queue(s) */
-  /* creation of Queue_SensorData */
-  Queue_SensorDataHandle = osMessageQueueNew (1, sizeof(AllSensorData), &Queue_SensorData_attributes);
-
   /* creation of Queue_BluetoothRx */
   Queue_BluetoothRxHandle = osMessageQueueNew (128, 1, &Queue_BluetoothRx_attributes);
 

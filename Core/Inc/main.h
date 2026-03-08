@@ -41,7 +41,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-extern osMessageQueueId_t Queue_SensorDataHandle;
+// extern osMessageQueueId_t Queue_SensorDataHandle;
 extern osMessageQueueId_t Queue_BluetoothRxHandle;
 /* USER CODE END EC */
 
