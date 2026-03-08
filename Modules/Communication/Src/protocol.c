@@ -204,25 +204,36 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
 // 位标志，bit0=土壤有效，bit1=温度有效，bit2=湿度有效，bit3=光敏有效
 // 时间戳
 static void processGetSensorData(Response *response) {
+    static AllSensorData lastValidData; // 缓存上一次有效数据
+    static bool hasData = false; // 标记是否已有数据
     AllSensorData fullData;
-    if (osMessageQueueGet(Queue_SensorDataHandle, &fullData, NULL, 10) == osOK) {
+
+    // 尝试从队列获取最新数据（非阻塞，超时 0）
+    if (osMessageQueueGet(Queue_SensorDataHandle, &fullData, NULL, 0) == osOK) {
+        // 有新数据，更新缓存
+        lastValidData = fullData;
+        hasData = true;
+    }
+
+    if (hasData) {
+        // 使用缓存数据构造响应
         CompactSensorData compact;
-        // 转换并缩放
-        compact.soilMoisture = (uint16_t) (fullData.soilMoisture.value * 10);
-        compact.temperature = (int16_t) (fullData.temperature.value * 10);
-        compact.humidity = (uint16_t) (fullData.humidity.value * 10);
-        compact.lightIntensity = (uint16_t) fullData.lightIntensity.value;
+        compact.soilMoisture = (uint16_t) (lastValidData.soilMoisture.value * 10);
+        compact.temperature = (int16_t) (lastValidData.temperature.value * 10);
+        compact.humidity = (uint16_t) (lastValidData.humidity.value * 10);
+        compact.lightIntensity = (uint16_t) lastValidData.lightIntensity.value;
         compact.statusFlags = 0;
-        if (fullData.soilMoisture.status == SENSOR_OK) compact.statusFlags |= 0x01;
-        if (fullData.temperature.status == SENSOR_OK) compact.statusFlags |= 0x02;
-        if (fullData.humidity.status == SENSOR_OK) compact.statusFlags |= 0x04;
-        if (fullData.lightIntensity.status == SENSOR_OK) compact.statusFlags |= 0x08;
-        compact.timestamp = fullData.lastUpdateTime;
+        if (lastValidData.soilMoisture.status == SENSOR_OK) compact.statusFlags |= 0x01;
+        if (lastValidData.temperature.status == SENSOR_OK) compact.statusFlags |= 0x02;
+        if (lastValidData.humidity.status == SENSOR_OK) compact.statusFlags |= 0x04;
+        if (lastValidData.lightIntensity.status == SENSOR_OK) compact.statusFlags |= 0x08;
+        compact.timestamp = lastValidData.lastUpdateTime;
 
         memcpy(response->data, &compact, sizeof(compact));
         response->dataLength = sizeof(compact);
         response->success = true;
     } else {
+        // 从未获取到数据（系统启动初期），返回错误
         response->success = false;
     }
 }
