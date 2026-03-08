@@ -9,6 +9,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <assert.h>
 
 // 传感器数据单位
 typedef enum {
@@ -47,14 +48,17 @@ typedef struct {
     uint32_t lastUpdateTime; // 最后更新时间
 } AllSensorData;
 
+// 编译时断言：确保 AllSensorData 大小不超过 128 字节
+static_assert(sizeof(AllSensorData) <= 128, "AllSensorData too large for hardcoded buffer");
+
 #pragma pack(push, 1) // 禁止填充，确保紧凑
 typedef struct {
-    uint16_t soilMoisture;   // 土壤湿度，放大 10 倍（0-1000 表示 0.0%-100.0%）
-    int16_t temperature;     // 温度，放大 10 倍（-500-1500 表示 -50.0°C-150.0°C）
-    uint16_t humidity;       // 湿度，放大 10 倍（0-1000）
+    uint16_t soilMoisture; // 土壤湿度，放大 10 倍（0-1000 表示 0.0%-100.0%）
+    int16_t temperature; // 温度，放大 10 倍（-500-1500 表示 -50.0°C-150.0°C）
+    uint16_t humidity; // 湿度，放大 10 倍（0-1000）
     uint16_t lightIntensity; // 光照强度
-    uint8_t statusFlags;     // 位标志，bit0=土壤有效，bit1=温度有效，bit2=湿度有效，bit3=光敏有效
-    uint32_t timestamp;      // 时间戳
+    uint8_t statusFlags; // 位标志，bit0=土壤有效，bit1=温度有效，bit2=湿度有效，bit3=光敏有效
+    uint32_t timestamp; // 时间戳
 } CompactSensorData;
 #pragma pack(pop)
 

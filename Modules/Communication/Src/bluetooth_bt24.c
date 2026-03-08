@@ -231,56 +231,6 @@ bool Bluetooth_SendPacket(CommandPacket *packet) {
     return Bluetooth_SendData(buffer, length);
 }
 
-// 接收处理
-// 仅在通信任务调用
-// TODO: 冗余职责，后续删除
-/*void Bluetooth_ReceiveByte(uint8_t byte) {
-    if (rxBufferIndex < sizeof(rxBuffer)) {
-        rxBuffer[rxBufferIndex++] = byte;
-    }
-}*/
-
-// 处理接收到的数据
-// TODO: 冗余职责，后续删除
-/*bool Bluetooth_ProcessReceivedData(void) {
-    if (rxBufferIndex == 0) {
-        return false;
-    }
-
-    // 解析数据包
-    CommandPacket packet;
-    if (Protocol_ParsePacket(rxBuffer, rxBufferIndex, &packet)) {
-        // 处理命令
-        Response response = Protocol_ProcessCommand(&packet);
-
-        // 发送响应
-        CommandPacket ackPacket = {
-            .startByte = 0xAA,
-            .command = CMD_ACK,
-            .dataLength = response.dataLength,
-            .endByte = 0x55
-        };
-        memcpy(ackPacket.data, response.data, response.dataLength);
-        ackPacket.checksum = Protocol_CalculateChecksum(
-            &ackPacket.command, // 当作字节指针
-            2 + ackPacket.dataLength
-        );
-
-        Bluetooth_SendPacket(&ackPacket);
-
-        // 清空接收缓冲区
-        rxBufferIndex = 0;
-        return true;
-    }
-
-    // 检查是否需要清空缓冲区
-    if (rxBufferIndex >= sizeof(rxBuffer)) {
-        rxBufferIndex = 0;
-    }
-
-    return false;
-}*/
-
 // 获取状态
 BluetoothStatus Bluetooth_GetStatus(void) {
     Bluetooth_UpdateState();

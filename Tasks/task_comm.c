@@ -3,9 +3,9 @@
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.13
  */
-#include <string.h>
 #include "bluetooth_bt24.h"
 #include "usart.h"
+#include <string.h>
 
 #define RX_BUFFER_SIZE 64
 
@@ -86,7 +86,6 @@ static BluetoothConfig btConfig = {
 }*/
 
 // 手动读取队列
-// TODO
 /*static void sendSensorDataPeriodically(void) {
     AllSensorData sensorData;
 
@@ -121,8 +120,7 @@ static BluetoothConfig btConfig = {
     }
 }*/
 
-// 模拟触发
-// TODO
+// 手动模拟触发
 /*static void sendSensorDataPeriodically(void) {
     // 构造一个假的 GET_SENSOR_DATA 命令包，仅用于触发 processGetSensorData
     CommandPacket fakePacket;
