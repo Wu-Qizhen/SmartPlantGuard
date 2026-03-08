@@ -1,6 +1,7 @@
 /**
  * 适用于 RTOS 的微秒级延时，但会影响 RTOS 调度
  * 建议在 main() 中先调用 delay_init()
+ *
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.14

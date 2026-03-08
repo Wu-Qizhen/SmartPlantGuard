@@ -1,6 +1,7 @@
 /**
  * 合并后的 ADC 传感器模块（土壤湿度 + 光敏）
  * 使用 ADC 扫描模式一次性读取两个通道，避免冲突
+ *
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.17
