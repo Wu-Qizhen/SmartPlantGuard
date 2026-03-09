@@ -303,6 +303,9 @@ static void processGetParams(Response *response) {
 static void processResetSystem(Response *response) {
     // 重置系统
     ControllerCore_ResetParamsToDefaults();
+    ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_OFF);
+    ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_OFF);
+    ActuatorManager_SetState(ACTUATOR_LIGHT, ACTUATOR_OFF);
     // TODO: 处理复位命令
     response->success = true;
 }

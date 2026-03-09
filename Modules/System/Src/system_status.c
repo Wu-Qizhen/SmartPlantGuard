@@ -3,7 +3,9 @@
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2026.02.02
  */
+#include "stm32f1xx_hal.h"
 #include "system_status.h"
+#include "system_config.h"
 
 // 全局状态变量
 SystemStatus gSystemStatus;
@@ -14,6 +16,7 @@ void SystemStatus_Init(void) {
     gSystemStatus.currentState = SYS_STATE_INIT;
     gSystemStatus.controlMode = MODE_AUTO;
     gSystemStatus.uptimeSeconds = 0;
+    HAL_GPIO_WritePin(SYSTEM_LED_PORT, SYSTEM_LED_PIN, GPIO_PIN_RESET);
 }
 
 // 更新系统状态

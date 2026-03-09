@@ -63,4 +63,6 @@ ControlModeEnum SystemStatus_GetControlMode(void);
 // 设置控制模式
 bool SystemStatus_SetControlMode(ControlModeEnum mode);
 
+// TODO: 后续完善系统与各模块错误处理
+
 #endif // SYSTEM_STATE_H
