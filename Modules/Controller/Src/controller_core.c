@@ -16,7 +16,7 @@ static ControlParams controlParams = {
     .temperatureLow = 20.0f,
     .lightIntensityLow = 500.0f,
     .lightIntensityHigh = 800.0f,
-    .minPumpInterval = 5,
+    .minPumpInterval = 300,
     .maxPumpDuration = 20
 };
 
@@ -28,6 +28,7 @@ static ControlDecision lastDecision = {
 };
 
 // 自动控制逻辑
+// TODO: 风扇挡位选择控制
 static void autoControl() {
     // 获取传感器数据
     if (osMutexAcquire(gSensorDataMutex, osWaitForever) != osOK) {
@@ -114,7 +115,7 @@ void ControllerCore_ResetParamsToDefaults(void) {
     controlParams.temperatureLow = 20.0f;
     controlParams.lightIntensityLow = 500.0f;
     controlParams.lightIntensityHigh = 800.0f;
-    controlParams.minPumpInterval = 5;
+    controlParams.minPumpInterval = 300;
     controlParams.maxPumpDuration = 20;
 }
 
