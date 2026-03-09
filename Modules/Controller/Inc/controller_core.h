@@ -11,7 +11,7 @@
 #include "actuator_manager.h"
 
 // 控制器初始化
-// bool ControllerCore_Init(void);
+bool ControllerCore_Init(void);
 
 // 主控制循环
 void ControllerCore_RunCycle(void);

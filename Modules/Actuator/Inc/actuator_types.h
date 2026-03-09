@@ -41,6 +41,8 @@ typedef struct {
     uint32_t totalOnTime; // 总开启时间（秒）
     uint32_t operationCount; // 操作次数
     bool isFaulty; // 是否故障
+    uint32_t lastOperationTime; // 上次操作时间（毫秒）
+    uint32_t startTime; // 本次开启时间（毫秒）
 } ActuatorStatus;
 
 #endif // ACTUATOR_TYPES_H

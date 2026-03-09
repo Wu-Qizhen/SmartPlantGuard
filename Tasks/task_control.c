@@ -12,6 +12,7 @@ void StartTask_Control(void *argument) {
     // 初始化
     SystemStatus_Init();
     ActuatorManager_Init();
+    ControllerCore_Init();
 
     for (;;) {
         ControllerCore_RunCycle();

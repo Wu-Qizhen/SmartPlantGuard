@@ -24,7 +24,6 @@ typedef struct {
     float lightIntensityLow; // 低阈值（开启补光）
     float lightIntensityHigh; // 高阈值（关闭补光）
 
-    // TODO: 时间控制
     uint32_t minPumpInterval; // 水泵最小间隔（秒）
     uint32_t maxPumpDuration; // 水泵最大持续时间（秒）
 } ControlParams;

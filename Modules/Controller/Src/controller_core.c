@@ -7,6 +7,7 @@
 #include "controller_core.h"
 #include "system_status.h"
 #include "sensor_manager.h"
+#include "actuator_manager.h"
 #include <string.h>
 
 static ControlParams controlParams = {
@@ -44,38 +45,49 @@ static void autoControl() {
         return;
     }
 
-    // 土壤湿度控制
-    if (localCopy.soilMoisture.value < controlParams.soilMoistureLow) {
-        ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_ON);
-        lastDecision.needWatering = true;
-        strcpy(lastDecision.decisionReason, "Soil moisture below threshold");
-    } else if (localCopy.soilMoisture.value > controlParams.soilMoistureHigh) {
-        ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_OFF);
-        lastDecision.needWatering = false;
-        strcpy(lastDecision.decisionReason, "Soil moisture above threshold");
+    // 土壤湿度滞回控制
+    ActuatorStateEnum pumpState = ActuatorManager_GetState(ACTUATOR_PUMP);
+    if (pumpState == ACTUATOR_OFF && localCopy.soilMoisture.value < controlParams.soilMoistureLow) {
+        if (ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_ON)) {
+            lastDecision.needWatering = true;
+            strcpy(lastDecision.decisionReason, "Soil moisture below threshold");
+        }
+    } else if (pumpState == ACTUATOR_ON && localCopy.soilMoisture.value > controlParams.soilMoistureHigh) {
+        if (ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_OFF)) {
+            lastDecision.needWatering = false;
+            strcpy(lastDecision.decisionReason, "Soil moisture above threshold");
+        }
     }
 
-    // 温度控制
-    if (localCopy.temperature.value > controlParams.temperatureHigh) {
+    // 温度滞回控制
+    ActuatorStateEnum fanState = ActuatorManager_GetState(ACTUATOR_FAN);
+    if (fanState == ACTUATOR_OFF && localCopy.temperature.value > controlParams.temperatureHigh) {
         ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_ON);
         lastDecision.needCooling = true;
         strcpy(lastDecision.decisionReason, "Temperature above threshold");
-    } else if (localCopy.temperature.value < controlParams.temperatureLow) {
+    } else if (fanState == ACTUATOR_ON && localCopy.temperature.value < controlParams.temperatureLow) {
         ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_OFF);
         lastDecision.needCooling = false;
         strcpy(lastDecision.decisionReason, "Temperature below threshold");
     }
 
-    // 光照控制
-    if (localCopy.lightIntensity.value < controlParams.lightIntensityLow) {
+    // 光照滞回控制
+    ActuatorStateEnum lightState = ActuatorManager_GetState(ACTUATOR_LIGHT);
+    if (lightState == ACTUATOR_OFF && localCopy.lightIntensity.value < controlParams.lightIntensityLow) {
         ActuatorManager_SetState(ACTUATOR_LIGHT, ACTUATOR_ON);
         lastDecision.needLighting = true;
         strcpy(lastDecision.decisionReason, "Light intensity below threshold");
-    } else if (localCopy.lightIntensity.value > controlParams.lightIntensityHigh) {
+    } else if (lightState == ACTUATOR_ON && localCopy.lightIntensity.value > controlParams.lightIntensityHigh) {
         ActuatorManager_SetState(ACTUATOR_LIGHT, ACTUATOR_OFF);
         lastDecision.needLighting = false;
         strcpy(lastDecision.decisionReason, "Light intensity above threshold");
     }
+}
+
+// 初始化
+bool ControllerCore_Init(void) {
+    ActuatorManager_SetPumpLimits(controlParams.minPumpInterval, controlParams.maxPumpDuration);
+    return true;
 }
 
 // 主控制循环
@@ -99,11 +111,9 @@ ControlParams ControllerCore_GetParams(void) {
 
 // 设置控制参数
 bool ControllerCore_SetParams(ControlParams *newParams) {
-    if (!newParams) {
-        return false;
-    }
-
+    if (!newParams) return false;
     controlParams = *newParams;
+    ActuatorManager_SetPumpLimits(controlParams.minPumpInterval, controlParams.maxPumpDuration);
     return true;
 }
 
@@ -117,6 +127,7 @@ void ControllerCore_ResetParamsToDefaults(void) {
     controlParams.lightIntensityHigh = 800.0f;
     controlParams.minPumpInterval = 300;
     controlParams.maxPumpDuration = 20;
+    ActuatorManager_SetPumpLimits(controlParams.minPumpInterval, controlParams.maxPumpDuration);
 }
 
 // 获取控制决策信息

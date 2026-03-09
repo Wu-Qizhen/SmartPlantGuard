@@ -43,4 +43,6 @@ bool ActuatorManager_CheckOverheat(void); // 检查过热保护
 // 重置统计信息
 void ActuatorManager_ResetStatistics(ActuatorEnum id);
 
+void ActuatorManager_SetPumpLimits(uint32_t minIntervalSec, uint32_t maxDurationSec);
+
 #endif // ACTUATOR_MANAGER_H
