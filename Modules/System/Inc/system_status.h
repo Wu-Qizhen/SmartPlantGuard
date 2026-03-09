@@ -7,6 +7,7 @@
 #ifndef SYSTEM_STATE_H
 #define SYSTEM_STATE_H
 
+#include "cmsis_os2.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -47,6 +48,7 @@ typedef struct {
 
 // 全局状态变量
 extern SystemStatus gSystemStatus;
+extern osMutexId_t gSystemStatusMutex;
 
 // 函数声明
 void SystemStatus_Init(void);

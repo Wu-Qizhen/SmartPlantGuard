@@ -26,6 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "system_status.h"
 #include "sensor_manager.h"
 /* USER CODE END Includes */
 
@@ -107,6 +108,11 @@ int main(void)
   // 在 MX_FREERTOS_Init() 之后创建互斥量（确保所有 RTOS 对象已初始化）
   gSensorDataMutex = osMutexNew(NULL);
   if (gSensorDataMutex == NULL) {
+    Error_Handler();
+  }
+
+  gSystemStatusMutex = osMutexNew(NULL);
+  if (gSystemStatusMutex == NULL) {
     Error_Handler();
   }
   /* USER CODE END RTOS_OBJECTS */

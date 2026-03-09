@@ -5,6 +5,7 @@
  */
 #include "system_status.h"
 #include "actuator_manager.h"
+#include "bluetooth_bt24.h"
 #include "controller_core.h"
 
 void StartTask_Control(void *argument) {
@@ -14,7 +15,7 @@ void StartTask_Control(void *argument) {
 
     for (;;) {
         ControllerCore_RunCycle();
-
+        Bluetooth_UpdateState();
         osDelay(5000);
     }
 }

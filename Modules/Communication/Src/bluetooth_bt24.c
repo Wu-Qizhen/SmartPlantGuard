@@ -62,17 +62,15 @@ static bool sendATCommand(const char *cmd) {
 }
 
 // 更新蓝牙连接状态（读取 STATE 引脚）
-// TODO: 需要周期性调用
-static void Bluetooth_UpdateState(void) {
-    /*GPIO_PinState pinState = HAL_GPIO_ReadPin(BLUETOOTH_STATE_PORT, BLUETOOTH_STATE_PIN);
+void Bluetooth_UpdateState(void) {
+    GPIO_PinState pinState = HAL_GPIO_ReadPin(BLUETOOTH_STATE_PORT, BLUETOOTH_STATE_PIN);
     if (pinState == GPIO_PIN_SET) {
         btStatus.state = BT_STATE_CONNECTED;
         btStatus.isPaired = true; // 连接通常意味着已配对
     } else {
         btStatus.state = BT_STATE_DISCONNECTED;
         btStatus.isPaired = false;
-    }*/
-    btStatus.state = BT_STATE_CONNECTED;
+    }
 }
 
 /*// 初始化蓝牙模块（HC05）
@@ -231,11 +229,11 @@ bool Bluetooth_SendPacket(CommandPacket *packet) {
     return Bluetooth_SendData(buffer, length);
 }
 
-// 获取状态
+/*// 获取状态
 BluetoothStatus Bluetooth_GetStatus(void) {
     Bluetooth_UpdateState();
     return btStatus;
-}
+}*/
 
 void Bluetooth_StartReceive() {
     HAL_UART_Receive_IT(bluetoothUart, &commRxByte, 1); // 初始化完成后开启中断

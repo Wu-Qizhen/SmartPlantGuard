@@ -39,6 +39,9 @@ typedef struct {
     // uint32_t connectCount;
 } BluetoothStatus;
 
+// 更新蓝牙模块状态
+void Bluetooth_UpdateState(void);
+
 // 初始化蓝牙模块
 bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config);
 
@@ -56,8 +59,8 @@ void Bluetooth_ReceiveByte(uint8_t byte);
 
 bool Bluetooth_ProcessReceivedData(void);*/
 
-// 获取状态
-BluetoothStatus Bluetooth_GetStatus(void);
+/*// 获取状态
+BluetoothStatus Bluetooth_GetStatus(void);*/
 
 /*// 配置蓝牙模块
 bool Bluetooth_SetDeviceName(const char *name);

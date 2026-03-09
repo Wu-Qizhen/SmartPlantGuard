@@ -79,7 +79,8 @@ static void autoControl() {
 
 // 主控制循环
 void ControllerCore_RunCycle(void) {
-    switch (gSystemStatus.controlMode) {
+    ControlModeEnum mode = SystemStatus_GetControlMode();
+    switch (mode) {
         case MODE_AUTO:
             // 自动控制模式
             autoControl();

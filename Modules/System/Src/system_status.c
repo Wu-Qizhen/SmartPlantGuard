@@ -7,6 +7,7 @@
 
 // 全局状态变量
 SystemStatus gSystemStatus;
+osMutexId_t gSystemStatusMutex;
 
 // 初始化系统状态
 void SystemStatus_Init(void) {
@@ -17,7 +18,9 @@ void SystemStatus_Init(void) {
 
 // 更新系统状态
 void SystemStatus_Update(SystemStateEnum newState) {
+    osMutexAcquire(gSystemStatusMutex, osWaitForever);
     gSystemStatus.currentState = newState;
+    osMutexRelease(gSystemStatusMutex);
 }
 
 // 获取状态字符串
@@ -42,11 +45,16 @@ const char *SystemStatus_GetString(SystemStateEnum state) {
 
 // 获取控制模式
 ControlModeEnum SystemStatus_GetControlMode(void) {
-    return gSystemStatus.controlMode;
+    osMutexAcquire(gSystemStatusMutex, osWaitForever);
+    ControlModeEnum mode = gSystemStatus.controlMode;
+    osMutexRelease(gSystemStatusMutex);
+    return mode;
 }
 
 // 设置控制模式
 bool SystemStatus_SetControlMode(ControlModeEnum mode) {
+    osMutexAcquire(gSystemStatusMutex, osWaitForever);
     gSystemStatus.controlMode = mode;
+    osMutexRelease(gSystemStatusMutex);
     return true;
 }
