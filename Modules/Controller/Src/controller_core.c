@@ -84,11 +84,8 @@ void ControllerCore_RunCycle(void) {
             // 自动控制模式
             autoControl();
             break;
-        case MODE_CALIBRATION:
-            // 校准模式
-            // TODO
-            break;
         default:
+            // 校准操作由通信协议函数处理
             break;
     }
 }

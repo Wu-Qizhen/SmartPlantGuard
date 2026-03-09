@@ -77,6 +77,7 @@
 #include "actuator_manager.h"
 #include "controller_core.h"
 #include "system_status.h"
+#include "adc_sensors.h"
 #include <string.h>
 
 static void processGetSensorData(Response *response);
@@ -306,10 +307,55 @@ static void processResetSystem(Response *response) {
     response->success = true;
 }
 
-// TODO: 处理校准命令
+// 处理校准命令
 static void processCalibrate(Response *response, CommandPacket *packet) {
-    // 处理校准命令
-    // 这里需要根据校准类型执行不同的校准操作
+    if (packet->dataLength < 1) {
+        response->success = false;
+        return;
+    }
+
+    uint8_t calibrationType = packet->data[0];
+
+    switch (calibrationType) {
+        case CALIBRATE_SOIL_DRY:
+            AdcSensors_CalibrateSoilDry();
+            break;
+        case CALIBRATE_SOIL_WET:
+            AdcSensors_CalibrateSoilWet();
+            break;
+        case CALIBRATE_LIGHT_MIN:
+            AdcSensors_CalibrateLightMin();
+            break;
+        case CALIBRATE_LIGHT_MAX:
+            AdcSensors_CalibrateLightMax();
+            break;
+        case CALIBRATE_SOIL_SET:
+            if (packet->dataLength >= 5) {
+                float dryValue = *(float *) &packet->data[1];
+                float wetValue = *(float *) &packet->data[3];
+                AdcSensors_SetSoilCalibration(dryValue, wetValue);
+            } else {
+                response->success = false;
+                return;
+            }
+            break;
+        case CALIBRATE_LIGHT_SET:
+            if (packet->dataLength >= 9) {
+                float minAdc = *(float *) &packet->data[1];
+                float maxAdc = *(float *) &packet->data[3];
+                float minLux = *(float *) &packet->data[5];
+                float maxLux = *(float *) &packet->data[7];
+                AdcSensors_SetLightCalibration(minAdc, maxAdc, minLux, maxLux);
+            } else {
+                response->success = false;
+                return;
+            }
+            break;
+        default:
+            response->success = false;
+            return;
+    }
+
     response->success = true;
 }
 

@@ -91,10 +91,20 @@ typedef enum {
     CMD_RESET = 0x06, // 复位
     CMD_CALIBRATE = 0x07, // 校准
     CMD_GET_SYSTEM_INFO = 0x08, // 获取系统信息
-    CMD_SET_CONTROL_MODE = 0x0B,  // 新增命令
+    CMD_SET_CONTROL_MODE = 0x0B, // 新增命令
     CMD_ACK = 0x09, // 确认
     CMD_ERROR = 0x0A // 错误
 } CommandTypeEnum;
+
+// 校准类型
+typedef enum {
+    CALIBRATE_SOIL_DRY = 0, // 土壤湿度干态校准
+    CALIBRATE_SOIL_WET = 1, // 土壤湿度湿态校准
+    CALIBRATE_LIGHT_MIN = 2, // 光照强度最小校准
+    CALIBRATE_LIGHT_MAX = 3, // 光照强度最大校准
+    CALIBRATE_SOIL_SET = 4, // 直接设置土壤校准值
+    CALIBRATE_LIGHT_SET = 5 // 直接设置光照校准值
+} CalibrationTypeEnum;
 
 // 指令结构
 #pragma pack(push, 1)
