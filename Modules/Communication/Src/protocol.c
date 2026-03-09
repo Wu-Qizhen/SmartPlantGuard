@@ -19,6 +19,7 @@
  *     CMD_RESET              0x06    恢复系统参数为默认值 无                无
  *     CMD_CALIBRATE          0x07    执行校准          自定义（至少 1 字节） 无
  *     CMD_GET_SYSTEM_INFO    0x08    获取系统信息       无                 无
+ *     CMD_SET_CONTROL_MODE   0x0B    设置控制模式      [Mode(1)]          无
  *    ----------------------------------------------------------------------------------------------------
  * 5. 各命令响应数据：
  *    (1) CMD_GET_SENSOR_DATA 成功响应数据（CompactSensorData，共 13 字节）：
@@ -63,6 +64,8 @@
  *        校验和：0x07 ^ 0x01 ^ 0x00 = 0x06
  *    (8) 获取系统信息：AA 08 00 08 55
  *        校验和：0x08 ^ 0x00 = 0x08
+ *    (9) 设置控制模式为手动：AA 0B 01 01 0B 55
+ *        校验和：0x0B ^ 0x01 ^ 0x01 = 0x0B
  *
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
@@ -91,6 +94,8 @@ static void processResetSystem(Response *response);
 static void processCalibrate(Response *response, CommandPacket *packet);
 
 static void processGetSystemInfo(Response *response);
+
+static void processSetControlMode(Response *response, const CommandPacket *packet);
 
 // 解析数据包
 bool Protocol_ParsePacket(uint8_t *buffer, uint16_t length, CommandPacket *packet) {
@@ -187,6 +192,9 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
             break;
         case CMD_GET_SYSTEM_INFO:
             processGetSystemInfo(&response);
+            break;
+        case CMD_SET_CONTROL_MODE:
+            processSetControlMode(&response, packet);
             break;
         default:
             response.success = false;
@@ -325,4 +333,25 @@ static void processGetSystemInfo(Response *response) {
         response->dataLength = sizeof(info);
         response->success = true;
     }
+}
+
+static void processSetControlMode(Response *response, const CommandPacket *packet) {
+    // 检查数据长度是否为 1 字节
+    if (packet->dataLength != 1) {
+        response->success = false;
+        return;
+    }
+
+    uint8_t modeValue = packet->data[0];
+
+    // 验证模式值是否有效
+    if (modeValue > MODE_CALIBRATION) {
+        // MODE_CALIBRATION 为 2
+        response->success = false;
+        return;
+    }
+
+    // 调用系统状态模块的设置函数
+    bool ok = SystemStatus_SetControlMode((ControlModeEnum) modeValue);
+    response->success = ok;
 }

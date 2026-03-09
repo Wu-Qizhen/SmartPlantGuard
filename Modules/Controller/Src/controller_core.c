@@ -15,7 +15,7 @@ static ControlParams controlParams = {
     .temperatureHigh = 30.0f,
     .temperatureLow = 20.0f,
     .lightIntensityLow = 500.0f,
-    .lightIntensityHigh = 900.0f,
+    .lightIntensityHigh = 800.0f,
     .minPumpInterval = 5,
     .maxPumpDuration = 20
 };
@@ -115,7 +115,7 @@ void ControllerCore_ResetParamsToDefaults(void) {
     controlParams.temperatureHigh = 30.0f;
     controlParams.temperatureLow = 20.0f;
     controlParams.lightIntensityLow = 500.0f;
-    controlParams.lightIntensityHigh = 900.0f;
+    controlParams.lightIntensityHigh = 800.0f;
     controlParams.minPumpInterval = 5;
     controlParams.maxPumpDuration = 20;
 }

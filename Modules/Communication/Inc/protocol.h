@@ -19,6 +19,7 @@
  *     CMD_RESET              0x06    恢复系统参数为默认值 无                无
  *     CMD_CALIBRATE          0x07    执行校准          自定义（至少 1 字节） 无
  *     CMD_GET_SYSTEM_INFO    0x08    获取系统信息       无                 无
+ *     CMD_SET_CONTROL_MODE   0x0B    设置控制模式      [Mode(1)]          无
  *    ----------------------------------------------------------------------------------------------------
  * 5. 各命令响应数据：
  *    (1) CMD_GET_SENSOR_DATA 成功响应数据（CompactSensorData，共 13 字节）：
@@ -63,6 +64,8 @@
  *        校验和：0x07 ^ 0x01 ^ 0x00 = 0x06
  *    (8) 获取系统信息：AA 08 00 08 55
  *        校验和：0x08 ^ 0x00 = 0x08
+ *    (9) 设置控制模式为手动：AA 0B 01 01 0B 55
+ *        校验和：0x0B ^ 0x01 ^ 0x01 = 0x0B
  *
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
@@ -88,6 +91,7 @@ typedef enum {
     CMD_RESET = 0x06, // 复位
     CMD_CALIBRATE = 0x07, // 校准
     CMD_GET_SYSTEM_INFO = 0x08, // 获取系统信息
+    CMD_SET_CONTROL_MODE = 0x0B,  // 新增命令
     CMD_ACK = 0x09, // 确认
     CMD_ERROR = 0x0A // 错误
 } CommandTypeEnum;
