@@ -59,7 +59,7 @@ typedef struct {
     uint16_t lightIntensity; // 光照强度（0-50000）
     uint8_t statusFlags; // 位标志，Bit 0 = 土壤有效，Bit 1 = 温度有效，Bit 2 = 湿度有效，Bit 3 = 光敏有效
     uint32_t timestamp; // 时间戳
-} CompactSensorData;
+} SensorDataPacket;
 #pragma pack(pop)
 
 #endif // SENSOR_TYPES_H

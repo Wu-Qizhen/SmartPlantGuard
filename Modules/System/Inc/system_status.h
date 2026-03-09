@@ -34,6 +34,17 @@ typedef struct {
     uint32_t uptimeSeconds; // 系统运行时间
 } SystemStatus;
 
+// 系统信息响应数据结构
+typedef struct {
+    uint8_t versionMajor; // 主版本号
+    uint8_t versionMinor; // 次版本号
+    uint8_t versionPatch; // 补丁版本号
+    uint8_t reserved; // 保留字节（对齐用）
+    uint32_t uptimeSeconds; // 系统运行时间（秒）
+    uint8_t systemState; // 当前系统状态（对应 SystemStateEnum）
+    uint8_t controlMode; // 当前控制模式（对应 ControlModeEnum）
+} SystemInfoPacket;
+
 // 全局状态变量
 extern SystemStatus gSystemStatus;
 
@@ -44,7 +55,6 @@ void SystemStatus_Update(SystemStateEnum newState);
 
 const char *SystemStatus_GetString(SystemStateEnum state);
 
-// TODO
 // 获取控制模式
 ControlModeEnum SystemStatus_GetControlMode(void);
 

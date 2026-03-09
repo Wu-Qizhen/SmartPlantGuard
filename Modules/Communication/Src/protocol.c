@@ -39,9 +39,9 @@
  *    (3) CMD_SET_ACTUATOR 请求数据格式：
  *        字节 0：执行器（0 = 水泵，1 = 风扇，2 = 补光灯）
  *        字节 1：目标状态（0 = OFF，1 = ON，2 = ERROR）
- *    (4) CMD_SET_PARAMS / CMD_GET_PARAMS 暂未实现
- *    (5) CMD_CALIBRATE 暂未实现
- *    (6) CMD_GET_SYSTEM_INFO 暂未实现
+ *    (4) CMD_SET_PARAMS / CMD_GET_PARAMS
+ *    (5) CMD_CALIBRATE
+ *    (6) CMD_GET_SYSTEM_INFO
  * 6. 命令包示例：
  *    (1) 获取传感器数据：AA 01 00 01 55
  *        校验和：0x01 ^ 0x00 = 0x01
@@ -70,14 +70,15 @@
  * Updated by Wu Qizhen on 2026.02.13
  */
 #include "protocol.h"
-#include <string.h>
 #include "sensor_manager.h"
 #include "actuator_manager.h"
 #include "controller_core.h"
+#include "system_status.h"
+#include <string.h>
 
 static void processGetSensorData(Response *response);
 
-static void processGetActuatorState(Response *response);
+static void processGetActuatorStatus(Response *response);
 
 static void processSetActuator(Response *response, const CommandPacket *packet);
 
@@ -167,7 +168,7 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
             processGetSensorData(&response);
             break;
         case CMD_GET_ACTUATOR_STATE:
-            processGetActuatorState(&response);
+            processGetActuatorStatus(&response);
             break;
         case CMD_SET_ACTUATOR:
             processSetActuator(&response, packet);
@@ -224,7 +225,7 @@ static void processGetSensorData(Response *response) {
     }
 
     // 构造紧凑数据包
-    CompactSensorData compact;
+    SensorDataPacket compact;
     compact.soilMoisture = (uint16_t) (localCopy.soilMoisture.value * 10);
     compact.temperature = (int16_t) (localCopy.temperature.value * 10);
     compact.humidity = (uint16_t) (localCopy.humidity.value * 10);
@@ -250,7 +251,7 @@ static void processGetSensorData(Response *response) {
  * 风扇（0 OFF 1 ON 2 ERROR）
  * 补光灯（0 OFF 1 ON 2 ERROR）
  */
-static void processGetActuatorState(Response *response) {
+static void processGetActuatorStatus(Response *response) {
     // 获取执行器状态
     for (int i = 0; i < ACTUATOR_COUNT; i++) {
         ActuatorStateEnum state = ActuatorManager_GetState((ActuatorEnum) i);
@@ -304,10 +305,24 @@ static void processCalibrate(Response *response, CommandPacket *packet) {
     response->success = true;
 }
 
-// TODO: 处理获取系统信息命令
 static void processGetSystemInfo(Response *response) {
-    // 填充系统信息
-    // 这里需要填充系统版本、运行时间等信息
-    response->dataLength = 0;
-    response->success = true;
+    SystemInfoPacket info;
+
+    // 版本号（可根据实际定义修改，此处示例为 1.0.0）
+    info.versionMajor = 1;
+    info.versionMinor = 0;
+    info.versionPatch = 0;
+    info.reserved = 0;
+
+    // 从全局系统状态获取运行时间、状态和控制模式
+    info.uptimeSeconds = gSystemStatus.uptimeSeconds;
+    info.systemState = (uint8_t) gSystemStatus.currentState;
+    info.controlMode = (uint8_t) gSystemStatus.controlMode;
+
+    // 确保数据大小不超过 MAX_DATA_SIZE（编译时已检查，运行时再确认）
+    if (sizeof(info) <= MAX_DATA_SIZE) {
+        memcpy(response->data, &info, sizeof(info));
+        response->dataLength = sizeof(info);
+        response->success = true;
+    }
 }

@@ -40,6 +40,11 @@ const char *SystemStatus_GetString(SystemStateEnum state) {
     }
 }
 
+// 获取控制模式
+ControlModeEnum SystemStatus_GetControlMode(void) {
+    return gSystemStatus.controlMode;
+}
+
 // 设置控制模式
 bool SystemStatus_SetControlMode(ControlModeEnum mode) {
     gSystemStatus.controlMode = mode;

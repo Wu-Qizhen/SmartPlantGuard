@@ -39,9 +39,9 @@
  *    (3) CMD_SET_ACTUATOR 请求数据格式：
  *        字节 0：执行器（0 = 水泵，1 = 风扇，2 = 补光灯）
  *        字节 1：目标状态（0 = OFF，1 = ON，2 = ERROR）
- *    (4) CMD_SET_PARAMS / CMD_GET_PARAMS 暂未实现
- *    (5) CMD_CALIBRATE 暂未实现
- *    (6) CMD_GET_SYSTEM_INFO 暂未实现
+ *    (4) CMD_SET_PARAMS / CMD_GET_PARAMS
+ *    (5) CMD_CALIBRATE
+ *    (6) CMD_GET_SYSTEM_INFO
  * 6. 命令包示例：
  *    (1) 获取传感器数据：AA 01 00 01 55
  *        校验和：0x01 ^ 0x00 = 0x01
