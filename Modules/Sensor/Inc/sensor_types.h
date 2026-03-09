@@ -56,8 +56,8 @@ typedef struct {
     uint16_t soilMoisture; // 土壤湿度，放大 10 倍（0-1000 表示 0.0%-100.0%）
     int16_t temperature; // 温度，放大 10 倍（-500-1500 表示 -50.0°C-150.0°C）
     uint16_t humidity; // 湿度，放大 10 倍（0-1000）
-    uint16_t lightIntensity; // 光照强度
-    uint8_t statusFlags; // 位标志，bit0=土壤有效，bit1=温度有效，bit2=湿度有效，bit3=光敏有效
+    uint16_t lightIntensity; // 光照强度（0-50000）
+    uint8_t statusFlags; // 位标志，Bit 0 = 土壤有效，Bit 1 = 温度有效，Bit 2 = 湿度有效，Bit 3 = 光敏有效
     uint32_t timestamp; // 时间戳
 } CompactSensorData;
 #pragma pack(pop)
