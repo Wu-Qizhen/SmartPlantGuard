@@ -109,7 +109,7 @@ bool ControllerCore_SetParams(ControlParams *newParams) {
 }
 
 // 重置为默认参数
-void ControllerCore_ResetToDefaults(void) {
+void ControllerCore_ResetParamsToDefaults(void) {
     controlParams.soilMoistureLow = 40.0f;
     controlParams.soilMoistureHigh = 60.0f;
     controlParams.temperatureHigh = 30.0f;

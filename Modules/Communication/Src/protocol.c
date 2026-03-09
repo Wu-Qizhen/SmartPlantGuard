@@ -85,7 +85,7 @@ static void processSetParams(Response *response, const CommandPacket *packet);
 
 static void processGetParams(Response *response);
 
-static void processReset(Response *response);
+static void processResetSystem(Response *response);
 
 static void processCalibrate(Response *response, CommandPacket *packet);
 
@@ -179,7 +179,7 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
             processGetParams(&response);
             break;
         case CMD_RESET:
-            processReset(&response);
+            processResetSystem(&response);
             break;
         case CMD_CALIBRATE:
             processCalibrate(&response, packet);
@@ -244,10 +244,12 @@ static void processGetSensorData(Response *response) {
     response->success = true;
 }
 
-// 处理获取执行器状态命令
-// 水泵（0 OFF 1 ON 2 ERROR）
-// 风扇（0 OFF 1 ON 2 ERROR）
-// 补光灯（0 OFF 1 ON 2 ERROR）
+/**
+ * 处理获取执行器状态命令
+ * 水泵（0 OFF 1 ON 2 ERROR）
+ * 风扇（0 OFF 1 ON 2 ERROR）
+ * 补光灯（0 OFF 1 ON 2 ERROR）
+ */
 static void processGetActuatorState(Response *response) {
     // 获取执行器状态
     for (int i = 0; i < ACTUATOR_COUNT; i++) {
@@ -270,9 +272,8 @@ static void processSetActuator(Response *response, const CommandPacket *packet) 
     response->success = ActuatorManager_SetState(id, state);
 }
 
-// TODO: 处理设置参数命令
 static void processSetParams(Response *response, const CommandPacket *packet) {
-    if (packet->dataLength < sizeof(ControlParams)) {
+    if (packet->dataLength != sizeof(ControlParams)) {
         response->success = false;
         return;
     }
@@ -283,17 +284,16 @@ static void processSetParams(Response *response, const CommandPacket *packet) {
     response->success = ControllerCore_SetParams(&params);
 }
 
-// TODO: 处理获取参数命令
 static void processGetParams(Response *response) {
     ControlParams params = ControllerCore_GetParams();
     memcpy(response->data, &params, sizeof(ControlParams));
     response->dataLength = sizeof(ControlParams);
 }
 
-// TODO: 处理复位命令
-static void processReset(Response *response) {
+static void processResetSystem(Response *response) {
     // 重置系统
-    ControllerCore_ResetToDefaults();
+    ControllerCore_ResetParamsToDefaults();
+    // TODO: 处理复位命令
     response->success = true;
 }
 

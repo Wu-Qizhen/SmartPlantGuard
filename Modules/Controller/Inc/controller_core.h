@@ -22,7 +22,7 @@ ControlParams ControllerCore_GetParams(void);
 bool ControllerCore_SetParams(ControlParams *newParams);
 
 // 重置为默认参数
-void ControllerCore_ResetToDefaults(void);
+void ControllerCore_ResetParamsToDefaults(void);
 
 // 获取控制决策信息
 ControlDecision ControllerCore_GetLastDecision(void);
