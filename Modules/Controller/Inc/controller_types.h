@@ -20,12 +20,9 @@ typedef struct {
     float temperatureHigh; // 高阈值（开启风扇）
     float temperatureLow; // 低阈值（关闭风扇）
 
-    // 光照控制（预留）
+    // 光照控制
     float lightIntensityLow; // 低阈值（开启补光）
     float lightIntensityHigh; // 高阈值（关闭补光）
-
-    // 滞回控制参数
-    float hysteresisBand; // 滞回带宽
 
     // 时间控制
     uint32_t minPumpInterval; // 水泵最小间隔（秒）

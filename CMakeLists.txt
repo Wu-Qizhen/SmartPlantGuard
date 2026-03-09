@@ -60,8 +60,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Tasks/task_comm.c
         # System module
         Modules/System/Src/system_config.c
-        Modules/System/Src/system_state.c
-        Modules/System/Src/error_handler.c
+        Modules/System/Src/system_status.c
+        # Modules/System/Src/error_handler.c
         # Sensor module
         Modules/Sensor/Src/sensor_manager.c
         Modules/Sensor/Src/dht11.c

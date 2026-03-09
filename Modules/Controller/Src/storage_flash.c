@@ -24,7 +24,6 @@ bool StorageFlash_Init(void) {
     systemConfig.controlParams.temperatureLow = 25.0f;
     systemConfig.controlParams.lightIntensityLow = 100.0f;
     systemConfig.controlParams.lightIntensityHigh = 500.0f;
-    systemConfig.controlParams.hysteresisBand = 2.0f;
     systemConfig.controlParams.minPumpInterval = 60;
     systemConfig.controlParams.maxPumpDuration = 30;
 
@@ -92,7 +91,6 @@ bool StorageFlash_RestoreDefaults(void) {
     systemConfig.controlParams.temperatureLow = 25.0f;
     systemConfig.controlParams.lightIntensityLow = 100.0f;
     systemConfig.controlParams.lightIntensityHigh = 500.0f;
-    systemConfig.controlParams.hysteresisBand = 2.0f;
     systemConfig.controlParams.minPumpInterval = 60;
     systemConfig.controlParams.maxPumpDuration = 30;
 
