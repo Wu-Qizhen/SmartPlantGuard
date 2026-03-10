@@ -45,4 +45,6 @@ void ActuatorManager_ResetStatistics(ActuatorEnum id);
 
 void ActuatorManager_SetPumpLimits(uint32_t minIntervalSec, uint32_t maxDurationSec);
 
+void ActuatorManager_Update(void);
+
 #endif // ACTUATOR_MANAGER_H

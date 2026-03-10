@@ -76,7 +76,8 @@ void StartTask_Comm(void *argument) {
                 uint8_t dataLen = parseBuf[offset + 2];
 
                 // 命令字节合法性检查
-                if (cmd < CMD_GET_SENSOR_DATA || cmd > CMD_GET_SYSTEM_INFO) {
+                // NOTE: 若协议增加，这里需同步修改
+                if (cmd < CMD_GET_SENSOR_DATA || cmd > CMD_SET_CONTROL_MODE) {
                     offset++; // 跳过非法命令
                     continue;
                 }

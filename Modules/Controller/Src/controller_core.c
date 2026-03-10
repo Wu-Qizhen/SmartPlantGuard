@@ -102,6 +102,8 @@ void ControllerCore_RunCycle(void) {
             // 校准操作由通信协议函数处理
             break;
     }
+    // 无论何种模式，都执行执行器超时检查
+    ActuatorManager_Update();
 }
 
 // 获取控制参数

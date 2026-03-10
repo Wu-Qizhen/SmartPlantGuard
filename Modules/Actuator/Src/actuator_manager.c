@@ -198,3 +198,26 @@ void ActuatorManager_SetPumpLimits(uint32_t minIntervalSec, uint32_t maxDuration
     pumpMinIntervalMs = minIntervalSec * 1000;
     pumpMaxDurationMs = maxDurationSec * 1000;
 }
+
+void ActuatorManager_Update(void) {
+    if (!isInitialized) return;
+    uint32_t currentTime = HAL_GetTick();
+
+    // 只检查水泵（可扩展其他执行器）
+    ActuatorEnum id = ACTUATOR_PUMP;
+    if (actuatorStatuses[id].currentState == ACTUATOR_ON) {
+        if (actuatorStatuses[id].startTime > 0 &&
+            (currentTime - actuatorStatuses[id].startTime) > pumpMaxDurationMs) {
+            // 超时强制关闭
+            actuatorStatuses[id].currentState = ACTUATOR_OFF;
+            actuatorStatuses[id].operationCount++;
+            actuatorStatuses[id].lastOperationTime = currentTime;
+
+            uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTime;
+            actuatorStatuses[id].totalOnTime += runTimeMs / 1000;
+            actuatorStatuses[id].startTime = 0;
+
+            HAL_GPIO_WritePin(RELAY_PUMP_PORT, RELAY_PUMP_PIN, GPIO_PIN_RESET);
+        }
+    }
+}
