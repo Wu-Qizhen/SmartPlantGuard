@@ -77,7 +77,6 @@
 #include "actuator_manager.h"
 #include "controller_core.h"
 #include "system_status.h"
-#include "adc_sensors.h"
 #include <string.h>
 
 static void processGetSensorData(Response *response);
@@ -272,6 +271,11 @@ static void processGetActuatorStatus(Response *response) {
 // 处理设置执行器命令
 static void processSetActuator(Response *response, const CommandPacket *packet) {
     if (packet->dataLength < 2) {
+        response->success = false;
+        return;
+    }
+
+    if (SystemStatus_GetControlMode() != MODE_MANUAL) {
         response->success = false;
         return;
     }
