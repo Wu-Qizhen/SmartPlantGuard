@@ -36,6 +36,7 @@ typedef struct {
 } SystemStatus;
 
 // 系统信息响应数据结构
+#pragma pack(push, 1)
 typedef struct {
     uint8_t versionMajor; // 主版本号
     uint8_t versionMinor; // 次版本号
@@ -45,6 +46,7 @@ typedef struct {
     uint8_t systemState; // 当前系统状态（对应 SystemStateEnum）
     uint8_t controlMode; // 当前控制模式（对应 ControlModeEnum）
 } SystemInfoPacket;
+#pragma pack(pop)
 
 // 全局状态变量
 extern SystemStatus gSystemStatus;

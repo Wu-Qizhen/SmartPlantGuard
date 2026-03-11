@@ -369,6 +369,7 @@ static void processCalibrate(Response *response, CommandPacket *packet) {
 static void processGetSystemInfo(Response *response) {
     SystemInfoPacket info;
     osMutexAcquire(gSystemStatusMutex, osWaitForever);
+    gSystemStatus.uptimeSeconds = HAL_GetTick();
     // 版本号（可根据实际定义修改，此处示例为 1.0.0）
     info.versionMajor = 1;
     info.versionMinor = 0;
