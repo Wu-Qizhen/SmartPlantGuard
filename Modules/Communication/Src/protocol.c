@@ -407,5 +407,8 @@ static void processSetControlMode(Response *response, const CommandPacket *packe
 
     // 调用系统状态模块的设置函数
     bool ok = SystemStatus_SetControlMode((ControlModeEnum) modeValue);
+    ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_OFF);
+    ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_OFF);
+    ActuatorManager_SetState(ACTUATOR_LIGHT, ACTUATOR_OFF);
     response->success = ok;
 }

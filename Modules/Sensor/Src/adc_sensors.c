@@ -89,7 +89,7 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
     // 光强增高，ADC 值减小，所以需要反转映射，已完成修改
     if (lightCalib.isCalibrated && (lightCalib.maxAdc > lightCalib.minAdc)) {
         // 线性映射到设置的 lux 范围
-        *lightIntensity = lightCalib.maxLux -
+        *lightIntensity = lightCalib.minLux +
                           ((lightCalib.maxAdc - (float) lightAdc) /
                            (lightCalib.maxAdc - lightCalib.minAdc)) *
                           (lightCalib.maxLux - lightCalib.minLux);
