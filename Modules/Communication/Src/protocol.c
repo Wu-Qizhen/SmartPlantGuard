@@ -369,14 +369,14 @@ static void processCalibrate(Response *response, CommandPacket *packet) {
 static void processGetSystemInfo(Response *response) {
     SystemInfoPacket info;
     osMutexAcquire(gSystemStatusMutex, osWaitForever);
-    gSystemStatus.uptimeSeconds = HAL_GetTick();
+    gSystemStatus.uptimeMills = HAL_GetTick();
     // 版本号（可根据实际定义修改，此处示例为 1.0.0）
     info.versionMajor = 1;
     info.versionMinor = 0;
     info.versionPatch = 0;
     info.reserved = 0;
     // 从全局系统状态获取运行时间、状态和控制模式
-    info.uptimeSeconds = gSystemStatus.uptimeSeconds;
+    info.uptimeMills = gSystemStatus.uptimeMills;
     info.systemState = (uint8_t) gSystemStatus.currentState;
     info.controlMode = (uint8_t) gSystemStatus.controlMode;
     osMutexRelease(gSystemStatusMutex);

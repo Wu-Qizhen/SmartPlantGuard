@@ -32,7 +32,7 @@ typedef enum {
 typedef struct {
     SystemStateEnum currentState;
     ControlModeEnum controlMode;
-    uint32_t uptimeSeconds; // 系统运行时间
+    uint32_t uptimeMills; // 系统运行时间
 } SystemStatus;
 
 // 系统信息响应数据结构
@@ -42,7 +42,7 @@ typedef struct {
     uint8_t versionMinor; // 次版本号
     uint8_t versionPatch; // 补丁版本号
     uint8_t reserved; // 保留字节（对齐用）
-    uint32_t uptimeSeconds; // 系统运行时间（秒） TODO: 改为毫秒
+    uint32_t uptimeMills; // 系统运行时间（秒）
     uint8_t systemState; // 当前系统状态（对应 SystemStateEnum）
     uint8_t controlMode; // 当前控制模式（对应 ControlModeEnum）
 } SystemInfoPacket;
@@ -65,6 +65,6 @@ ControlModeEnum SystemStatus_GetControlMode(void);
 // 设置控制模式
 bool SystemStatus_SetControlMode(ControlModeEnum mode);
 
-// TODO: 后续完善系统与各模块错误处理
+// TODO: 完善系统与各模块错误处理
 
 #endif // SYSTEM_STATE_H

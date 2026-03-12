@@ -15,7 +15,7 @@ osMutexId_t gSystemStatusMutex;
 void SystemStatus_Init(void) {
     gSystemStatus.currentState = SYS_STATE_INIT;
     gSystemStatus.controlMode = MODE_AUTO;
-    gSystemStatus.uptimeSeconds = 0;
+    gSystemStatus.uptimeMills = 0;
     HAL_GPIO_WritePin(SYSTEM_LED_PORT, SYSTEM_LED_PIN, GPIO_PIN_RESET);
 }
 
