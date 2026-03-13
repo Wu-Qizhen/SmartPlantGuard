@@ -20,7 +20,7 @@ extern osMutexId_t gSensorDataMutex;
 // 传感器管理器状态
 typedef struct {
     bool isInitialized;
-    uint8_t readInterval; // 读取间隔（秒）
+    uint8_t readInterval; // 读取间隔
     bool autoCalibration; // 自动校准
     uint32_t totalReadCount; // 总读取次数
     uint32_t errorCount; // 错误计数

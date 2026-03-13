@@ -45,7 +45,7 @@ typedef struct {
     SensorData humidity; // 湿度（%）
     SensorData lightIntensity; // 光照强度
     bool allSensorsValid; // 所有传感器是否有效
-    uint32_t lastUpdateTime; // 最后更新时间
+    uint32_t lastUpdateTimeMs; // 最后更新时间
 } AllSensorData;
 
 // 编译时断言：确保 AllSensorData 大小不超过 128 字节

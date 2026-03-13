@@ -17,6 +17,6 @@ void StartTask_SensorRead(void *argument) {
             osMutexRelease(gSensorDataMutex);
         }
 
-        osDelay(2000);
+        osDelay(SENSOR_READ_INTERVAL_MS);
     }
 }

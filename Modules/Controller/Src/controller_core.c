@@ -11,14 +11,14 @@
 #include <string.h>
 
 static ControlParams controlParams = {
-    .soilMoistureLow = 40.0f,
-    .soilMoistureHigh = 60.0f,
-    .temperatureHigh = 30.0f,
-    .temperatureLow = 20.0f,
-    .lightIntensityLow = 500.0f,
-    .lightIntensityHigh = 800.0f,
-    .minPumpInterval = 300,
-    .maxPumpDuration = 20
+    .soilMoistureLow = DEFAULT_SOIL_MOISTURE_LOW,
+    .soilMoistureHigh = DEFAULT_SOIL_MOISTURE_HIGH,
+    .temperatureHigh = DEFAULT_TEMP_HIGH,
+    .temperatureLow = DEFAULT_TEMP_LOW,
+    .lightIntensityLow = DEFAULT_LIGHT_INTENSITY_LOW,
+    .lightIntensityHigh = DEFAULT_LIGHT_INTENSITY_HIGH,
+    .pumpMinInterval = DEFAULT_PUMP_MIN_INTERVAL,
+    .pumpMaxDuration = DEFAULT_PUMP_MAX_DURATION
 };
 
 static ControlDecision lastDecision = {
@@ -40,7 +40,7 @@ static void autoControl() {
     osMutexRelease(gSensorDataMutex);
 
     // 判断是否有有效数据
-    if (localCopy.lastUpdateTime == 0) {
+    if (localCopy.lastUpdateTimeMs == 0) {
         // 从未成功读取过传感器数据
         return;
     }
@@ -86,7 +86,7 @@ static void autoControl() {
 
 // 初始化
 bool ControllerCore_Init(void) {
-    ActuatorManager_SetPumpLimits(controlParams.minPumpInterval, controlParams.maxPumpDuration);
+    ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
     return true;
 }
 
@@ -115,21 +115,21 @@ ControlParams ControllerCore_GetParams(void) {
 bool ControllerCore_SetParams(ControlParams *newParams) {
     if (!newParams) return false;
     controlParams = *newParams;
-    ActuatorManager_SetPumpLimits(controlParams.minPumpInterval, controlParams.maxPumpDuration);
+    ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
     return true;
 }
 
 // 重置为默认参数
 void ControllerCore_ResetParamsToDefaults(void) {
-    controlParams.soilMoistureLow = 40.0f;
-    controlParams.soilMoistureHigh = 60.0f;
-    controlParams.temperatureHigh = 30.0f;
-    controlParams.temperatureLow = 20.0f;
-    controlParams.lightIntensityLow = 500.0f;
-    controlParams.lightIntensityHigh = 800.0f;
-    controlParams.minPumpInterval = 300;
-    controlParams.maxPumpDuration = 20;
-    ActuatorManager_SetPumpLimits(controlParams.minPumpInterval, controlParams.maxPumpDuration);
+    controlParams.soilMoistureLow = DEFAULT_SOIL_MOISTURE_LOW;
+    controlParams.soilMoistureHigh = DEFAULT_SOIL_MOISTURE_HIGH;
+    controlParams.temperatureHigh = DEFAULT_TEMP_HIGH;
+    controlParams.temperatureLow = DEFAULT_TEMP_LOW;
+    controlParams.lightIntensityLow = DEFAULT_LIGHT_INTENSITY_LOW;
+    controlParams.lightIntensityHigh = DEFAULT_LIGHT_INTENSITY_HIGH;
+    controlParams.pumpMinInterval = DEFAULT_PUMP_MIN_INTERVAL;
+    controlParams.pumpMaxDuration = DEFAULT_PUMP_MAX_DURATION;
+    ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
 }
 
 // 获取控制决策信息

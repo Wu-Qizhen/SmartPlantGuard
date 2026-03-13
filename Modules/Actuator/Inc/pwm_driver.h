@@ -20,7 +20,7 @@ typedef struct {
 } PWMConfig;
 
 // 初始化 PWM 驱动
-bool PWMDriver_Init(PWMConfig *config);
+// bool PWMDriver_Init(PWMConfig *config);
 
 // 设置 PWM 占空比
 bool PWMDriver_SetDutyCycle(PWMConfig *config, uint16_t dutyCycle); // 0-1000

@@ -5,10 +5,11 @@
  * Updated by Wu Qizhen on 2026.02.13
  */
 #include "pwm_driver.h"
+#include "system_config.h"
 
 // 初始化 PWM 驱动
-// 已弃用，在 CubeMX 已配置
-bool PWMDriver_Init(PWMConfig *config) {
+// 已在 CubeMX 配置
+/*bool PWMDriver_Init(PWMConfig *config) {
     if (!config || !config->htim) {
         return false;
     }
@@ -19,7 +20,7 @@ bool PWMDriver_Init(PWMConfig *config) {
     HAL_TIM_PWM_Start(config->htim, config->channel);
 
     return true;
-}
+}*/
 
 // 设置 PWM 占空比
 bool PWMDriver_SetDutyCycle(PWMConfig *config, uint16_t dutyCycle) {
@@ -35,7 +36,7 @@ bool PWMDriver_SetDutyCycle(PWMConfig *config, uint16_t dutyCycle) {
     }
 
     // 计算比较值
-    uint32_t compareValue = (config->period * dutyCycle) / 1000;
+    uint32_t compareValue = (config->period * dutyCycle) / MAX_DUTY_CYCLE;
 
     // 设置比较值
     switch (config->channel) {

@@ -6,6 +6,7 @@
 #include "usart.h"
 #include "bluetooth_bt24.h"
 #include "protocol.h"
+#include "system_config.h"
 #include <string.h>
 
 #define RX_BUFFER_SIZE 64
@@ -15,15 +16,15 @@
 static BluetoothConfig btConfig = {
     .deviceName = "PlantGuard_5NV9",
     .pinCode = "McEnvCtr",
-    .baudRate = 9600
+    .baudRate = UART_BAUD_RATE
 };
 
 static void sendResponse(const Response *resp) {
     CommandPacket ackPkt = {
-        .startByte = 0xAA,
+        .startByte = PACKET_HEAD,
         .command = resp->success ? CMD_ACK : CMD_ERROR,
         .dataLength = resp->dataLength,
-        .endByte = 0x55
+        .endByte = PACKET_TAIL
     };
     memcpy(ackPkt.data, resp->data, resp->dataLength);
     ackPkt.checksum = Protocol_CalculateChecksum(&ackPkt.command, 2 + ackPkt.dataLength);
@@ -64,7 +65,7 @@ void StartTask_Comm(void *argument) {
             uint16_t offset = 0;
             while (offset + MIN_PACKET_SIZE <= parseLen) {
                 // 查找起始字节
-                if (parseBuf[offset] != 0xAA) {
+                if (parseBuf[offset] != PACKET_HEAD) {
                     offset++;
                     continue;
                 }

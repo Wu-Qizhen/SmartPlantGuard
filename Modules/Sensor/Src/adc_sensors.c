@@ -7,22 +7,23 @@
  * Created by Wu Qizhen on 2026.02.17
  */
 #include "adc_sensors.h"
+#include "system_config.h"
 
 static ADC_HandleTypeDef *adcHandle; // 共享的 ADC 句柄
 
 // 土壤湿度校准数据
 static SoilCalibration soilCalib = {
-    .dryValue = 4095.0f,
-    .wetValue = 0.0f,
+    .dryValue = DEFAULT_SOIL_DRY_VALUE,
+    .wetValue = DEFAULT_SOIL_WET_VALUE,
     .isCalibrated = false
 };
 
 // 光照强度校准数据
 static LightCalibration lightCalib = {
-    .minAdc = 0.0f,
-    .maxAdc = 4095.0f,
-    .minLux = 0.0f,
-    .maxLux = 1000.0f, // 默认范围 0~1000 LUX
+    .minAdc = DEFAULT_LIGHT_MIN_ADC,
+    .maxAdc = DEFAULT_LIGHT_MAX_ADC,
+    .minLux = DEFAULT_LIGHT_MIN_LUX,
+    .maxLux = DEFAULT_LIGHT_MAX_LUX, // 默认范围
     .isCalibrated = false
 };
 
@@ -95,7 +96,10 @@ SensorStatusEnum AdcSensors_Read(float *soilMoisture, float *lightIntensity) {
                           (lightCalib.maxLux - lightCalib.minLux);
     } else {
         // 默认：假设 0~4095 对应 0~1000 lux
-        *lightIntensity = ((float) (4095 - lightAdc) / 4095.0f) * 1000.0f;
+        *lightIntensity = DEFAULT_LIGHT_MIN_LUX +
+                          ((DEFAULT_LIGHT_MAX_ADC - (float) lightAdc) /
+                           (DEFAULT_LIGHT_MAX_ADC - DEFAULT_LIGHT_MIN_ADC)) *
+                          (DEFAULT_LIGHT_MAX_LUX - DEFAULT_LIGHT_MIN_LUX);
     }
 
     // 限制在范围内（避免校准值异常导致越界）
