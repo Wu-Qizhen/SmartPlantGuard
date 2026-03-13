@@ -28,6 +28,16 @@ extern ADC_HandleTypeDef hadc1;
 #define BLUETOOTH_EN_PIN             GPIO_PIN_8     // PB8
 #define BLUETOOTH_STATE_PORT         GPIOB
 #define BLUETOOTH_STATE_PIN          GPIO_PIN_9     // PB9
+// SPI Flash (W25Q64)
+#define FLASH_SPI_HANDLE        (&hspi1)
+#define FLASH_CS_PORT           GPIOA
+#define FLASH_CS_PIN            GPIO_PIN_4      // PA4 -> W25Q64 CS
+#define FLASH_SCK_PORT          GPIOA
+#define FLASH_SCK_PIN           GPIO_PIN_5      // PA5 -> W25Q64 SCK
+#define FLASH_MOSI_PORT         GPIOA
+#define FLASH_MOSI_PIN          GPIO_PIN_7      // PA7 -> W25Q64 MOSI
+#define FLASH_MISO_PORT         GPIOA
+#define FLASH_MISO_PIN          GPIO_PIN_6      // PA6 -> W25Q64 MISO
 
 // 执行器引脚
 // 继电器移至 Port B，减少对 ADC 的干扰
@@ -40,10 +50,10 @@ extern ADC_HandleTypeDef hadc1;
 #define FAN_PWM_PIN                  GPIO_PIN_0     // PB0
 #define FAN_PWM_TIM                  TIM3
 #define FAN_PWM_CHANNEL              TIM_CHANNEL_3
-#define FAN_AIN1_PORT                GPIOA
-#define FAN_AIN1_PIN                 GPIO_PIN_6     // PA6
-#define FAN_AIN2_PORT                GPIOA
-#define FAN_AIN2_PIN                 GPIO_PIN_7     // PA7
+#define FAN_AIN1_PORT                GPIOB
+#define FAN_AIN1_PIN                 GPIO_PIN_1     // PB1
+#define FAN_AIN2_PORT                GPIOB
+#define FAN_AIN2_PIN                 GPIO_PIN_5     // PB5
 
 // 系统引脚
 // 板载 LED（PC13），低电平点亮
