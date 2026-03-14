@@ -8,6 +8,9 @@
 #define STORAGE_FLASH_H
 
 #include "controller_types.h"
+#include "sensor_types.h"
+
+extern bool is_busy;
 
 // 存储控制参数的数据结构
 typedef struct {
@@ -31,7 +34,7 @@ bool StorageFlash_LoadConfig(SystemConfig *config);
 bool StorageFlash_RestoreDefaults(void);
 
 // 擦除存储
-bool StorageFlash_Erase(void);
+bool StorageFlash_Erase(uint32_t sectorIndex);
 
 // 获取存储状态
 bool StorageFlash_IsValid(void);
