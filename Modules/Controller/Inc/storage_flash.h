@@ -16,9 +16,9 @@ extern bool is_busy;
 typedef struct {
     ControlParams controlParams; // 控制参数
     uint32_t magicNumber; // 魔数验证，一般设为0x55AA55AA
-//    uint32_t crc32; // CRC 校验
-//    uint32_t saveCount; // 保存次数
-//    uint32_t lastSaveTime; // 最后保存时间
+    //    uint32_t crc32; // CRC 校验
+    //    uint32_t saveCount; // 保存次数
+    //    uint32_t lastSaveTime; // 最后保存时间
 } SystemConfig;
 
 // 存储传感器数据的数据结构
