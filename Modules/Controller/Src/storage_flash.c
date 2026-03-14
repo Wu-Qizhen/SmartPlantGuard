@@ -17,8 +17,6 @@ static bool is_busy = false;
 
 // 存储初始化
 bool StorageFlash_Init(void) {
-    // 初始化存储
-    // 这里需要根据实际的 STM32 型号实现 Flash 操作
 
     // 加载默认配置
     systemConfig.controlParams.soilMoistureLow = 30.0f;
@@ -89,6 +87,8 @@ bool StorageFlash_SaveConfig(SystemConfig *config) {
     osDelay(20);
 
     systemConfig = *config;
+
+    // 错误处理/正常退出统一入口：释放忙标志，返回状态
 cleanup:
     is_busy = false;
     return success;
@@ -142,7 +142,7 @@ cleanup:
 
 // 恢复默认设置
 bool StorageFlash_RestoreDefaults(void) {
-    if (!isStorageInitialized) {
+    if (!isStorageInitialized || is_busy) {
         return false;
     }
 
@@ -167,14 +167,35 @@ bool StorageFlash_RestoreDefaults(void) {
 
 // 擦除存储
 bool StorageFlash_Erase(void) {
-    if (!isStorageInitialized) {
+    if (!isStorageInitialized || is_busy) {
         return false;
     }
 
-    // 擦除 Flash(W25Q64)
-    // 这里需要根据实际的 STM32 型号实现 Flash 擦除
+    // 擦除 Flash(W25Q64)中的配置参数部分
+    is_busy = true;
+    bool success = true; // 假设成功
+    // 1.写使能
+    uint8_t writeEnableCmd[] = {0x06};
+    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET );
+    if (HAL_SPI_Transmit(&hspi1, writeEnableCmd, 1, 100) != HAL_OK) { success = false; }
+    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET );
+    if (!success) goto cleanup; // 出错直接跳转解锁
 
-    return true;
+    // 2.扇区擦除
+    uint8_t sectorEraseCmd[] = {0x20,0x00,0x00,0x00};    // 擦除第0号扇区
+    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_RESET );
+    if (HAL_SPI_Transmit(&hspi1, sectorEraseCmd, 4, 100) != HAL_OK) { success = false; }
+    HAL_GPIO_WritePin(GPIOA,GPIO_PIN_4,GPIO_PIN_SET );
+    if (!success) goto cleanup;
+    osDelay(300);  // 等待擦除
+
+    if (success) {
+        StorageFlash_RestoreDefaults();  //配置恢复初始值并存入Flash
+    }
+
+cleanup:
+    is_busy = false;
+    return success;
 }
 
 // 获取存储状态
@@ -191,16 +212,18 @@ bool StorageFlash_IsValid(void) {
     /*// 验证 CRC
     uint32_t crc32 = calculateCRC32((uint8_t *) &systemConfig.controlParams, sizeof(ControlParams));
     return (crc32 == systemConfig.crc32);*/
+
+    return true;
 }
 
-// 获取保存次数
+/*// 获取保存次数
 uint32_t StorageFlash_GetSaveCount(void) {
     if (!isStorageInitialized) {
         return 0;
     }
 
     //return systemConfig.saveCount;
-}
+}*/
 
 /*暂时先不需要
 // 计算 CRC32
