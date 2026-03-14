@@ -15,11 +15,20 @@ extern bool is_busy;
 // 存储控制参数的数据结构
 typedef struct {
     ControlParams controlParams; // 控制参数
-    uint32_t magicNumber; // 魔数验证
+    uint32_t magicNumber; // 魔数验证，一般设为0x55AA55AA
 //    uint32_t crc32; // CRC 校验
 //    uint32_t saveCount; // 保存次数
 //    uint32_t lastSaveTime; // 最后保存时间
 } SystemConfig;
+
+// 存储传感器数据的数据结构
+typedef struct {
+    SensorDataPacket sensorDataPacket; // 控制参数
+    uint32_t magicNumber; // 魔数验证，一般设为0x55AA55AA
+    //    uint32_t crc32; // CRC 校验
+    //    uint32_t saveCount; // 保存次数
+    //    uint32_t lastSaveTime; // 最后保存时间
+} SensorDataSave;
 
 // 存储初始化
 bool StorageFlash_Init(void);
@@ -32,6 +41,12 @@ bool StorageFlash_LoadConfig(SystemConfig *config);
 
 // 恢复默认设置
 bool StorageFlash_RestoreDefaults(void);
+
+// 保存数据到 Flash
+bool StorageFlash_SaveData(SensorDataSave *DataSave);
+
+// 从 Flash 加载数据
+bool StorageFlash_LoadData(SensorDataSave *DataSave);
 
 // 擦除存储
 bool StorageFlash_Erase(uint32_t sectorIndex);
