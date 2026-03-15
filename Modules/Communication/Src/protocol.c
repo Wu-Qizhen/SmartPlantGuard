@@ -105,7 +105,7 @@ bool Protocol_ParsePacket(uint8_t *buffer, uint16_t length, CommandPacket *packe
     }
 
     // 检查起始字节和结束字节
-    if (buffer[0] != 0xAA || buffer[length - 1] != 0x55) {
+    if (buffer[0] != PACKET_HEAD || buffer[length - 1] != PACKET_TAIL) {
         return false;
     }
 
@@ -225,8 +225,8 @@ static void processGetSensorData(Response *response) {
     AllSensorData localCopy = gLatestSensorData;
     osMutexRelease(gSensorDataMutex);
 
-    // 判断是否有有效数据（例如检查 lastUpdateTime 是否为 0）
-    if (localCopy.lastUpdateTime == 0) {
+    // 判断是否有有效数据（例如检查 lastUpdateTimeMs 是否为 0）
+    if (localCopy.lastUpdateTimeMs == 0) {
         // 从未成功读取过传感器数据
         response->success = false;
         return;
@@ -245,7 +245,7 @@ static void processGetSensorData(Response *response) {
     if (localCopy.humidity.status == SENSOR_OK) compact.statusFlags |= 0x04;
     if (localCopy.lightIntensity.status == SENSOR_OK) compact.statusFlags |= 0x08;
 
-    compact.timestamp = localCopy.lastUpdateTime;
+    compact.timestamp = localCopy.lastUpdateTimeMs;
 
     // 填充响应
     memcpy(response->data, &compact, sizeof(compact));
@@ -370,7 +370,7 @@ static void processGetSystemInfo(Response *response) {
     SystemInfoPacket info;
     osMutexAcquire(gSystemStatusMutex, osWaitForever);
     gSystemStatus.uptimeMills = HAL_GetTick();
-    // 版本号（可根据实际定义修改，此处示例为 1.0.0）
+    // 版本号（此处为 1.0.0）
     info.versionMajor = 1;
     info.versionMinor = 0;
     info.versionPatch = 0;

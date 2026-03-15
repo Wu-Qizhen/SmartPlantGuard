@@ -29,8 +29,8 @@ bool StorageFlash_Init(void) {
     systemConfig.controlParams.temperatureLow = 25.0f;
     systemConfig.controlParams.lightIntensityLow = 100.0f;
     systemConfig.controlParams.lightIntensityHigh = 500.0f;
-    systemConfig.controlParams.minPumpInterval = 60;
-    systemConfig.controlParams.maxPumpDuration = 30;
+    systemConfig.controlParams.pumpMinInterval = 60;
+    systemConfig.controlParams.pumpMaxDuration = 30;
 
     systemConfig.magicNumber = 0x55AA55AA;
     /*systemConfig.crc32 = 0;
@@ -157,8 +157,8 @@ bool StorageFlash_RestoreDefaults(void) {
     systemConfig.controlParams.temperatureLow = 25.0f;
     systemConfig.controlParams.lightIntensityLow = 100.0f;
     systemConfig.controlParams.lightIntensityHigh = 500.0f;
-    systemConfig.controlParams.minPumpInterval = 60;
-    systemConfig.controlParams.maxPumpDuration = 30;
+    systemConfig.controlParams.pumpMinInterval = 60;
+    systemConfig.controlParams.pumpMaxDuration = 30;
 
     systemConfig.magicNumber = 0x55AA55AA;
     /*systemConfig.crc32 = calculateCRC32((uint8_t *) &systemConfig.controlParams, sizeof(ControlParams));

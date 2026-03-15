@@ -9,8 +9,8 @@
 static ActuatorStatus actuatorStatuses[ACTUATOR_COUNT];
 static bool isInitialized = false;
 static FanConfig fanConfig;
-static uint32_t pumpMinIntervalMs = 300000; // 默认 5 分钟
-static uint32_t pumpMaxDurationMs = 20000; // 默认 20 秒
+static uint32_t pumpMinIntervalMs = DEFAULT_PUMP_MIN_INTERVAL * 1000; // 默认 5 分钟
+static uint32_t pumpMaxDurationMs = DEFAULT_PUMP_MAX_DURATION * 1000; // 默认 20 秒
 
 // 初始化执行器系统
 bool ActuatorManager_Init(void) {
@@ -18,9 +18,9 @@ bool ActuatorManager_Init(void) {
         .pwm = {
             .htim = &htim3,
             .channel = FAN_PWM_CHANNEL,
-            .period = 999,
+            .period = PWM_ARR_PERIOD,
             .minDutyCycle = 0,
-            .maxDutyCycle = 1000
+            .maxDutyCycle = MAX_DUTY_CYCLE
         },
         .dir1Port = FAN_AIN1_PORT,
         .dir1Pin = FAN_AIN1_PIN,
@@ -36,7 +36,7 @@ bool ActuatorManager_Init(void) {
         actuatorStatuses[i].operationCount = 0;
         actuatorStatuses[i].isFaulty = false;
         actuatorStatuses[i].lastOperationTime = 0;
-        actuatorStatuses[i].startTime = 0;
+        actuatorStatuses[i].startTimeMs = 0;
     }
 
     isInitialized = true;
@@ -59,15 +59,15 @@ bool ActuatorManager_SetState(ActuatorEnum id, ActuatorStateEnum state) {
                 (currentTime - actuatorStatuses[id].lastOperationTime) < pumpMinIntervalMs) {
                 return false; // 间隔不足，拒绝开启
             }
-            actuatorStatuses[id].startTime = currentTime; // 记录本次开启时刻
+            actuatorStatuses[id].startTimeMs = currentTime; // 记录本次开启时刻
         }
 
         // 水泵关闭时累加运行时间
         if (id == ACTUATOR_PUMP && actuatorStatuses[id].currentState == ACTUATOR_ON && state == ACTUATOR_OFF) {
-            if (actuatorStatuses[id].startTime > 0) {
-                uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTime;
+            if (actuatorStatuses[id].startTimeMs > 0) {
+                uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTimeMs;
                 actuatorStatuses[id].totalOnTime += runTimeMs / 1000; // 转换为秒
-                actuatorStatuses[id].startTime = 0;
+                actuatorStatuses[id].startTimeMs = 0;
             }
         }
 
@@ -100,16 +100,16 @@ bool ActuatorManager_SetState(ActuatorEnum id, ActuatorStateEnum state) {
     } else {
         // 状态未变化，但水泵若处于开启状态，需检查是否超过最大运行时间
         if (id == ACTUATOR_PUMP && state == ACTUATOR_ON) {
-            if (actuatorStatuses[id].startTime > 0 &&
-                (currentTime - actuatorStatuses[id].startTime) > pumpMaxDurationMs) {
+            if (actuatorStatuses[id].startTimeMs > 0 &&
+                (currentTime - actuatorStatuses[id].startTimeMs) > pumpMaxDurationMs) {
                 // 超时，强制关闭
                 actuatorStatuses[id].currentState = ACTUATOR_OFF;
                 actuatorStatuses[id].operationCount++;
                 actuatorStatuses[id].lastOperationTime = currentTime;
 
-                uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTime;
+                uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTimeMs;
                 actuatorStatuses[id].totalOnTime += runTimeMs / 1000;
-                actuatorStatuses[id].startTime = 0;
+                actuatorStatuses[id].startTimeMs = 0;
 
                 HAL_GPIO_WritePin(RELAY_PUMP_PORT, RELAY_PUMP_PIN, GPIO_PIN_RESET);
             }
@@ -126,8 +126,8 @@ bool ActuatorManager_SetPWM(ActuatorEnum id, uint16_t dutyCycle) {
     }
 
     // 限制占空比范围
-    if (dutyCycle > 1000) {
-        dutyCycle = 1000;
+    if (dutyCycle > MAX_DUTY_CYCLE) {
+        dutyCycle = MAX_DUTY_CYCLE;
     }
 
     // 只对风扇执行 PWM 控制
@@ -206,16 +206,16 @@ void ActuatorManager_Update(void) {
     // 只检查水泵（可扩展其他执行器）
     ActuatorEnum id = ACTUATOR_PUMP;
     if (actuatorStatuses[id].currentState == ACTUATOR_ON) {
-        if (actuatorStatuses[id].startTime > 0 &&
-            (currentTime - actuatorStatuses[id].startTime) > pumpMaxDurationMs) {
+        if (actuatorStatuses[id].startTimeMs > 0 &&
+            (currentTime - actuatorStatuses[id].startTimeMs) > pumpMaxDurationMs) {
             // 超时强制关闭
             actuatorStatuses[id].currentState = ACTUATOR_OFF;
             actuatorStatuses[id].operationCount++;
             actuatorStatuses[id].lastOperationTime = currentTime;
 
-            uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTime;
+            uint32_t runTimeMs = currentTime - actuatorStatuses[id].startTimeMs;
             actuatorStatuses[id].totalOnTime += runTimeMs / 1000;
-            actuatorStatuses[id].startTime = 0;
+            actuatorStatuses[id].startTimeMs = 0;
 
             HAL_GPIO_WritePin(RELAY_PUMP_PORT, RELAY_PUMP_PIN, GPIO_PIN_RESET);
         }

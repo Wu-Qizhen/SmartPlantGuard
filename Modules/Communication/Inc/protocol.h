@@ -80,6 +80,8 @@
 
 #define MAX_DATA_SIZE 32
 #define MIN_PACKET_SIZE 5
+#define PACKET_HEAD 0xAA
+#define PACKET_TAIL 0x55
 
 // 指令类型
 typedef enum {

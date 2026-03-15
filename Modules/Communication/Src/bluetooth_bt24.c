@@ -38,7 +38,7 @@ static bool sendATCommand(const char *cmd) {
     if (status != HAL_OK) return false;
 
     // 轮询接收响应，直到收到 OK 或超时
-    uint8_t rxBuff[32];
+    uint8_t rxBuff[MAX_DATA_SIZE];
     uint32_t tickstart = HAL_GetTick();
     uint16_t index = 0;
     bool okReceived = false;

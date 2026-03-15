@@ -12,7 +12,7 @@ osMutexId_t gSensorDataMutex;
 
 static SensorManagerStatus managerStatus = {
     .isInitialized = false,
-    .readInterval = 5,
+    .readInterval = SENSOR_READ_INTERVAL_MS / 1000,
     .autoCalibration = false,
     .totalReadCount = 0,
     .errorCount = 0
@@ -63,7 +63,7 @@ bool SensorManager_ReadAll(AllSensorData *sensorData) {
     sensorData->soilMoisture.status = adcStatus;
     sensorData->lightIntensity.status = adcStatus;
 
-    sensorData->lastUpdateTime = HAL_GetTick();
+    sensorData->lastUpdateTimeMs = HAL_GetTick();
     sensorData->allSensorsValid = (tempHumStatus == SENSOR_OK) && (adcStatus == SENSOR_OK);
 
     managerStatus.totalReadCount++;

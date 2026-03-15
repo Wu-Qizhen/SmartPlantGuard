@@ -17,6 +17,6 @@ void StartTask_Control(void *argument) {
     for (;;) {
         ControllerCore_RunCycle();
         Bluetooth_UpdateState();
-        osDelay(5000);
+        osDelay(AUTO_CONTROL_INTERVAL_MS);
     }
 }
