@@ -308,11 +308,14 @@ static void processGetParams(Response *response) {
 
 static void processResetSystem(Response *response) {
     // 重置系统
+    HAL_GPIO_WritePin(SYSTEM_LED_PORT, SYSTEM_LED_PIN, GPIO_PIN_SET);
     ControllerCore_ResetParamsToDefaults();
     ActuatorManager_SetState(ACTUATOR_PUMP, ACTUATOR_OFF);
     ActuatorManager_SetState(ACTUATOR_FAN, ACTUATOR_OFF);
     ActuatorManager_SetState(ACTUATOR_LIGHT, ACTUATOR_OFF);
-    // TODO: 处理复位命令
+    SystemStatus_SetControlMode(MODE_AUTO);
+    osDelay(100);
+    HAL_GPIO_WritePin(SYSTEM_LED_PORT, SYSTEM_LED_PIN, GPIO_PIN_RESET);
     response->success = true;
 }
 
