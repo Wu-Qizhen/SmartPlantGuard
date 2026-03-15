@@ -109,13 +109,15 @@ bool ControllerCore_Init(void) {
     if (controlParamsMutex == NULL) return false;
     lastDecisionMutex = osMutexNew(NULL);
     if (lastDecisionMutex == NULL) return false;
-    osMutexAcquire(controlParamsMutex, osWaitForever);
-    if (!StorageFlash_LoadConfig(&controlParams)) {
-        osMutexRelease(controlParamsMutex);
-        return false;
-    }
+
+    // osMutexAcquire(controlParamsMutex, osWaitForever);
+    // 在 osKernelStart() 之前，不要使用 osMutexAcquire()，因为内核还没有开始运行
+    // if (!StorageFlash_LoadConfig(&controlParams)) {
+    // osMutexRelease(controlParamsMutex);
+    // return false;
+    // }
     ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
-    osMutexRelease(controlParamsMutex);
+    // osMutexRelease(controlParamsMutex);
     return true;
 }
 

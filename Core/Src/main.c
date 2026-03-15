@@ -27,12 +27,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "actuator_manager.h"
-#include "bluetooth_bt24.h"
-#include "controller_core.h"
 #include "system_status.h"
 #include "sensor_manager.h"
 #include "storage_flash.h"
+#include "actuator_manager.h"
+#include "bluetooth_bt24.h"
+#include "controller_core.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
