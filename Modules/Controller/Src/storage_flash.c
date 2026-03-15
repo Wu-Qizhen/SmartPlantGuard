@@ -10,7 +10,6 @@
 #include "system_config.h"
 #include <string.h>
 
-static SystemConfig systemConfig;
 static bool isStorageInitialized = false;
 static osMutexId_t flashBusyMutex = NULL;
 
@@ -36,6 +35,9 @@ bool StorageFlash_SaveConfig(ControlParams *config) {
         return false; // 获取互斥量失败（超时或其他错误）
     }
     bool success = true;
+    SystemConfig saveData;
+    saveData.controlParams = *config;
+    saveData.magicNumber = MAGIC_NUMBER;
 
     // 1. 写使能
     uint8_t writeEnableCmd[] = {0x06};
@@ -64,15 +66,13 @@ bool StorageFlash_SaveConfig(ControlParams *config) {
     if (HAL_SPI_Transmit(&hspi1, Cmd, 4, 100) != HAL_OK) { success = false; }
     // 只有在指令发送成功后才发送数据
     if (success) {
-        if (HAL_SPI_Transmit(&hspi1, (uint8_t *) config, sizeof(SystemConfig), 1000) != HAL_OK) {
+        if (HAL_SPI_Transmit(&hspi1, (uint8_t *) &saveData, sizeof(SystemConfig), 1000) != HAL_OK) {
             success = false;
         }
     }
     HAL_GPIO_WritePin(FLASH_CS_PORT, FLASH_CS_PIN, GPIO_PIN_SET);
     if (!success) goto cleanup;
     osDelay(20);
-
-    systemConfig.controlParams = *config;
 
     // 错误处理 / 正常退出统一入口：释放忙标志，返回状态
 cleanup:
@@ -115,7 +115,6 @@ bool StorageFlash_LoadConfig(ControlParams *config) {
     }
 
     *config = tempConfig.controlParams;
-    systemConfig = tempConfig;
 
 cleanup:
     osMutexRelease(flashBusyMutex);
@@ -124,8 +123,8 @@ cleanup:
 
 // 保存数据到 Flash
 // 调用前记得给结构体赋值
-bool StorageFlash_SaveData(SensorDataSave *dataSave) {
-    if (!dataSave || !isStorageInitialized) {
+bool StorageFlash_SaveData(SensorDataPacket *data) {
+    if (!data || !isStorageInitialized) {
         return false;
     }
 
@@ -134,6 +133,10 @@ bool StorageFlash_SaveData(SensorDataSave *dataSave) {
         return false; // 获取互斥量失败（超时或其他错误）
     }
     bool success = true; // 假设成功
+    SensorDataSave saveData;
+    saveData.sensorDataPacket = *data;
+    saveData.magicNumber = MAGIC_NUMBER;
+
     // 1. 写使能
     uint8_t writeEnableCmd[] = {0x06};
     HAL_GPIO_WritePin(FLASH_CS_PORT, FLASH_CS_PIN, GPIO_PIN_RESET);
@@ -161,7 +164,7 @@ bool StorageFlash_SaveData(SensorDataSave *dataSave) {
     if (HAL_SPI_Transmit(&hspi1, Cmd, 4, 100) != HAL_OK) { success = false; }
     // 只有在指令发送成功后才发送数据
     if (success) {
-        if (HAL_SPI_Transmit(&hspi1, (uint8_t *) dataSave, sizeof(SensorDataSave), 1000) != HAL_OK) {
+        if (HAL_SPI_Transmit(&hspi1, (uint8_t *) &saveData, sizeof(SensorDataSave), 1000) != HAL_OK) {
             success = false;
         }
     }
@@ -176,8 +179,8 @@ cleanup:
 
 // 从 Flash 加载数据
 // 想要获取数据就调用此函数后从结构体中获取
-bool StorageFlash_LoadData(SensorDataSave *dataSave) {
-    if (!dataSave || !isStorageInitialized) {
+bool StorageFlash_LoadData(SensorDataPacket *data) {
+    if (!data || !isStorageInitialized) {
         return false;
     }
 
@@ -209,7 +212,7 @@ bool StorageFlash_LoadData(SensorDataSave *dataSave) {
         goto cleanup;
     }
 
-    *dataSave = tempDataSave;
+    *data = tempDataSave.sensorDataPacket;
 
 cleanup:
     osMutexRelease(flashBusyMutex);

@@ -45,10 +45,10 @@ bool StorageFlash_SaveConfig(ControlParams *config);
 bool StorageFlash_LoadConfig(ControlParams *config);
 
 // 保存数据到 Flash
-bool StorageFlash_SaveData(SensorDataSave *dataSave);
+bool StorageFlash_SaveData(SensorDataPacket *data);
 
 // 从 Flash 加载数据
-bool StorageFlash_LoadData(SensorDataSave *dataSave);
+bool StorageFlash_LoadData(SensorDataPacket *data);
 
 // 擦除存储
 bool StorageFlash_Erase(uint32_t sectorIndex);
