@@ -18,6 +18,11 @@
 uint8_t commRxByte;
 
 static UART_HandleTypeDef *bluetoothUart;
+static BluetoothConfig btConfig = {
+    .deviceName = "PlantGuard_5NV9",
+    .pinCode = "McEnvCtr",
+    .baudRate = UART_BAUD_RATE
+};
 static BluetoothStatus btStatus = {
     .state = BT_STATE_DISCONNECTED,
     .isPaired = false,
@@ -121,11 +126,11 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
 }*/
 
 // 初始化蓝牙模块（BT24）
-bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
+bool Bluetooth_Init(UART_HandleTypeDef *huart) {
     txSemaphore = osSemaphoreNew(1, 1, NULL); // 初始可用
     if (txSemaphore == NULL) return false;
 
-    if (!huart || !config) {
+    if (!huart) {
         return false;
     }
 
@@ -145,18 +150,19 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config) {
 
     // 2. 设置设备名称（BT24 指令格式：AT+NAME<name>，无等号）
     char cmd[CMD_BUFFER_SIZE];
-    snprintf(cmd, sizeof(cmd), "AT+NAME%s", config->deviceName);
+    snprintf(cmd, sizeof(cmd), "AT+NAME%s", btConfig.deviceName);
     sendATCommand(cmd); // 忽略失败，继续尝试
 
     // 3. 设置配对码（BT24 指令格式：AT+PIN<code>，无等号）
     //    若 BT24 仅支持数字密码，而 config->pinCode 为字母，此命令可能失败，
     //    但不会影响整体初始化（可根据实际模块调整）
-    snprintf(cmd, sizeof(cmd), "AT+PIN%s", config->pinCode);
+    snprintf(cmd, sizeof(cmd), "AT+PIN%s", btConfig.pinCode);
     sendATCommand(cmd);
 
     // 4. 软件复位使配置生效（BT24 需要重启）
     sendATCommand("AT+RESET");
-    osDelay(500); // 等待模块重启
+    // 在 main 中初始化
+    HAL_Delay(500); // 等待模块重启
 
     return true;
 }

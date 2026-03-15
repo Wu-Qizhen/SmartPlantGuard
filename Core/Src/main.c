@@ -27,8 +27,12 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "actuator_manager.h"
+#include "bluetooth_bt24.h"
+#include "controller_core.h"
 #include "system_status.h"
 #include "sensor_manager.h"
+#include "storage_flash.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -108,15 +112,17 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_OBJECTS */
   // 在 MX_FREERTOS_Init() 之后创建互斥量（确保所有 RTOS 对象已初始化）
-  gSensorDataMutex = osMutexNew(NULL);
-  if (gSensorDataMutex == NULL) {
+  delay_init();
+  SystemStatus_Init();
+  if (!StorageFlash_Init() || !SensorManager_Init()
+      || !ActuatorManager_Init() || !ControllerCore_Init() || !Bluetooth_Init(&huart1)) {
     Error_Handler();
   }
-
-  gSystemStatusMutex = osMutexNew(NULL);
-  if (gSystemStatusMutex == NULL) {
-    Error_Handler();
-  }
+  /*StorageFlash_Init();
+  SensorManager_Init();
+  ActuatorManager_Init();
+  ControllerCore_Init();
+  Bluetooth_Init(&huart1);*/
   /* USER CODE END RTOS_OBJECTS */
 
   /* Start scheduler */

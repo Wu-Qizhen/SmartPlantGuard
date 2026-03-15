@@ -19,23 +19,23 @@ static SensorManagerStatus managerStatus = {
 };
 
 // 初始化传感器系统
-SensorStatusEnum SensorManager_Init(void) {
-    // 创建互斥量（只创建一次），已移至 main.c
-    /*if (gSensorDataMutex == NULL) {
-        gSensorDataMutex = osMutexNew(NULL);
-        if (gSensorDataMutex == NULL) {
-            // 处理创建失败（可根据需要返回错误）
-            return SENSOR_ERROR;
-        }
-    }*/
+bool SensorManager_Init(void) {
+    gSensorDataMutex = osMutexNew(NULL);
+    if (gSensorDataMutex == NULL) {
+        return false;
+    }
 
     // 初始化各个传感器
-    delay_init();
-    DHT11_Init(DHT11_PORT, DHT11_PIN);
-    AdcSensors_Init(ADC_SENSOR_HANDLE);
+    // delay_init();
+    if (DHT11_Init(DHT11_PORT, DHT11_PIN) != SENSOR_OK) {
+        return false;
+    }
+    if (!AdcSensors_Init(ADC_SENSOR_HANDLE)) {
+        return false;
+    }
 
     managerStatus.isInitialized = true;
-    return SENSOR_OK;
+    return true;
 }
 
 // 读取所有传感器数据

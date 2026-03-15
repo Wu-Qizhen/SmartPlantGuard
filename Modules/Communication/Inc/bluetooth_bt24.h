@@ -43,7 +43,7 @@ typedef struct {
 void Bluetooth_UpdateState(void);
 
 // 初始化蓝牙模块
-bool Bluetooth_Init(UART_HandleTypeDef *huart, BluetoothConfig *config);
+bool Bluetooth_Init(UART_HandleTypeDef *huart);
 
 void Bluetooth_StartReceive();
 

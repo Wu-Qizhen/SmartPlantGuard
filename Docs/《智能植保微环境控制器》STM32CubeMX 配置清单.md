@@ -1,26 +1,26 @@
-# STM32 Cube MX 配置清单
+# 《智能植保微环境控制器》STM32CubeMX 配置清单
 
 | 引脚   | 功能                           | 外设      | 备注            |
 |:-----| :----------------------------- | :-------- |:--------------|
 | PA0  | 土壤湿度                       | ADC1_IN0  | 必须接 3.3V      |
 | PA1  | 光敏传感器                     | ADC1_IN1  | 必须接 3.3V      |
-| PB1  | 风扇 AIN1                      | GPIO      |               |
-| PB5  | 风扇 AIN2                      | GPIO      |               |
+| PA4  | SPI 片选                      | GPIO      |               |
+| PA5  | SPI 时钟                      | SPI1_SCK     | 现波特率 1.125 MHz |
+| PA6  | ~~风扇 AIN1~~ -> SPI 输入       | SPI1_MISO   |               |
+| PA7  | ~~风扇 AIN2~~ -> SPI 输出  | SPI1_MOSI   |               |
 | PA9  | 蓝牙 TX                        | USART1_TX |               |
 | PA10 | 蓝牙 RX                        | USART1_RX |               |
 | PA13 | SWDIO                          | 调试      | 保留            |
 | PA14 | SWCLK                          | 调试      | 保留            |
 | PB0  | 风扇 PWM                       | TIM3_CH3  |               |
+| PB1  | 风扇 AIN1                      | GPIO      |               |
+| PB5  | 风扇 AIN2                      | GPIO      |               |
 | PB8  | 蓝牙 EN                        | GPIO      |               |
 | PB9  | 蓝牙 STATE                     | GPIO      |               |
 | PB12 | DHT11 数据                     | GPIO      | 外部上拉，3.3V 电平  |
 | PB13 | 水泵继电器                     | GPIO      |               |
 | PB14 | ~~风扇继电器~~ -> 补光灯继电器 | GPIO      |               |
 | PC13 | 系统 LED                       | GPIO      | 低电平点亮         |
-| PA4  | SPI 片选                      | GPIO      |               |
-| PA5  | SPI 时钟                      | SPI1_SCK     | 现波特率1.125 MHz |
-| PA6  | SPI 输入                      | SPI1_MISO   |               |
-| PA7  | SPI 输出                     | SPI1_MOSI   |               |
 
 <img src="./IMG/引脚设计.png" style="zoom:50%;" />
 
@@ -58,8 +58,8 @@ PCLK2：72 MHz（APB2 总线时钟）
 
 ## 3. GPIO
 
-- PA6（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
-- PA7（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
+- PB1（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
+- PB5（TB6612 风扇方向控制）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PB8（蓝牙状态）：GPIO_Output, Push Pull, No pull, Low speed, Low level
 - PB9（蓝牙状态）：GPIO_Input
 - PB12（DHT11 数据线）：GPIO_Output, Open Drain, Pull-up, Medium speed, High level

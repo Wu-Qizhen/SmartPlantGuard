@@ -8,11 +8,10 @@
 #define SENSOR_MANAGER_H
 
 #include "cmsis_os2.h"
-#include "dht11.h"
-#include "adc_sensors.h"
 #include "sensor_types.h"
 #include "system_config.h"
-#include "stm32f1xx_hal.h"
+#include "dht11.h"
+#include "adc_sensors.h"
 
 extern AllSensorData gLatestSensorData;
 extern osMutexId_t gSensorDataMutex;
@@ -27,7 +26,7 @@ typedef struct {
 } SensorManagerStatus;
 
 // 初始化传感器系统
-SensorStatusEnum SensorManager_Init(void);
+bool SensorManager_Init(void);
 
 // 读取所有传感器数据
 bool SensorManager_ReadAll(AllSensorData *sensorData);

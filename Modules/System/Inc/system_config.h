@@ -8,7 +8,6 @@
 
 #include "stm32f1xx_hal.h"
 
-// 引脚定义
 // 传感器引脚
 extern ADC_HandleTypeDef hadc1;
 #define ADC_SENSOR_HANDLE           (&hadc1)
@@ -18,38 +17,29 @@ extern ADC_HandleTypeDef hadc1;
 #define DHT11_PIN                   GPIO_PIN_12      // PB12
 
 // 通信引脚
-// 蓝牙
 #define BLUETOOTH_UART              USART1
 #define BLUETOOTH_TX_PORT           GPIOA
-#define BLUETOOTH_TX_PIN            GPIO_PIN_9      // PA9 -> HC-05 RX
+#define BLUETOOTH_TX_PIN            GPIO_PIN_9      // PA9 -> BT24 RX
 #define BLUETOOTH_RX_PORT           GPIOA
-#define BLUETOOTH_RX_PIN            GPIO_PIN_10     // PA10 <- HC-05 TX
+#define BLUETOOTH_RX_PIN            GPIO_PIN_10     // PA10 <- BT24 TX
 #define BLUETOOTH_EN_PORT           GPIOB
 #define BLUETOOTH_EN_PIN            GPIO_PIN_8      // PB8
 #define BLUETOOTH_STATE_PORT        GPIOB
 #define BLUETOOTH_STATE_PIN         GPIO_PIN_9      // PB9
-#define BLUETOOTH_UART               USART1
-#define BLUETOOTH_TX_PORT            GPIOA
-#define BLUETOOTH_TX_PIN             GPIO_PIN_9     // PA9 -> HC-05 RX
-#define BLUETOOTH_RX_PORT            GPIOA
-#define BLUETOOTH_RX_PIN             GPIO_PIN_10    // PA10 <- HC-05 TX
-#define BLUETOOTH_EN_PORT            GPIOB
-#define BLUETOOTH_EN_PIN             GPIO_PIN_8     // PB8
-#define BLUETOOTH_STATE_PORT         GPIOB
-#define BLUETOOTH_STATE_PIN          GPIO_PIN_9     // PB9
-// SPI Flash (W25Q64)
-#define FLASH_SPI_HANDLE        (&hspi1)
-#define FLASH_CS_PORT           GPIOA
-#define FLASH_CS_PIN            GPIO_PIN_4      // PA4 -> W25Q64 CS
-#define FLASH_SCK_PORT          GPIOA
-#define FLASH_SCK_PIN           GPIO_PIN_5      // PA5 -> W25Q64 SCK
-#define FLASH_MOSI_PORT         GPIOA
-#define FLASH_MOSI_PIN          GPIO_PIN_7      // PA7 -> W25Q64 MOSI
-#define FLASH_MISO_PORT         GPIOA
-#define FLASH_MISO_PIN          GPIO_PIN_6      // PA6 -> W25Q64 MISO
+
+// 存储引脚
+#define FLASH_SPI_HANDLE            (&hspi1)
+#define FLASH_CS_PORT               GPIOA
+#define FLASH_CS_PIN                GPIO_PIN_4      // PA4 -> W25Q64 CS
+#define FLASH_SCK_PORT              GPIOA
+#define FLASH_SCK_PIN               GPIO_PIN_5      // PA5 -> W25Q64 SCK
+#define FLASH_MOSI_PORT             GPIOA
+#define FLASH_MOSI_PIN              GPIO_PIN_7      // PA7 -> W25Q64 MOSI
+#define FLASH_MISO_PORT             GPIOA
+#define FLASH_MISO_PIN              GPIO_PIN_6      // PA6 -> W25Q64 MISO
 
 // 执行器引脚
-// 继电器移至 Port B，减少对 ADC 的干扰
+// 继电器（移至 Port B，减少对 ADC 的干扰）
 #define RELAY_PUMP_PORT             GPIOB
 #define RELAY_PUMP_PIN              GPIO_PIN_13     // PB13
 #define RELAY_LIGHT_PORT            GPIOB
@@ -59,13 +49,13 @@ extern ADC_HandleTypeDef hadc1;
 #define FAN_PWM_PIN                 GPIO_PIN_0      // PB0
 #define FAN_PWM_TIM                 TIM3
 #define FAN_PWM_CHANNEL             TIM_CHANNEL_3
-#define FAN_AIN1_PORT               GPIOA
-#define FAN_AIN1_PIN                GPIO_PIN_6      // PA6
-#define FAN_AIN2_PORT               GPIOA
-#define FAN_AIN2_PIN                GPIO_PIN_7      // PA7
+#define FAN_AIN1_PORT               GPIOB
+#define FAN_AIN1_PIN                GPIO_PIN_1      // PB1
+#define FAN_AIN2_PORT               GPIOB
+#define FAN_AIN2_PIN                GPIO_PIN_5      // PB5
 
 // 系统引脚
-// 板载 LED（PC13），低电平点亮
+// 板载 LED（低电平点亮）
 #define SYSTEM_LED_PORT             GPIOC
 #define SYSTEM_LED_PIN              GPIO_PIN_13     // PC13
 // WiFi 预留 / 调试（USART2）

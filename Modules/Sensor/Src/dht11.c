@@ -107,7 +107,8 @@ SensorStatusEnum DHT11_Init(GPIO_TypeDef *port, uint16_t pin) {
     // 初始化为输出高电平
     DHT11_SetOutputMode();
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_SET);
-    osDelay(100); // 等待传感器稳定
+    // 在 main 中初始化
+    HAL_Delay(100); // 等待传感器稳定
 
     return SENSOR_OK;
 }

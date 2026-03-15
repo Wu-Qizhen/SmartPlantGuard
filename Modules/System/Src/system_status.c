@@ -13,6 +13,10 @@ osMutexId_t gSystemStatusMutex;
 
 // 初始化系统状态
 void SystemStatus_Init(void) {
+    gSystemStatusMutex = osMutexNew(NULL);
+    if (gSystemStatusMutex == NULL) {
+        return;
+    }
     gSystemStatus.currentState = SYS_STATE_INIT;
     gSystemStatus.controlMode = MODE_AUTO;
     gSystemStatus.uptimeMills = 0;

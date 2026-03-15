@@ -6,18 +6,10 @@
 #include "usart.h"
 #include "bluetooth_bt24.h"
 #include "protocol.h"
-#include "system_config.h"
 #include <string.h>
 
 #define RX_BUFFER_SIZE 64
 #define RX_TIMEOUT_MS 500
-
-// 初始化设备名称、配对密码、波特率
-static BluetoothConfig btConfig = {
-    .deviceName = "PlantGuard_5NV9",
-    .pinCode = "McEnvCtr",
-    .baudRate = UART_BAUD_RATE
-};
 
 static void sendResponse(const Response *resp) {
     CommandPacket ackPkt = {
@@ -37,7 +29,7 @@ void StartTask_Comm(void *argument) {
     uint16_t parseLen = 0;
     uint32_t lastRxTick = HAL_GetTick(); // 最后收到数据的时间戳
 
-    Bluetooth_Init(&huart1, &btConfig);
+    // Bluetooth_Init(&huart1, &btConfig);
     Bluetooth_StartReceive();
 
     for (;;) {
