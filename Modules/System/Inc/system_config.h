@@ -33,10 +33,10 @@ extern ADC_HandleTypeDef hadc1;
 #define FLASH_CS_PIN                GPIO_PIN_4      // PA4 -> W25Q64 CS
 #define FLASH_SCK_PORT              GPIOA
 #define FLASH_SCK_PIN               GPIO_PIN_5      // PA5 -> W25Q64 SCK
-#define FLASH_MOSI_PORT             GPIOA
-#define FLASH_MOSI_PIN              GPIO_PIN_7      // PA7 -> W25Q64 MOSI
 #define FLASH_MISO_PORT             GPIOA
 #define FLASH_MISO_PIN              GPIO_PIN_6      // PA6 -> W25Q64 MISO
+#define FLASH_MOSI_PORT             GPIOA
+#define FLASH_MOSI_PIN              GPIO_PIN_7      // PA7 -> W25Q64 MOSI
 
 // 执行器引脚
 // 继电器（移至 Port B，减少对 ADC 的干扰）
