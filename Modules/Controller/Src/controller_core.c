@@ -110,6 +110,10 @@ bool ControllerCore_Init(void) {
     lastDecisionMutex = osMutexNew(NULL);
     if (lastDecisionMutex == NULL) return false;
     osMutexAcquire(controlParamsMutex, osWaitForever);
+    if (!StorageFlash_LoadConfig(&controlParams)) {
+        osMutexRelease(controlParamsMutex);
+        return false;
+    }
     ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
     osMutexRelease(controlParamsMutex);
     return true;
@@ -144,7 +148,6 @@ bool ControllerCore_SetParams(ControlParams *newParams) {
     if (!newParams) return false;
     osMutexAcquire(controlParamsMutex, osWaitForever);
     controlParams = *newParams;
-    StorageFlash_SaveConfig(&controlParams);
     ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
     osMutexRelease(controlParamsMutex);
     return true;
@@ -161,8 +164,8 @@ void ControllerCore_ResetParamsToDefaults(void) {
     controlParams.lightIntensityHigh = DEFAULT_LIGHT_INTENSITY_HIGH;
     controlParams.pumpMinInterval = DEFAULT_PUMP_MIN_INTERVAL;
     controlParams.pumpMaxDuration = DEFAULT_PUMP_MAX_DURATION;
-    StorageFlash_SaveConfig(&controlParams);
     ActuatorManager_SetPumpLimits(controlParams.pumpMinInterval, controlParams.pumpMaxDuration);
+    StorageFlash_SaveConfig(&controlParams);
     osMutexRelease(controlParamsMutex);
 }
 

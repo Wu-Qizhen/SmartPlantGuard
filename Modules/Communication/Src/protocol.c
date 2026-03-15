@@ -77,6 +77,7 @@
 #include "actuator_manager.h"
 #include "controller_core.h"
 #include "system_status.h"
+#include "storage_flash.h"
 #include <string.h>
 
 static void processGetSensorData(Response *response);
@@ -296,6 +297,7 @@ static void processSetParams(Response *response, const CommandPacket *packet) {
     memcpy(&params, packet->data, sizeof(ControlParams));
 
     response->success = ControllerCore_SetParams(&params);
+    StorageFlash_SaveConfig(&params);
 }
 
 static void processGetParams(Response *response) {
