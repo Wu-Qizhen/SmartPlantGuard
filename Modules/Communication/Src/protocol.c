@@ -297,7 +297,9 @@ static void processSetParams(Response *response, const CommandPacket *packet) {
     memcpy(&params, packet->data, sizeof(ControlParams));
 
     response->success = ControllerCore_SetParams(&params);
-    StorageFlash_SaveConfig(&params);
+    // 注意：先返回响应，再异步保存到 Flash
+    // 这样可以避免阻塞通信任务，导致客户端超时
+    osThreadNew((osThreadFunc_t) StorageFlash_SaveConfig, &params, NULL);
 }
 
 static void processGetParams(Response *response) {
