@@ -113,7 +113,8 @@ void StartTask_Comm(void *argument) {
             }
         } else {
             // 超时未收到数据，可执行周期性任务（如主动上报传感器数据）
-            // 此处留空，可根据需要添加
+            // 检查是否需要保存配置
+            Protocol_CheckSaveConfig();
         }
     }
 }

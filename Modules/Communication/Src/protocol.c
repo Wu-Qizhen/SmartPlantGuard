@@ -80,6 +80,10 @@
 #include "storage_flash.h"
 #include <string.h>
 
+// 保存配置的标志和参数
+static bool needSaveConfig = false;
+static ControlParams configToSave;
+
 static void processGetSensorData(Response *response);
 
 static void processGetActuatorStatus(Response *response);
@@ -206,6 +210,14 @@ Response Protocol_ProcessCommand(CommandPacket *packet) {
     return response;
 }
 
+// 检查并执行保存配置
+void Protocol_CheckSaveConfig(void) {
+    if (needSaveConfig) {
+        needSaveConfig = false;
+        StorageFlash_SaveConfig(&configToSave);
+    }
+}
+
 /**
  * 处理获取传感器数据命令
  * 土壤湿度，放大 10 倍（0-1000）
@@ -297,9 +309,11 @@ static void processSetParams(Response *response, const CommandPacket *packet) {
     memcpy(&params, packet->data, sizeof(ControlParams));
 
     response->success = ControllerCore_SetParams(&params);
-    // 注意：先返回响应，再异步保存到 Flash
+
+    // 注意：设置保存标志，在通信任务空闲时执行保存
     // 这样可以避免阻塞通信任务，导致客户端超时
-    osThreadNew((osThreadFunc_t) StorageFlash_SaveConfig, &params, NULL);
+    configToSave = params;
+    needSaveConfig = true;
 }
 
 static void processGetParams(Response *response) {

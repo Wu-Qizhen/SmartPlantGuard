@@ -137,4 +137,7 @@ uint8_t Protocol_CalculateChecksum(const uint8_t *data, uint8_t length);
 
 Response Protocol_ProcessCommand(CommandPacket *packet);
 
+// 检查并执行保存配置
+void Protocol_CheckSaveConfig(void);
+
 #endif // PROTOCOL_H
