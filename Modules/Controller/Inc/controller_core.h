@@ -10,6 +10,9 @@
 #include "controller_types.h"
 #include "actuator_manager.h"
 
+extern osMutexId_t controlParamsMutex;
+extern osMutexId_t lastDecisionMutex;
+
 // 控制器初始化
 bool ControllerCore_Init(void);
 

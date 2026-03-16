@@ -11,15 +11,10 @@
 #include <string.h>
 
 static bool isStorageInitialized = false;
-static osMutexId_t flashBusyMutex = NULL;
+osMutexId_t flashBusyMutex = NULL;
 
 // 存储初始化
 bool StorageFlash_Init(void) {
-    flashBusyMutex = osMutexNew(NULL);
-    if (flashBusyMutex == NULL) {
-        return false; // 互斥量创建失败
-    }
-
     isStorageInitialized = true;
     return true;
 }

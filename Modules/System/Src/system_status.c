@@ -13,10 +13,6 @@ osMutexId_t gSystemStatusMutex;
 
 // 初始化系统状态
 void SystemStatus_Init(void) {
-    gSystemStatusMutex = osMutexNew(NULL);
-    if (gSystemStatusMutex == NULL) {
-        return;
-    }
     // 在 osKernelStart() 之前，不要使用 osMutexAcquire()，因为内核还没有开始运行
     gSystemStatus.currentState = SYS_STATE_INIT;
     gSystemStatus.controlMode = MODE_AUTO;

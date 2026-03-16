@@ -29,7 +29,7 @@ void StartTask_Comm(void *argument) {
     uint16_t parseLen = 0;
     uint32_t lastRxTick = HAL_GetTick(); // 最后收到数据的时间戳
 
-    // Bluetooth_Init(&huart1, &btConfig);
+    Bluetooth_Init(&huart1);
     Bluetooth_StartReceive();
 
     for (;;) {

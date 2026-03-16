@@ -7,7 +7,7 @@
 
 void StartTask_SensorRead(void *argument) {
     AllSensorData sensorData;
-    // SensorManager_Init();
+    SensorManager_Init();
 
     for (;;) {
         if (SensorManager_ReadAll(&sensorData)) {

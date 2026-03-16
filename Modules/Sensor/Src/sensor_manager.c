@@ -20,19 +20,9 @@ static SensorManagerStatus managerStatus = {
 
 // 初始化传感器系统
 bool SensorManager_Init(void) {
-    gSensorDataMutex = osMutexNew(NULL);
-    if (gSensorDataMutex == NULL) {
-        return false;
-    }
-
     // 初始化各个传感器
-    // delay_init();
-    if (DHT11_Init(DHT11_PORT, DHT11_PIN) != SENSOR_OK) {
-        return false;
-    }
-    if (!AdcSensors_Init(ADC_SENSOR_HANDLE)) {
-        return false;
-    }
+    DHT11_Init(DHT11_PORT, DHT11_PIN);
+    AdcSensors_Init(ADC_SENSOR_HANDLE);
 
     managerStatus.isInitialized = true;
     return true;

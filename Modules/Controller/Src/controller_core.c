@@ -21,7 +21,7 @@ static ControlParams controlParams = {
     .pumpMinInterval = DEFAULT_PUMP_MIN_INTERVAL,
     .pumpMaxDuration = DEFAULT_PUMP_MAX_DURATION
 };
-static osMutexId_t controlParamsMutex = NULL;
+osMutexId_t controlParamsMutex = NULL;
 
 static ControlDecision lastDecision = {
     .needWatering = false,
@@ -29,7 +29,7 @@ static ControlDecision lastDecision = {
     .needLighting = false,
     .decisionReason = "Initial state"
 };
-static osMutexId_t lastDecisionMutex = NULL;
+osMutexId_t lastDecisionMutex = NULL;
 
 // 自动控制逻辑
 // TODO: 风扇挡位选择控制
@@ -146,6 +146,7 @@ ControlParams ControllerCore_GetParams(void) {
 }
 
 // 设置控制参数
+// 设置之后需调用 StorageFlash_SaveConfig() 存储
 bool ControllerCore_SetParams(ControlParams *newParams) {
     if (!newParams) return false;
     osMutexAcquire(controlParamsMutex, osWaitForever);

@@ -7,6 +7,7 @@
 #ifndef STORAGE_FLASH_H
 #define STORAGE_FLASH_H
 
+#include "cmsis_os2.h"
 #include "controller_types.h"
 #include "sensor_types.h"
 
@@ -16,6 +17,8 @@
 // W25Q64 总容量 8MB = 8388608 字节
 // 扇区大小 4KB = 4096 字节
 // 总扇区数 = 8MB / 4KB = 2048 个扇区
+
+extern osMutexId_t flashBusyMutex;
 
 // 存储控制参数的数据结构
 typedef struct {

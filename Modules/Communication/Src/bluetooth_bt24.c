@@ -161,8 +161,7 @@ bool Bluetooth_Init(UART_HandleTypeDef *huart) {
 
     // 4. 软件复位使配置生效（BT24 需要重启）
     sendATCommand("AT+RESET");
-    // 在 main 中初始化
-    HAL_Delay(500); // 等待模块重启
+    osDelay(500); // 等待模块重启
 
     return true;
 }
