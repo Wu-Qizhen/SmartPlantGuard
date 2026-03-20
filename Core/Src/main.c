@@ -135,7 +135,7 @@ int main(void)
     Error_Handler();
   }
 
-  delay_init();
+  delayInit();
   /* USER CODE END RTOS_OBJECTS */
 
   /* Start scheduler */

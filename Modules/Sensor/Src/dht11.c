@@ -43,24 +43,24 @@ static SensorStatusEnum DHT11_StartSignal(void) {
 
     // 拉高总线 30us
     HAL_GPIO_WritePin(dht11Port, dht11Pin, GPIO_PIN_SET);
-    delay_us(30);
+    delayUs(30);
 
     // 切换为输入模式，准备接收响应
     DHT11_SetInputMode();
-    delay_us(40);
+    delayUs(40);
 
     // 检查传感器是否拉低总线（响应信号）
     if (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_RESET) {
         // 等待拉低阶段结束（约 80us）
         uint32_t timeout = 0;
         while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_RESET) {
-            delay_us(1);
+            delayUs(1);
             if (++timeout > 100) return SENSOR_TIMEOUT;
         }
         // 等待拉高阶段结束（约 80us）
         timeout = 0;
         while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET) {
-            delay_us(1);
+            delayUs(1);
             if (++timeout > 100) return SENSOR_TIMEOUT;
         }
         return SENSOR_OK;
@@ -75,11 +75,11 @@ static uint8_t DHT11_ReadByte(void) {
         // 等待位起始信号（低电平结束）
         uint32_t startTimeout = 0;
         while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_RESET) {
-            delay_us(1);
+            delayUs(1);
             if (++startTimeout > 60) return 0xFF; // 超时
         }
         // 延时 40us 后判断电平
-        delay_us(40);
+        delayUs(40);
         if (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET) {
             byte |= (1 << (7 - i)); // 高位在前
             // 修复卡死问题
@@ -87,7 +87,7 @@ static uint8_t DHT11_ReadByte(void) {
             // 等待该位高电平结束，增加超时
             uint32_t endTimeout = 0;
             while (HAL_GPIO_ReadPin(dht11Port, dht11Pin) == GPIO_PIN_SET) {
-                delay_us(1);
+                delayUs(1);
                 if (++endTimeout > 100) {
                     // 100µs 足够覆盖最长的高电平时间（约70µs）
                     // 超时，可返回错误或跳过该位
