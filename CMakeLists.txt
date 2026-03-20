@@ -81,7 +81,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
         Modules/Communication/Src/bluetooth_bt24.c
         # Modules/Communication/Src/wifi_esp8266.c
         # Utils
-        Utils/Src/delay.c
+        Modules/Utils/Src/delay.c
 )
 
 # Add include paths
@@ -98,7 +98,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         # Communication module
         Modules/Communication/Inc
         # Utils
-        Utils/Inc
+        Modules/Utils/Inc
 )
 
 # Add project symbols (macros)

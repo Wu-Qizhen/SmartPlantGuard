@@ -23,7 +23,7 @@ static LightCalibration lightCalib = {
     .minAdc = DEFAULT_LIGHT_MIN_ADC,
     .maxAdc = DEFAULT_LIGHT_MAX_ADC,
     .minLux = DEFAULT_LIGHT_MIN_LUX,
-    .maxLux = DEFAULT_LIGHT_MAX_LUX, // 默认范围
+    .maxLux = DEFAULT_LIGHT_MAX_LUX, // TODO: 需要根据实际调整
     .isCalibrated = false
 };
 
