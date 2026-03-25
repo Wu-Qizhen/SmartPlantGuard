@@ -22,29 +22,72 @@ typedef enum {
     ACTUATOR_COUNT // 执行器总数
 } ActuatorEnum;
 
-// 初始化执行器系统
+/**
+ * 初始化执行器系统
+ * @return 初始化是否成功
+ */
 bool ActuatorManager_Init(void);
 
-// 控制执行器
+/**
+ * 控制执行器
+ * @param id 执行器 ID
+ * @param state 执行器状态
+ * @return 控制是否成功
+ */
 bool ActuatorManager_SetState(ActuatorEnum id, ActuatorStateEnum state);
 
-bool ActuatorManager_SetPWM(ActuatorEnum id, uint16_t dutyCycle); // 0-1000
+/**
+ * 设置执行器 PWM 占空比
+ * @param id 执行器 ID
+ * @param dutyCycle 占空比（0-1000）
+ * @return 设置是否成功
+ */
+bool ActuatorManager_SetPWM(ActuatorEnum id, uint16_t dutyCycle);
 
-// 获取执行器状态
+/**
+ * 获取执行器状态
+ * @param id 执行器 ID
+ * @return 执行器当前状态
+ */
 ActuatorStateEnum ActuatorManager_GetState(ActuatorEnum id);
 
+/**
+ * 获取执行器状态信息
+ * @param id 执行器 ID
+ * @return 执行器状态信息结构体
+ */
 ActuatorStatus ActuatorManager_GetStatus(ActuatorEnum id);
 
-// 安全控制函数
+/**
+ * 安全切换执行器状态
+ * @param id 执行器 ID
+ * @param minInterval 最小切换间隔
+ * @return 切换是否成功
+ */
 bool ActuatorManager_SafeToggle(ActuatorEnum id, uint32_t minInterval);
 
-bool ActuatorManager_CheckOverheat(void); // 检查过热保护
+/**
+ * 检查过热保护
+ * @return 过热检查结果
+ */
+bool ActuatorManager_CheckOverheat(void);
 
-// 重置统计信息
+/**
+ * 重置执行器统计信息
+ * @param id 执行器 ID
+ */
 void ActuatorManager_ResetStatistics(ActuatorEnum id);
 
+/**
+ * 设置水泵运行限制
+ * @param minIntervalSec 最小运行间隔（秒）
+ * @param maxDurationSec 最大运行时长（秒）
+ */
 void ActuatorManager_SetPumpLimits(uint32_t minIntervalSec, uint32_t maxDurationSec);
 
+/**
+ * 更新执行器状态
+ */
 void ActuatorManager_Update(void);
 
 #endif // ACTUATOR_MANAGER_H

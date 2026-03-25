@@ -11,7 +11,15 @@
 
 #include <stdint.h>
 
-void delayUs(uint32_t us); // 微秒延时
-void delayInit(void); // 初始化延时硬件（如 DWT）
+/**
+ * 微秒延时
+ * @param us 延时微秒数
+ */
+void delayUs(uint32_t us);
+
+/**
+ * 初始化延时硬件（如 DWT）
+ */
+void delayInit(void);
 
 #endif // DELAY_H

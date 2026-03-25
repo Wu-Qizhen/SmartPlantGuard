@@ -38,22 +38,45 @@ typedef struct {
     // uint32_t lastSaveTime; // 最后保存时间
 } SensorDataSave;
 
-// 存储初始化
+/**
+ * 存储初始化
+ * @return 初始化是否成功
+ */
 bool StorageFlash_Init(void);
 
-// 保存配置到 Flash
+/**
+ * 保存配置到 Flash
+ * @param config 控制参数结构体
+ * @return 保存是否成功
+ */
 bool StorageFlash_SaveConfig(ControlParams *config);
 
-// 从 Flash 加载配置
+/**
+ * 从 Flash 加载配置
+ * @param config 控制参数结构体
+ * @return 加载是否成功
+ */
 bool StorageFlash_LoadConfig(ControlParams *config);
 
-// 保存数据到 Flash
+/**
+ * 保存数据到 Flash
+ * @param data 传感器数据包
+ * @return 保存是否成功
+ */
 bool StorageFlash_SaveData(SensorDataPacket *data);
 
-// 从 Flash 加载数据
+/**
+ * 从 Flash 加载数据
+ * @param data 传感器数据包
+ * @return 加载是否成功
+ */
 bool StorageFlash_LoadData(SensorDataPacket *data);
 
-// 擦除存储
+/**
+ * 擦除存储
+ * @param sectorIndex 扇区索引
+ * @return 擦除是否成功
+ */
 bool StorageFlash_Erase(uint32_t sectorIndex);
 
 #endif // STORAGE_FLASH_H

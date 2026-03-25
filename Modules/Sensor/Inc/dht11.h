@@ -12,16 +12,33 @@
 #include "sensor_types.h"
 #include "stm32f1xx_hal.h"
 
-// DHT11 初始化
+/**
+ * DHT11 初始化
+ * @param port GPIO 端口
+ * @param pin GPIO 引脚
+ * @return 初始化状态
+ */
 SensorStatusEnum DHT11_Init(GPIO_TypeDef *port, uint16_t pin);
 
-// 读取温湿度数据
+/**
+ * 读取温湿度数据
+ * @param temperature 返回温度值
+ * @param humidity 返回湿度值
+ * @return 读取状态
+ */
 SensorStatusEnum DHT11_Read(float *temperature, float *humidity);
 
-// 获取最后一次读取的状态
+/**
+ * 获取最后一次读取的状态
+ * @return 最后一次读取的状态
+ */
 SensorStatusEnum DHT11_GetLastStatus(void);
 
-// 获取读取统计
+/**
+ * 获取读取统计
+ * @param successCount 成功次数
+ * @param errorCount 错误次数
+ */
 void DHT11_GetStatistics(uint32_t *successCount, uint32_t *errorCount);
 
 #endif // DHT11_H

@@ -67,7 +67,7 @@ extern ADC_HandleTypeDef hadc1;
 #define DEFAULT_SOIL_MOISTURE_LOW        40.0f      // 土壤湿度低于开启水泵
 #define DEFAULT_SOIL_MOISTURE_HIGH       60.0f      // 土壤湿度高于关闭水泵
 #define DEFAULT_TEMP_HIGH                30.0f      // 温度高于开启风扇
-#define DEFAULT_TEMP_LOW                 20.0f      // 温度低于关闭风扇
+#define DEFAULT_TEMP_LOW                 28.0f      // 温度低于关闭风扇
 #define DEFAULT_LIGHT_INTENSITY_LOW      500.0f     // 光照强度低于开启补光灯
 #define DEFAULT_LIGHT_INTENSITY_HIGH     800.0f     // 光照强度高于关闭补光灯
 #define DEFAULT_PUMP_MIN_INTERVAL        300        // 时间小于无法再次启动水泵

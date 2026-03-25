@@ -128,16 +128,40 @@ typedef struct {
     uint8_t dataLength;
 } Response;
 
-// 协议处理函数
+/**
+ * 解析数据包
+ * @param buffer 数据缓冲区
+ * @param length 数据长度
+ * @param packet 数据包结构体
+ * @return 解析是否成功
+ */
 bool Protocol_ParsePacket(uint8_t *buffer, uint16_t length, CommandPacket *packet);
 
+/**
+ * 验证数据包
+ * @param packet 数据包结构体
+ * @return 验证是否成功
+ */
 bool Protocol_ValidatePacket(CommandPacket *packet);
 
+/**
+ * 计算校验和
+ * @param data 数据指针
+ * @param length 数据长度
+ * @return 校验和值
+ */
 uint8_t Protocol_CalculateChecksum(const uint8_t *data, uint8_t length);
 
+/**
+ * 处理命令
+ * @param packet 命令数据包
+ * @return 响应结构体
+ */
 Response Protocol_ProcessCommand(CommandPacket *packet);
 
-// 检查并执行保存配置
+/**
+ * 检查并执行保存配置
+ */
 void Protocol_CheckSaveConfig(void);
 
 #endif // PROTOCOL_H

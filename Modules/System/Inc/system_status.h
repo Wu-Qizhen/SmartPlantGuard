@@ -52,17 +52,35 @@ typedef struct {
 extern SystemStatus gSystemStatus;
 extern osMutexId_t gSystemStatusMutex;
 
-// 函数声明
+/**
+ * 初始化系统状态
+ */
 void SystemStatus_Init(void);
 
+/**
+ * 更新系统状态
+ * @param newState 新的系统状态
+ */
 void SystemStatus_Update(SystemStateEnum newState);
 
+/**
+ * 获取系统状态字符串
+ * @param state 系统状态
+ * @return 状态字符串
+ */
 const char *SystemStatus_GetString(SystemStateEnum state);
 
-// 获取控制模式
+/**
+ * 获取控制模式
+ * @return 当前控制模式
+ */
 ControlModeEnum SystemStatus_GetControlMode(void);
 
-// 设置控制模式
+/**
+ * 设置控制模式
+ * @param mode 控制模式
+ * @return 设置是否成功
+ */
 bool SystemStatus_SetControlMode(ControlModeEnum mode);
 
 #endif // SYSTEM_STATE_H

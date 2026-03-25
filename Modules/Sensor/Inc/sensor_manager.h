@@ -25,37 +25,94 @@ typedef struct {
     uint32_t errorCount; // 错误计数
 } SensorManagerStatus;
 
-// 初始化传感器系统
+/**
+ * 初始化传感器系统
+ * @return 初始化是否成功
+ */
 bool SensorManager_Init(void);
 
-// 读取所有传感器数据
+/**
+ * 读取所有传感器数据
+ * @param sensorData 传感器数据结构体
+ * @return 读取是否成功
+ */
 bool SensorManager_ReadAll(AllSensorData *sensorData);
 
-// 读取单个传感器
+/**
+ * 读取土壤湿度
+ * @param moisture 土壤湿度值
+ * @return 读取状态
+ */
 SensorStatusEnum SensorManager_ReadSoilMoisture(float *moisture);
 
+/**
+ * 读取光照强度
+ * @param light 光照强度值
+ * @return 读取状态
+ */
 SensorStatusEnum SensorManager_ReadLightIntensity(float *light);
 
+/**
+ * 同时读取土壤湿度和光照强度
+ * @param moisture 土壤湿度值
+ * @param light 光照强度值
+ * @return 读取状态
+ */
 SensorStatusEnum SensorManager_ReadSoilMoistureLightIntensity(float *moisture, float *light);
 
+/**
+ * 读取温度
+ * @param temperature 温度值
+ * @return 读取状态
+ */
 SensorStatusEnum SensorManager_ReadTemperature(float *temperature);
 
+/**
+ * 读取湿度
+ * @param humidity 湿度值
+ * @return 读取状态
+ */
 SensorStatusEnum SensorManager_ReadHumidity(float *humidity);
 
+/**
+ * 同时读取温度和湿度
+ * @param temperature 温度值
+ * @param humidity 湿度值
+ * @return 读取状态
+ */
 SensorStatusEnum SensorManager_ReadTemperatureHumidity(float *temperature, float *humidity);
 
-// 校准函数
+/**
+ * 校准土壤湿度传感器
+ * @param dryValue 干燥值
+ * @param wetValue 湿润值
+ * @return 校准是否成功
+ */
 bool SensorManager_CalibrateSoilMoisture(float dryValue, float wetValue);
 
+/**
+ * 校准光照传感器
+ * @param minLux 最小光照值
+ * @param maxLux 最大光照值
+ * @return 校准是否成功
+ */
 bool SensorManager_CalibrateLightSensor(float minLux, float maxLux);
 
-// 设置读取间隔
+/**
+ * 设置读取间隔
+ * @param seconds 读取间隔（秒）
+ */
 void SensorManager_SetReadInterval(uint8_t seconds);
 
-// 获取管理器状态
+/**
+ * 获取管理器状态
+ * @return 传感器管理器状态结构体
+ */
 SensorManagerStatus SensorManager_GetStatus(void);
 
-// 重置传感器统计
+/**
+ * 重置传感器统计
+ */
 void SensorManager_ResetStatistics(void);
 
 #endif // SENSOR_MANAGER_H

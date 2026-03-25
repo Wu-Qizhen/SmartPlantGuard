@@ -39,19 +39,45 @@ typedef struct {
     // uint32_t connectCount;
 } BluetoothStatus;
 
-// 更新蓝牙模块状态
+/**
+ * 更新蓝牙模块状态
+ */
 void Bluetooth_UpdateState(void);
 
-// 初始化蓝牙模块
+/**
+ * 初始化蓝牙模块
+ * @param huart UART 句柄
+ * @return 初始化是否成功
+ */
 bool Bluetooth_Init(UART_HandleTypeDef *huart);
 
+/**
+ * 开始接收数据
+ */
 void Bluetooth_StartReceive();
 
-// 发送数据
+/**
+ * 发送数据
+ * @param data 数据指针
+ * @param length 数据长度
+ * @return 发送是否成功
+ */
 bool Bluetooth_SendData(uint8_t *data, uint16_t length);
 
+/**
+ * 阻塞式发送数据
+ * @param data 数据指针
+ * @param length 数据长度
+ * @param timeout 超时时间
+ * @return 发送是否成功
+ */
 bool Bluetooth_SendDataBlocking(uint8_t *data, uint16_t length, uint32_t timeout);
 
+/**
+ * 发送数据包
+ * @param packet 数据包指针
+ * @return 发送是否成功
+ */
 bool Bluetooth_SendPacket(CommandPacket *packet);
 
 /*// 接收处理（在串口中断中调用）
